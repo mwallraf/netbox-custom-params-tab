@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netbox-custom-params-tab"
+version = "0.1.0"
+description = "NetBox plugin: move custom fields into a dedicated section on object detail pages"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.entry-points."netbox.plugins"]
+netbox_custom_params_tab = "netbox_custom_params_tab:config"
+
+[tool.setuptools.packages.find]
+include = ["netbox_custom_params_tab*"]
