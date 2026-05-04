@@ -8,11 +8,11 @@ class TestCustomTabConfigTable:
     def test_renders_with_queryset(self, device_content_type):
         CustomTabConfig.objects.create(content_type=device_content_type, tab_label='Params')
         table = CustomTabConfigTable(CustomTabConfig.objects.all())
-        assert table.rows.data.count() == 1
+        assert len(table.rows.data) == 1
 
     def test_empty_queryset_renders(self):
         table = CustomTabConfigTable(CustomTabConfig.objects.none())
-        assert table.rows.data.count() == 0
+        assert len(table.rows.data) == 0
 
     def test_required_columns_present(self):
         table = CustomTabConfigTable(CustomTabConfig.objects.none())
