@@ -1,21 +1,21 @@
 from django import forms
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.forms import inlineformset_factory
 from netbox.forms import NetBoxModelForm
 from .models import CustomTabConfig, CustomTabConfigGroup, CustomTabConfigField
 from .template_content import BUILTIN_MODELS
 
+GROUP_FORMSET_PREFIX = 'config_groups'
+FIELD_FORMSET_PREFIX = 'config_fields'
+
 
 def _supported_content_type_pks():
-    pks = []
+    query = Q()
     for model_path in BUILTIN_MODELS:
         app_label, model_name = model_path.split('.')
-        try:
-            ct = ContentType.objects.get(app_label=app_label, model=model_name)
-            pks.append(ct.pk)
-        except ContentType.DoesNotExist:
-            pass
-    return pks
+        query |= Q(app_label=app_label, model=model_name)
+    return list(ContentType.objects.filter(query).values_list('pk', flat=True))
 
 
 class CustomTabConfigForm(NetBoxModelForm):

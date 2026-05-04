@@ -6,6 +6,8 @@ from netbox_custom_params_tab.forms import (
     CustomTabConfigForm,
     CustomTabConfigGroupFormSet,
     CustomTabConfigFieldFormSet,
+    GROUP_FORMSET_PREFIX,
+    FIELD_FORMSET_PREFIX,
 )
 
 
@@ -19,7 +21,7 @@ class TestCustomTabConfigForm:
         })
         assert form.is_valid(), form.errors
 
-    def test_missing_content_type_is_invalid(self):
+    def test_missing_content_type_is_invalid(self, device_content_type):
         form = CustomTabConfigForm(data={
             'tab_label': 'Parameters',
             'enabled': True,
@@ -27,7 +29,7 @@ class TestCustomTabConfigForm:
         assert not form.is_valid()
         assert 'content_type' in form.errors
 
-    def test_tab_label_field_exists(self, device_content_type):
+    def test_tab_label_field_exists(self):
         form = CustomTabConfigForm()
         assert 'tab_label' in form.fields
 
@@ -57,12 +59,12 @@ class TestCustomTabConfigGroupFormSet:
         formset = CustomTabConfigGroupFormSet(
             instance=config,
             data={
-                'config_groups-TOTAL_FORMS': '0',
-                'config_groups-INITIAL_FORMS': '0',
-                'config_groups-MIN_NUM_FORMS': '0',
-                'config_groups-MAX_NUM_FORMS': '1000',
+                f'{GROUP_FORMSET_PREFIX}-TOTAL_FORMS': '0',
+                f'{GROUP_FORMSET_PREFIX}-INITIAL_FORMS': '0',
+                f'{GROUP_FORMSET_PREFIX}-MIN_NUM_FORMS': '0',
+                f'{GROUP_FORMSET_PREFIX}-MAX_NUM_FORMS': '1000',
             },
-            prefix='config_groups',
+            prefix=GROUP_FORMSET_PREFIX,
         )
         assert formset.is_valid(), formset.errors
 
@@ -72,14 +74,14 @@ class TestCustomTabConfigGroupFormSet:
         formset = CustomTabConfigGroupFormSet(
             instance=config,
             data={
-                'config_groups-TOTAL_FORMS': '1',
-                'config_groups-INITIAL_FORMS': '0',
-                'config_groups-MIN_NUM_FORMS': '0',
-                'config_groups-MAX_NUM_FORMS': '1000',
-                'config_groups-0-group': str(group.pk),
-                'config_groups-0-weight': '100',
+                f'{GROUP_FORMSET_PREFIX}-TOTAL_FORMS': '1',
+                f'{GROUP_FORMSET_PREFIX}-INITIAL_FORMS': '0',
+                f'{GROUP_FORMSET_PREFIX}-MIN_NUM_FORMS': '0',
+                f'{GROUP_FORMSET_PREFIX}-MAX_NUM_FORMS': '1000',
+                f'{GROUP_FORMSET_PREFIX}-0-group': str(group.pk),
+                f'{GROUP_FORMSET_PREFIX}-0-weight': '100',
             },
-            prefix='config_groups',
+            prefix=GROUP_FORMSET_PREFIX,
         )
         assert formset.is_valid(), formset.errors
         formset.save()
@@ -94,14 +96,14 @@ class TestCustomTabConfigFieldFormSet:
         formset = CustomTabConfigFieldFormSet(
             instance=config,
             data={
-                'config_fields-TOTAL_FORMS': '1',
-                'config_fields-INITIAL_FORMS': '0',
-                'config_fields-MIN_NUM_FORMS': '0',
-                'config_fields-MAX_NUM_FORMS': '1000',
-                'config_fields-0-field': str(cf.pk),
-                'config_fields-0-weight': '150',
+                f'{FIELD_FORMSET_PREFIX}-TOTAL_FORMS': '1',
+                f'{FIELD_FORMSET_PREFIX}-INITIAL_FORMS': '0',
+                f'{FIELD_FORMSET_PREFIX}-MIN_NUM_FORMS': '0',
+                f'{FIELD_FORMSET_PREFIX}-MAX_NUM_FORMS': '1000',
+                f'{FIELD_FORMSET_PREFIX}-0-field': str(cf.pk),
+                f'{FIELD_FORMSET_PREFIX}-0-weight': '150',
             },
-            prefix='config_fields',
+            prefix=FIELD_FORMSET_PREFIX,
         )
         assert formset.is_valid(), formset.errors
         formset.save()
