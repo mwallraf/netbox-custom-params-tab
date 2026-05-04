@@ -30,7 +30,7 @@ class TestCustomTabConfig:
 
     def test_content_type_is_unique(self, device_content_type):
         CustomTabConfig.objects.create(content_type=device_content_type)
-        with pytest.raises(Exception):
+        with pytest.raises(IntegrityError):
             CustomTabConfig.objects.create(content_type=device_content_type)
 
     def test_get_absolute_url_resolves(self, device_content_type):
@@ -79,6 +79,13 @@ class TestCustomTabConfigGroup:
         group.delete()
         assert CustomTabConfigGroup.objects.count() == 0
 
+    def test_duplicate_group_entry_raises(self, device_content_type):
+        config = CustomTabConfig.objects.create(content_type=device_content_type)
+        group = CustomFieldGroup.objects.create(name='Unique Test')
+        CustomTabConfigGroup.objects.create(tab_config=config, group=group)
+        with pytest.raises(IntegrityError):
+            CustomTabConfigGroup.objects.create(tab_config=config, group=group)
+
 
 @pytest.mark.django_db
 class TestCustomTabConfigField:
@@ -106,3 +113,16 @@ class TestCustomTabConfigField:
         CustomTabConfigField.objects.create(tab_config=config, field=cf)
         cf.delete()
         assert CustomTabConfigField.objects.count() == 0
+
+    def test_duplicate_field_entry_raises(self, device_content_type):
+        config = CustomTabConfig.objects.create(content_type=device_content_type)
+        cf = CustomField.objects.create(name='unique_cf', type=CustomFieldTypeChoices.TYPE_TEXT)
+        CustomTabConfigField.objects.create(tab_config=config, field=cf)
+        with pytest.raises(IntegrityError):
+            CustomTabConfigField.objects.create(tab_config=config, field=cf)
+
+    def test_weight_default_is_100(self, device_content_type):
+        config = CustomTabConfig.objects.create(content_type=device_content_type)
+        cf = CustomField.objects.create(name='weight_cf', type=CustomFieldTypeChoices.TYPE_TEXT)
+        entry = CustomTabConfigField.objects.create(tab_config=config, field=cf)
+        assert entry.weight == 100

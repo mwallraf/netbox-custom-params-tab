@@ -1,6 +1,18 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
+# WARNING: This migration was hand-crafted because NetBox was not installed at
+# generation time. It MUST be regenerated before deploying against a real NetBox
+# database:
+#
+#   pip install netbox  # or install from source
+#   python -m django makemigrations netbox_custom_params_tab --settings=testing.settings
+#
+# Known issues in this hand-crafted version:
+#   - extras dependency pinned to 0001_initial (wrong for NetBox 4.x)
+#   - custom_field_data uses encoder=None instead of NetBox's custom encoder
+#   - managers declaration for RestrictedManager is absent
+
 
 class Migration(migrations.Migration):
 
