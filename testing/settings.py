@@ -35,6 +35,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -67,5 +68,6 @@ PLUGINS_CONFIG = {
 }
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/tmp/netbox_static_test/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/tmp/netbox_media_test/'

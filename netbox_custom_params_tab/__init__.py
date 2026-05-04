@@ -17,10 +17,10 @@ class CustomParamsTabConfig(PluginConfig):
     def ready(self):
         super().ready()
         from django.conf import settings as django_settings
-        import netbox_custom_params_tab.template_content as tc
         plugin_cfg = django_settings.PLUGINS_CONFIG.get('netbox_custom_params_tab', {})
         extra = plugin_cfg.get('extra_models', [])
         if extra:
+            import netbox_custom_params_tab.template_content as tc
             tc.template_extensions = tc.build_template_extensions(extra)
 
 

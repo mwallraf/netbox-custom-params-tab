@@ -9,6 +9,12 @@ description = "NetBox plugin: move custom fields into a dedicated section on obj
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-django",
+]
+
 [project.entry-points."netbox.plugins"]
 netbox_custom_params_tab = "netbox_custom_params_tab:config"
 
