@@ -1,4 +1,4 @@
-FROM ghcr.io/netbox-community/netbox:v4.2-latest
+FROM netboxcommunity/netbox:v4.6-5.0.0
 
 USER root
 
