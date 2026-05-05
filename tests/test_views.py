@@ -33,6 +33,17 @@ class TestCustomTabConfigEditView:
         response = client_logged_in.get(url)
         assert response.status_code == 200
 
+    def test_unauthenticated_add_redirects(self, client):
+        url = reverse('plugins:netbox_custom_params_tab:customtabconfig_add')
+        response = client.get(url)
+        assert response.status_code in (302, 403)
+
+    def test_unauthenticated_edit_redirects(self, client, device_content_type):
+        config = CustomTabConfig.objects.create(content_type=device_content_type)
+        url = reverse('plugins:netbox_custom_params_tab:customtabconfig_edit', args=[config.pk])
+        response = client.get(url)
+        assert response.status_code in (302, 403)
+
     def test_post_creates_config(self, client_logged_in, device_content_type):
         url = reverse('plugins:netbox_custom_params_tab:customtabconfig_add')
         data = {
@@ -43,7 +54,7 @@ class TestCustomTabConfigEditView:
             **_empty_formset_data(FIELD_FORMSET_PREFIX),
         }
         response = client_logged_in.post(url, data)
-        assert response.status_code in (200, 302)
+        assert response.status_code == 302
         assert CustomTabConfig.objects.filter(content_type=device_content_type).exists()
 
     def test_get_edit_returns_200(self, client_logged_in, device_content_type):
@@ -64,7 +75,8 @@ class TestCustomTabConfigEditView:
             **_empty_formset_data(GROUP_FORMSET_PREFIX),
             **_empty_formset_data(FIELD_FORMSET_PREFIX),
         }
-        client_logged_in.post(url, data)
+        response = client_logged_in.post(url, data)
+        assert response.status_code == 302
         config.refresh_from_db()
         assert config.tab_label == 'New Label'
 

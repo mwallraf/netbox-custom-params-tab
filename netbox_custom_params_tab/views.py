@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -24,7 +25,11 @@ class CustomTabConfigView(ObjectView):
     queryset = CustomTabConfig.objects.all()
 
 
-class CustomTabConfigEditView(View):
+class CustomTabConfigEditView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = (
+        'netbox_custom_params_tab.add_customtabconfig',
+        'netbox_custom_params_tab.change_customtabconfig',
+    )
     template_name = 'netbox_custom_params_tab/customtabconfig_edit.html'
 
     def _build_forms(self, instance=None, data=None):
