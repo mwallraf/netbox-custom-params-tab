@@ -1,0 +1,11 @@
+.git
+.venv
+venv
+*.egg-info
+__pycache__
+*.pyc
+docs
+tests
+testing
+.DS_Store
+.worktrees

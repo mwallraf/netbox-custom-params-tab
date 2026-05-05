@@ -1,4 +1,5 @@
 ALLOWED_HOSTS = ['*']
+DEBUG = True
 
 DATABASE = {
     'ENGINE': 'django.db.backends.postgresql',
