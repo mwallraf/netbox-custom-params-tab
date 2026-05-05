@@ -4,6 +4,6 @@ USER root
 
 # Copy plugin source and install as editable so volume-mounted edits are live
 COPY . /opt/netbox-custom-params-tab/
-RUN /opt/netbox/venv/bin/pip install --no-cache-dir -e /opt/netbox-custom-params-tab/
+RUN /opt/netbox/venv/bin/python -m pip install --no-cache-dir -e /opt/netbox-custom-params-tab/
 
 USER unit
