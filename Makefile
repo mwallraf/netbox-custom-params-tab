@@ -25,13 +25,13 @@ shell:  ## Open a bash shell inside the netbox container
 	docker compose exec netbox bash
 
 nbshell:  ## Open NetBox's Django shell_plus inside the netbox container
-	docker compose exec netbox python /opt/netbox/netbox/manage.py shell_plus
+	docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py shell_plus
 
 migrate:  ## Run pending database migrations inside the netbox container
-	docker compose exec netbox python /opt/netbox/netbox/manage.py migrate
+	docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py migrate
 
 superuser:  ## Interactively create a Django superuser
-	docker compose exec netbox python /opt/netbox/netbox/manage.py createsuperuser
+	docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py createsuperuser
 
 clean:  ## Destroy containers, volumes, and the locally-built image
 	docker compose down -v --rmi local
