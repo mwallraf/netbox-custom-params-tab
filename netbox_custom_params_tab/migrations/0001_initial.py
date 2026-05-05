@@ -1,6 +1,3 @@
-import django.db.models.deletion
-from django.db import migrations, models
-
 # WARNING: This migration was hand-crafted because NetBox was not installed at
 # generation time. It MUST be regenerated before deploying against a real NetBox
 # database:
@@ -9,9 +6,11 @@ from django.db import migrations, models
 #   python -m django makemigrations netbox_custom_params_tab --settings=testing.settings
 #
 # Known issues in this hand-crafted version:
-#   - extras dependency pinned to 0001_initial (wrong for NetBox 4.x)
 #   - custom_field_data uses encoder=None instead of NetBox's custom encoder
 #   - managers declaration for RestrictedManager is absent
+
+import django.db.models.deletion
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -49,21 +48,17 @@ class Migration(migrations.Migration):
             name='CustomTabConfigGroup',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('group_name', models.CharField(max_length=50)),
                 ('weight', models.PositiveIntegerField(default=100)),
                 ('tab_config', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='config_groups',
                     to='netbox_custom_params_tab.customtabconfig',
                 )),
-                ('group', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE,
-                    related_name='+',
-                    to='extras.customfieldgroup',
-                )),
             ],
             options={
-                'ordering': ['weight', 'group__name'],
-                'unique_together': {('tab_config', 'group')},
+                'ordering': ['weight', 'group_name'],
+                'unique_together': {('tab_config', 'group_name')},
             },
         ),
         migrations.CreateModel(
@@ -86,16 +81,6 @@ class Migration(migrations.Migration):
                 'ordering': ['weight', 'field__name'],
                 'unique_together': {('tab_config', 'field')},
             },
-        ),
-        migrations.AddField(
-            model_name='customtabconfig',
-            name='groups',
-            field=models.ManyToManyField(
-                blank=True,
-                related_name='custom_tab_configs',
-                through='netbox_custom_params_tab.CustomTabConfigGroup',
-                to='extras.customfieldgroup',
-            ),
         ),
         migrations.AddField(
             model_name='customtabconfig',

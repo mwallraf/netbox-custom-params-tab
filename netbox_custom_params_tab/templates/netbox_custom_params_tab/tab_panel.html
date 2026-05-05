@@ -10,7 +10,7 @@
           <h6 class="border-bottom pb-1 text-muted">{{ item_obj.name }}</h6>
           <table class="table table-hover attr-table">
             <tbody>
-              {% for cf in item_obj.customfields.all %}
+              {% for cf in item_obj.custom_fields %}
                 {% with raw_value=object.custom_field_data|dict_value:cf.name %}
                 <tr>
                   <th scope="row" style="width:30%">{{ cf.label|default:cf.name }}</th>
@@ -20,7 +20,7 @@
                 </tr>
                 {% endwith %}
               {% empty %}
-                <tr><td class="text-muted">No fields in this group.</td></tr>
+                <tr><td colspan="2" class="text-muted">No fields in this group.</td></tr>
               {% endfor %}
             </tbody>
           </table>

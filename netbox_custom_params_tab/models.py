@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from netbox.models import NetBoxModel
-from extras.models import CustomField, CustomFieldGroup
+from extras.models import CustomField
 
 
 class CustomTabConfig(NetBoxModel):
@@ -13,12 +13,6 @@ class CustomTabConfig(NetBoxModel):
     )
     tab_label = models.CharField(max_length=100, default='Parameters')
     enabled = models.BooleanField(default=True)
-    groups = models.ManyToManyField(
-        to=CustomFieldGroup,
-        through='CustomTabConfigGroup',
-        blank=True,
-        related_name='custom_tab_configs',
-    )
     fields = models.ManyToManyField(
         to=CustomField,
         through='CustomTabConfigField',
@@ -44,19 +38,15 @@ class CustomTabConfigGroup(models.Model):
         on_delete=models.CASCADE,
         related_name='config_groups',
     )
-    group = models.ForeignKey(
-        to=CustomFieldGroup,
-        on_delete=models.CASCADE,
-        related_name='+',
-    )
+    group_name = models.CharField(max_length=50)
     weight = models.PositiveIntegerField(default=100)
 
     class Meta:
-        ordering = ['weight', 'group__name']
-        unique_together = [('tab_config', 'group')]
+        ordering = ['weight', 'group_name']
+        unique_together = [('tab_config', 'group_name')]
 
     def __str__(self):
-        return f'{self.tab_config} / {self.group.name} (weight={self.weight})'
+        return f'{self.tab_config} / {self.group_name} (weight={self.weight})'
 
 
 class CustomTabConfigField(models.Model):

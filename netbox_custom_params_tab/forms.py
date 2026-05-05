@@ -45,7 +45,7 @@ class CustomTabConfigForm(NetBoxModelForm):
 CustomTabConfigGroupFormSet = inlineformset_factory(
     CustomTabConfig,
     CustomTabConfigGroup,
-    fields=['group', 'weight'],
+    fields=['group_name', 'weight'],
     extra=1,
     can_delete=True,
     fk_name='tab_config',

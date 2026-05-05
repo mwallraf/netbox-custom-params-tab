@@ -1,6 +1,6 @@
 import pytest
 from django.contrib.contenttypes.models import ContentType
-from extras.models import CustomField, CustomFieldGroup, CustomFieldTypeChoices
+from extras.models import CustomField, CustomFieldTypeChoices
 from netbox_custom_params_tab.models import CustomTabConfig
 from netbox_custom_params_tab.forms import (
     CustomTabConfigForm,
@@ -70,7 +70,6 @@ class TestCustomTabConfigGroupFormSet:
 
     def test_add_group_entry(self, device_content_type):
         config = CustomTabConfig.objects.create(content_type=device_content_type)
-        group = CustomFieldGroup.objects.create(name='Network')
         formset = CustomTabConfigGroupFormSet(
             instance=config,
             data={
@@ -78,7 +77,7 @@ class TestCustomTabConfigGroupFormSet:
                 f'{GROUP_FORMSET_PREFIX}-INITIAL_FORMS': '0',
                 f'{GROUP_FORMSET_PREFIX}-MIN_NUM_FORMS': '0',
                 f'{GROUP_FORMSET_PREFIX}-MAX_NUM_FORMS': '1000',
-                f'{GROUP_FORMSET_PREFIX}-0-group': str(group.pk),
+                f'{GROUP_FORMSET_PREFIX}-0-group_name': 'Networking',
                 f'{GROUP_FORMSET_PREFIX}-0-weight': '100',
             },
             prefix=GROUP_FORMSET_PREFIX,
@@ -86,6 +85,7 @@ class TestCustomTabConfigGroupFormSet:
         assert formset.is_valid(), formset.errors
         formset.save()
         assert config.config_groups.count() == 1
+        assert config.config_groups.first().group_name == 'Networking'
 
 
 @pytest.mark.django_db

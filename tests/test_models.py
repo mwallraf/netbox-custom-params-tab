@@ -1,7 +1,7 @@
 import pytest
 from django.db import IntegrityError
 from django.contrib.contenttypes.models import ContentType
-from extras.models import CustomField, CustomFieldGroup, CustomFieldTypeChoices
+from extras.models import CustomField, CustomFieldTypeChoices
 from netbox_custom_params_tab.models import (
     CustomTabConfig,
     CustomTabConfigGroup,
@@ -43,48 +43,35 @@ class TestCustomTabConfig:
 class TestCustomTabConfigGroup:
     def test_create(self, device_content_type):
         config = CustomTabConfig.objects.create(content_type=device_content_type)
-        group = CustomFieldGroup.objects.create(name='Network')
-        entry = CustomTabConfigGroup.objects.create(tab_config=config, group=group, weight=100)
+        entry = CustomTabConfigGroup.objects.create(tab_config=config, group_name='Network', weight=100)
         assert entry.pk is not None
 
     def test_weight_default_is_100(self, device_content_type):
         config = CustomTabConfig.objects.create(content_type=device_content_type)
-        group = CustomFieldGroup.objects.create(name='Network')
-        entry = CustomTabConfigGroup.objects.create(tab_config=config, group=group)
+        entry = CustomTabConfigGroup.objects.create(tab_config=config, group_name='Network')
         assert entry.weight == 100
 
     def test_ordering_ascending_by_weight(self, device_content_type):
         config = CustomTabConfig.objects.create(content_type=device_content_type)
-        group_a = CustomFieldGroup.objects.create(name='Alpha')
-        group_b = CustomFieldGroup.objects.create(name='Beta')
-        CustomTabConfigGroup.objects.create(tab_config=config, group=group_b, weight=200)
-        CustomTabConfigGroup.objects.create(tab_config=config, group=group_a, weight=100)
+        CustomTabConfigGroup.objects.create(tab_config=config, group_name='Beta', weight=200)
+        CustomTabConfigGroup.objects.create(tab_config=config, group_name='Alpha', weight=100)
         names = list(
-            config.config_groups.order_by('weight', 'group__name')
-            .values_list('group__name', flat=True)
+            config.config_groups.order_by('weight', 'group_name')
+            .values_list('group_name', flat=True)
         )
         assert names == ['Alpha', 'Beta']
 
     def test_cascade_delete_when_tab_config_deleted(self, device_content_type):
         config = CustomTabConfig.objects.create(content_type=device_content_type)
-        group = CustomFieldGroup.objects.create(name='Cascade Test')
-        CustomTabConfigGroup.objects.create(tab_config=config, group=group)
+        CustomTabConfigGroup.objects.create(tab_config=config, group_name='Test Group')
         config.delete()
         assert CustomTabConfigGroup.objects.count() == 0
 
-    def test_cascade_delete_when_group_deleted(self, device_content_type):
+    def test_duplicate_group_name_entry_raises(self, device_content_type):
         config = CustomTabConfig.objects.create(content_type=device_content_type)
-        group = CustomFieldGroup.objects.create(name='Doomed Group')
-        CustomTabConfigGroup.objects.create(tab_config=config, group=group)
-        group.delete()
-        assert CustomTabConfigGroup.objects.count() == 0
-
-    def test_duplicate_group_entry_raises(self, device_content_type):
-        config = CustomTabConfig.objects.create(content_type=device_content_type)
-        group = CustomFieldGroup.objects.create(name='Unique Test')
-        CustomTabConfigGroup.objects.create(tab_config=config, group=group)
+        CustomTabConfigGroup.objects.create(tab_config=config, group_name='Unique')
         with pytest.raises(IntegrityError):
-            CustomTabConfigGroup.objects.create(tab_config=config, group=group)
+            CustomTabConfigGroup.objects.create(tab_config=config, group_name='Unique')
 
 
 @pytest.mark.django_db
