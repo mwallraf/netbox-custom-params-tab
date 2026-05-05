@@ -1,0 +1,78 @@
+services:
+  netbox:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: netbox-custom-params-tab-dev:latest
+    ports:
+      - '8000:8080'
+    environment:
+      SUPERUSER_NAME: admin
+      SUPERUSER_EMAIL: admin@example.com
+      SUPERUSER_PASSWORD: admin
+    volumes:
+      - .:/opt/netbox-custom-params-tab
+      - ./docker/configuration.py:/etc/netbox/config/configuration.py:ro
+      - netbox-media:/opt/netbox/netbox/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+    restart: unless-stopped
+
+  netbox-worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: netbox-custom-params-tab-dev:latest
+    command: /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py rqworker
+    volumes:
+      - .:/opt/netbox-custom-params-tab
+      - ./docker/configuration.py:/etc/netbox/config/configuration.py:ro
+    depends_on:
+      - netbox
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: netbox
+      POSTGRES_USER: netbox
+      POSTGRES_PASSWORD: netbox
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U netbox']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-cache:
+    image: redis:7-alpine
+    volumes:
+      - redis-cache-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  netbox-media:
+  postgres-data:
+  redis-data:
+  redis-cache-data:
