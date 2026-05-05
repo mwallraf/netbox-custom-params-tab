@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 from django.contrib.contenttypes.models import ContentType
 from extras.models import CustomField
@@ -26,7 +25,7 @@ BUILTIN_MODELS = [
 @dataclass
 class GroupItem:
     name: str
-    custom_fields: List
+    custom_fields: list
 
 
 def _make_extension(model_path):
@@ -46,12 +45,18 @@ def _make_extension(model_path):
             if not config:
                 return ''
 
+            group_configs = list(config.config_groups.all())
+            group_names = [cg.group_name for cg in group_configs]
+            fields_by_group: dict[str, list] = {}
+            for cf in CustomField.objects.filter(group_name__in=group_names):
+                fields_by_group.setdefault(cf.group_name, []).append(cf)
+
             group_entries = [
                 ('group', GroupItem(
                     name=cg.group_name,
-                    custom_fields=list(CustomField.objects.filter(group_name=cg.group_name)),
+                    custom_fields=fields_by_group.get(cg.group_name, []),
                 ), cg.weight)
-                for cg in config.config_groups.all()
+                for cg in group_configs
             ]
             field_entries = [
                 ('field', cf.field, cf.weight)

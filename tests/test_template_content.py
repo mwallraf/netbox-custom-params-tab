@@ -31,6 +31,9 @@ class TestTabExtensionFullWidthPage:
     def _get_extension_instance(self, model_path, obj):
         extensions = build_template_extensions()
         ext_class = next(e for e in extensions if e.model == model_path)
+        # PluginTemplateExtension.__init__ expects a request context that isn't
+        # available in unit tests. We bypass it and inject only the 'object' key
+        # that full_width_page() actually reads from self.context.
         instance = ext_class.__new__(ext_class)
         instance.context = {'object': obj}
         return instance
@@ -44,13 +47,16 @@ class TestTabExtensionFullWidthPage:
         assert result == ''
 
     def test_returns_empty_string_when_config_disabled(self, device_content_type):
-        CustomTabConfig.objects.create(content_type=device_content_type, enabled=False)
+        config = CustomTabConfig.objects.create(content_type=device_content_type, enabled=False)
+        # Assert the row exists so we know '' comes from the enabled=True filter, not from an empty table
+        assert CustomTabConfig.objects.filter(pk=config.pk).exists()
         mock_obj = MagicMock()
         mock_obj.custom_field_data = {}
         ext = self._get_extension_instance('dcim.device', mock_obj)
-        with patch.object(type(ext), 'render', return_value='rendered'):
+        with patch.object(type(ext), 'render', return_value='rendered') as mock_render:
             result = ext.full_width_page()
         assert result == ''
+        mock_render.assert_not_called()
 
     def test_calls_render_when_config_is_enabled(self, device_content_type):
         CustomTabConfig.objects.create(
