@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from dcim.models import Site
 from extras.models import CustomField
 from users.models import ObjectPermission
+from utilities.exceptions import AbortRequest
 
 from netbox_custom_field_profiles.forms import CustomFieldProfileForm
 from netbox_custom_field_profiles.models import CustomFieldProfile, ProfileField
@@ -229,3 +230,48 @@ class ProfileSelectionTests(TestCase):
             with self.assertRaises(IntegrityError):
                 self.client.post(self.url('_edit', profile), self.remembered_data([], title='Must roll back'))
         self.assertEqual((list(CustomFieldProfile.objects.values()), list(ProfileField.objects.values())), before)
+
+    def test_applicability_loss_after_validation_rejects_normal_and_split_saves(self):
+        for commit in (True, False):
+            for remembered in (False, True):
+                with self.subTest(commit=commit, remembered=remembered):
+                    self.native_field.object_types.add(self.device_ct)
+                    profile = self.save_form(self.form_data([self.native_field], enabled=True))
+                    data = (self.remembered_data([self.native_field], enabled=True) if remembered
+                            else self.form_data([self.native_field], enabled=True))
+                    form = CustomFieldProfileForm(data=data, instance=profile)
+                    self.assertTrue(form.is_valid(), form.errors)
+                    pending = form.save(commit=False) if not commit else None
+                    self.native_field.object_types.remove(self.device_ct)
+                    profile.refresh_from_db()
+                    self.assertFalse(profile.enabled)
+                    before = (list(CustomFieldProfile.objects.values()), list(ProfileField.objects.values()))
+                    with self.assertRaisesMessage(AbortRequest, 'selected custom fields changed'):
+                        with transaction.atomic():
+                            if commit:
+                                form.save()
+                            else:
+                                pending.save()
+                                form.save_m2m()
+                    self.assertEqual((list(CustomFieldProfile.objects.values()),
+                                      list(ProfileField.objects.values())), before)
+
+    def test_native_view_returns_stale_selection_error_without_restoring_cleanup(self):
+        profile = self.save_form(self.form_data([self.native_field], enabled=True))
+        original = CustomFieldProfileForm.is_valid
+
+        def validate_then_remove(form):
+            valid = original(form)
+            if valid:
+                self.native_field.object_types.remove(self.device_ct)
+            return valid
+
+        with patch.object(CustomFieldProfileForm, 'is_valid', validate_then_remove):
+            response = self.client.post(self.url('_edit', profile),
+                                        self.form_data([self.native_field], enabled=True, title='Stale title'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'selected custom fields changed')
+        profile.refresh_from_db()
+        self.assertFalse(profile.enabled)
+        self.assertNotEqual(profile.title, 'Stale title')
+        self.assertFalse(profile.profile_fields.exists())

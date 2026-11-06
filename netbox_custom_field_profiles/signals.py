@@ -24,14 +24,23 @@ def disable_target_profiles(sender, instance, using, **kwargs):
     ).update(enabled=False)
 
 
+def lock_profile_fields(field_ids, using):
+    """Serialize native field changes and profile saves before any profile lock."""
+    return list(CustomField.objects.using(using).select_for_update().filter(
+        pk__in=field_ids,
+    ).order_by('pk').values_list('pk', flat=True))
+
+
 def remove_field_memberships(field_ids, using):
     """Remove invalid references and disable only newly empty Selected profiles."""
     with transaction.atomic(using=using):
+        lock_profile_fields(field_ids, using)
         memberships = ProfileField.objects.using(using).filter(field_id__in=field_ids)
         affected_ids = list(memberships.values_list('profile_id', flat=True).distinct())
         if not affected_ids:
             return
-        # Serialize updates to affected aggregates; never hold native field locks here.
+        # Field locks precede aggregate locks, including when no membership existed
+        # when cleanup began: a concurrent form cannot insert behind this scan.
         list(CustomFieldProfile.objects.using(using).select_for_update().filter(
             pk__in=affected_ids,
         ).order_by('pk').values_list('pk', flat=True))
@@ -44,17 +53,26 @@ def remove_field_memberships(field_ids, using):
 
 def field_deleted(sender, instance, using, **kwargs):
     # A native deferred deletion sends pre_delete while retaining the field row.
+    # A queryset collector sends one signal per row. Lock its entire field set
+    # before the first aggregate, so multi-field deletion keeps the same order.
+    origin = kwargs.get('origin')
+    if getattr(origin, 'model', None) is CustomField:
+        lock_profile_fields(origin.using(using).values_list('pk', flat=True), using)
     remove_field_memberships([instance.pk], using)
 
 
 def field_object_types_changed(sender, instance, action, reverse, pk_set, using, **kwargs):
     """Clean actual Device-applicability loss, in either relation direction."""
-    if action not in ('pre_clear', 'post_clear', 'post_remove'):
+    if action not in ('pre_clear', 'pre_remove', 'post_clear', 'post_remove'):
+        return
+    if action == 'pre_remove':
+        lock_profile_fields(list(pk_set or ()) if reverse else [instance.pk], using)
         return
     if action == 'pre_clear':
         field_ids = (list(CustomField.objects.using(using).filter(
             object_types=instance.pk,
         ).values_list('pk', flat=True)) if reverse else [instance.pk])
+        lock_profile_fields(field_ids, using)
         # clear() has no pk_set. Keep state on this operation's instance, not global
         # process state: concurrent requests/databases must not share a capture.
         captures = getattr(instance, '_profile_field_clear_ids', {})

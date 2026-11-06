@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, router
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 from netbox.models import NetBoxModel
@@ -28,6 +28,14 @@ class CustomFieldProfile(NetBoxModel):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        # Only form-owned aggregate saves need field locks before this UPDATE.
+        # Ordinary model saves retain their native behavior.
+        guard = getattr(self, '_profile_form_save_guard', None)
+        if guard is not None:
+            guard(kwargs.get('using') or router.db_for_write(type(self), instance=self))
+        return super().save(*args, **kwargs)
 
     def clean(self):
         super().clean()

@@ -1,14 +1,16 @@
 import json
 
 from django import forms
-from django.db import transaction
+from django.db import router, transaction
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from netbox.forms import NetBoxModelForm
 from extras.models import CustomField, Tag
 from dcim.models import DeviceType, DeviceRole
 from utilities.forms.fields import DynamicModelMultipleChoiceField
+from utilities.exceptions import AbortRequest
 from .models import CustomFieldProfile, ProfileField
+from .signals import lock_profile_fields
 
 
 class CustomFieldProfileForm(NetBoxModelForm):
@@ -140,20 +142,42 @@ class CustomFieldProfileForm(NetBoxModelForm):
             return not any(self.data.get(name) for name in self.rule_fields)
         return not any(self.initial.get(name) for name in self.rule_fields)
 
-    @transaction.atomic
+    def _guard_save(self, using):
+        # Split saves must keep these locks through model.save() and save_m2m().
+        # The normal native edit view already supplies that transaction.
+        if not transaction.get_connection(using).in_atomic_block:
+            raise AbortRequest('Save the profile and its field selection in one transaction.')
+        field_ids = self.ordered_field_ids
+        if field_ids is not None:
+            lock_profile_fields(field_ids, using)
+        if self.instance.pk:
+            CustomFieldProfile.objects.using(using).select_for_update().get(pk=self.instance.pk)
+        if field_ids is not None:
+            applicable_ids = set(CustomField.objects.using(using).filter(
+                pk__in=field_ids, object_types__app_label='dcim', object_types__model='device',
+            ).values_list('pk', flat=True))
+            if set(field_ids) != applicable_ids:
+                raise AbortRequest('The selected custom fields changed while this form was open. '
+                                   'Review the field selection and try again.')
+
     def _save_m2m(self):
+        using = router.db_for_write(type(self.instance), instance=self.instance)
+        self._guard_save(using)
         super()._save_m2m()
         if self.ordered_field_ids is not None:
-            # Lock the aggregate while replacing positions; never write native fields.
-            CustomFieldProfile.objects.select_for_update().get(pk=self.instance.pk)
             self.instance.profile_fields.all().delete()
             ProfileField.objects.bulk_create([
                 ProfileField(profile=self.instance, field_id=pk, position=position)
                 for position, pk in enumerate(self.ordered_field_ids)
             ])
+        self.instance.__dict__.pop('_profile_form_save_guard', None)
 
     def save(self, commit=True):
+        # Guard before the model UPDATE too: waiting until save_m2m() would
+        # acquire the profile lock before native field locks and invert cleanup.
+        self.instance._profile_form_save_guard = self._guard_save
         if not commit:
             return super().save(commit=False)
-        with transaction.atomic():
+        using = router.db_for_write(type(self.instance), instance=self.instance)
+        with transaction.atomic(using=using):
             return super().save(commit=True)

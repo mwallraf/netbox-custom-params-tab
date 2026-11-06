@@ -1,12 +1,17 @@
 """Native lifecycle contracts: cleanup owns plugin configuration only."""
+import json
+import time
+from concurrent.futures import ThreadPoolExecutor
+from threading import Event
 from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
-from django.db import transaction
-from django.test import TestCase
+from django.db import close_old_connections, connection, transaction
+from django.test import TestCase, TransactionTestCase
 from dcim.models import Device, DeviceRole, DeviceType, Site
 from extras.choices import CustomFieldStatusChoices
 from extras.models import CustomField, Tag
+from utilities.exceptions import AbortRequest
 
 from netbox_custom_field_profiles.forms import CustomFieldProfileForm
 from netbox_custom_field_profiles.matching import get_matching_profiles, get_profile_fields
@@ -275,3 +280,100 @@ class ProfileLifecycleTests(TestCase):
         self.assertTrue(selected.profile_fields.filter(field=field).exists())
         self.assertNotIn(field, get_profile_fields(selected))
         self.assertNotIn(field, get_profile_fields(all_fields))
+
+
+class ProfileLifecycleConcurrencyTests(TransactionTestCase):
+    """Real connections prove cleanup sees a membership inserted after it starts."""
+
+    def setUp(self):
+        test_tracer.ProfileTracerTests.setUpTestData.__func__(type(self))
+
+    def test_split_save_requires_caller_transaction_before_writing_model(self):
+        form = CustomFieldProfileForm(data={
+            'title': 'Split save', 'content_type': self.device_ct.pk,
+            'display_order': 10, 'field_mode': 'selected', 'enabled': True,
+            'selected_fields': [self.native_field.pk],
+            'field_order': json.dumps([self.native_field.pk]),
+        })
+        self.assertTrue(form.is_valid(), form.errors)
+        obj = form.save(commit=False)
+        with self.assertRaisesMessage(AbortRequest, 'one transaction'):
+            obj.save()
+        self.assertFalse(CustomFieldProfile.objects.exists())
+        with transaction.atomic():
+            obj.save()
+            form.save_m2m()
+        self.assertTrue(obj.profile_fields.filter(field=self.native_field).exists())
+        self.assertNotIn('_profile_form_save_guard', obj.__dict__)
+        obj.title = 'Ordinary model save'
+        obj.save()
+
+    def test_native_cleanup_waits_for_inserting_form_then_removes_membership(self):
+        from netbox_custom_field_profiles.signals import lock_profile_fields
+
+        locked, release, cleanup_started = Event(), Event(), Event()
+        cleanup_pid = []
+
+        def pause_form(field_ids, using):
+            result = lock_profile_fields(field_ids, using)
+            if not locked.is_set():
+                locked.set()
+                if not release.wait(10):
+                    raise RuntimeError('test did not release profile save')
+            return result
+
+        def save_profile():
+            close_old_connections()
+            try:
+                form = CustomFieldProfileForm(data={
+                    'title': 'Concurrent insert', 'content_type': self.device_ct.pk,
+                    'display_order': 10, 'field_mode': 'selected', 'enabled': True,
+                    'selected_fields': [self.native_field.pk],
+                    'field_order': json.dumps([self.native_field.pk]),
+                })
+                if not form.is_valid():
+                    raise AssertionError(form.errors)
+                return form.save().pk
+            finally:
+                connection.close()
+
+        def cleanup():
+            close_old_connections()
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute('SELECT pg_backend_pid()')
+                    cleanup_pid.append(cursor.fetchone()[0])
+                cleanup_started.set()
+                CustomField.objects.get(pk=self.native_field.pk).object_types.remove(self.device_ct)
+            finally:
+                connection.close()
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            with patch('netbox_custom_field_profiles.forms.lock_profile_fields', pause_form):
+                saved = pool.submit(save_profile)
+                try:
+                    self.assertTrue(locked.wait(10))
+                    removed = pool.submit(cleanup)
+                    self.assertTrue(cleanup_started.wait(10))
+                    # Observe an actual PostgreSQL lock wait, rather than assuming
+                    # thread scheduling has interleaved the two transactions.
+                    deadline = time.monotonic() + 10
+                    waiting = False
+                    while time.monotonic() < deadline:
+                        with connection.cursor() as cursor:
+                            cursor.execute('SELECT wait_event_type FROM pg_stat_activity WHERE pid = %s',
+                                           [cleanup_pid[0]])
+                            row = cursor.fetchone()
+                        if row and row[0] == 'Lock':
+                            waiting = True
+                            break
+                        time.sleep(0.01)
+                    self.assertTrue(waiting, 'native cleanup did not wait on the field row lock')
+                finally:
+                    release.set()
+                profile_pk = saved.result(timeout=10)
+                removed.result(timeout=10)
+        profile = CustomFieldProfile.objects.get(pk=profile_pk)
+        self.assertFalse(profile.enabled)
+        self.assertFalse(profile.profile_fields.exists())
+        self.assertEqual(get_profile_fields(profile), [])
