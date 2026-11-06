@@ -82,3 +82,5 @@ command is not run by setup. Record resolved versions if used. Old SQLite test
 settings may need later adaptation; no successful feature suite is claimed.
 The sanitized report is local `.sandbox/legacy-tests.json` and the target returns
 its actual nonzero outcome. Feature acceptance belongs to later roadmap phases.
+
+Lifecycle isolation compares original running unrelated container IDs with the final inventory; new unrelated containers are allowed. Missing/replaced original IDs fail, with local diagnostic IDs under `.sandbox/`. No unrelated resource is mutated. All Docker subprocesses use the same environment builder, ignoring ambient DOCKER_/COMPOSE_ overrides.

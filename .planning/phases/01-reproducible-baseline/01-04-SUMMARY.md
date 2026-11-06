@@ -16,7 +16,7 @@ the env-file bytes, and left unrelated container identities unchanged. Native
 schema/registration and real admin/API smoke passed again after reset. Web and
 worker end healthy and running on localhost 18047.
 
-33 helper tests pass (ten lifecycle guards); git diff --check b090288 passes.
+35 helper tests pass (twelve lifecycle guards); git diff --check b090288 passes.
 Source snapshot at 4dba67e and current layout verification pass. Final make test
 runs the helper suite, rendered configuration validation, real native runtime,
 CSRF session/API auth with negative controls, and seed-check.
@@ -40,4 +40,8 @@ All blocking real lifecycle checks passed. Independent goal verification follows
 
 ## Review corrections
 
-CR-01/02 and WR-01 fixed: one Docker environment for inspection and mutation; exact service mount maps including symlink/readonly/driver controls; read-only random-marker sentinel plus seed identity/native-value snapshots. Ten lifecycle regression tests pass; independent focused fix review found no remaining issues.
+CR-01/02 and WR-01 fixed: one Docker environment for inspection and mutation; exact service mount maps including symlink/readonly/driver controls; read-only random-marker sentinel plus seed identity/native-value snapshots. Twelve lifecycle regression tests pass; independent focused fix review found no remaining issues.
+
+The first corrected rerun passed persistence/reset/schema/authentication but its final all-container-set equality failed amid unrelated Docker activity. Final checking snapshots original running unrelated IDs, requires all remain present, permits new unrelated containers, and saves local diagnostic metadata. A regression rejects replacement IDs.
+
+Final corrected lifecycle rerun exited 0 with PERSISTENCE_OK, PROJECT_RESET_OK, RESET_RECREATED_DATABASE_OK, CREDENTIALS_STABLE, and LIFECYCLE_OK. The later metadata-only inspect format was validated directly against the workstation NetBox container; it returns only ID and project label, with parser unit coverage.

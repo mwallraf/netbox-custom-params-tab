@@ -12,7 +12,7 @@ Executed 2026-11-06 from milestone/custom-field-profiles, canonical root checkou
 | Package | netbox-custom-field-profiles 0.1.0 editable install, native app registry confirmed |
 | Schema | Initial schema generated in native interpreter before bootstrap; clean migration applied; native checks and zero drift pass |
 | setup | SANDBOX_READY, actual web/worker healthy |
-| Baseline tests | 33 stdlib helper tests pass; CONFIG_OK and RUNTIME_OK |
+| Baseline tests | 35 stdlib helper tests pass; CONFIG_OK and RUNTIME_OK |
 | Authentication | BASELINE_SMOKE_OK: actual CSRF admin login/session, generated native API token, negative controls |
 | Dummy seed | SEED_IDEMPOTENT_OK: CMTS/CPE Devices with native field values |
 | Legacy tests | Unexecuted: runner-unavailable, exit 1, pytest absent; local sanitized report .sandbox/legacy-tests.json |

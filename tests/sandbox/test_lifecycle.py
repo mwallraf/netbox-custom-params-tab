@@ -73,3 +73,15 @@ class LifecycleGuards(unittest.TestCase):
             self.assertIn('Site.objects.get(', code)
             self.assertNotIn('create(', code)
             self.assertIn('seed_snapshot()', code)
+
+    def test_new_unrelated_container_does_not_invalidate_existing_ids(self):
+        lifecycle.assert_original_containers({'original'}, {'original', 'new'})
+        with self.assertRaises(RuntimeError):
+            lifecycle.assert_original_containers({'original'}, {'replacement'})
+
+    def test_unrelated_inspection_selects_only_id_and_project_label(self):
+        with patch.object(lifecycle, 'docker_json', side_effect=['one\n', '"one"|other\n']) as inspect:
+            self.assertEqual(lifecycle.unrelated_ids(), {'one'})
+            argv = inspect.call_args.args[0]
+            self.assertIn('--format', argv)
+            self.assertNotIn('.Config.Env', argv[argv.index('--format') + 1])

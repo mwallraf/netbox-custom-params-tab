@@ -19,43 +19,19 @@ A NetBox 4.x plugin (`netbox_custom_field_profiles`) that moves selected custom 
 Design spec: `docs/superpowers/specs/2026-05-04-netbox-custom-field-profiles-design.md`  
 Implementation plan: `docs/superpowers/plans/2026-05-04-netbox-custom-field-profiles.md`
 
-## Common commands
+## Current development commands
 
-### Automated tests (pytest + pytest-django, SQLite in-memory)
-
-```bash
-pytest tests/ -v                          # full suite
-pytest tests/test_models.py -v            # single file
-pytest tests/test_models.py::TestCustomTabConfig::test_create -v  # single test
-```
-
-Tests require NetBox to be installed in the active Python environment. The Django settings used are `testing/settings.py` (configured in `pytest.ini` via `DJANGO_SETTINGS_MODULE`).
-
-### Migrations (run inside the container or with testing settings)
-
-```bash
-python -m django makemigrations netbox_custom_field_profiles --settings=testing.settings
-python -m django migrate --settings=testing.settings
-python -m django makemigrations --check --settings=testing.settings   # verify no drift
-```
-
-### Docker dev stack (manual integration testing)
-
-```bash
-make build      # build the dev image (extends official NetBox image + installs plugin)
-make up         # start stack (netbox, netbox-worker, postgres, redis, redis-cache)
-make migrate    # apply migrations inside the running netbox container
-make logs       # tail all service logs
-make shell      # bash shell in netbox container
-make nbshell    # NetBox Django shell_plus
-make superuser  # create a superuser interactively
-make down       # stop stack (preserves volumes)
-make clean      # destroy containers + volumes + local image
-```
-
-NetBox UI is at http://localhost:8000 after `make up` + `make migrate`. Default credentials created automatically by docker-compose env vars: `admin` / `admin`.
-
-The source directory is mounted into the container at `/opt/netbox-custom-field-profiles`, so Python edits are live without rebuilding. Rebuilding (`make build`) is only needed when `pyproject.toml` changes or new static/template files are added.
+Use `make setup` then http://127.0.0.1:18047. Generated credentials are in local
+ignored `.env`; there are no fixed/default passwords. `make test` runs the
+blocking stdlib and real runtime/session/API/seed baseline. `make test-legacy`
+reports the optional old pytest suite honestly; its runner is currently absent.
+Use `make down` to retain data, or explicit `make reset` for project-only reset.
+See [sandbox guide](docs/development/sandbox.md) for all supported targets and
+[baseline status](docs/development/baseline-status.md) for measured evidence.
+Migrations use the native container interpreter with developer mode, not old
+SQLite settings. NetBox 4.7.4 / Docker packaging 5.1.1 is exercised; plugin minimum
+is 4.7.0. The architecture below describes retained legacy feature code, not a
+verified profile implementation.
 
 ## Architecture
 
@@ -102,4 +78,4 @@ The `content_type` dropdown in `CustomTabConfigForm` is restricted to supported 
 ## Canonical source
 
 Use the normal repository root on milestone/custom-field-profiles; no worktrees.
-The historical sandbox commands above predate Phase 1; consult README and tracked development documentation for current setup.
+Consult README and tracked development documentation for current setup.

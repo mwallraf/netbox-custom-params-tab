@@ -11,8 +11,8 @@ traceable requirement IDs. Phase 1 execution is authorized; consult current STAT
 Read `README.md` for the source location, rename status, and environment caveats.
 `CLAUDE.md` contains additional background about the earlier implementation.
 
-The current stage is requirements capture and phase planning. Do not infer an
-instruction to implement new features from the requirements document alone.
+Phase 1 establishes the runnable baseline; later profile features remain planned.
+Do not infer an instruction to implement later features from requirements alone.
 Follow the user's subsequent instructions when development is authorized.
 
 The implementation is canonical in the repository root on milestone/custom-field-profiles.

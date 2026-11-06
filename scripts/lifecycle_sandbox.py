@@ -35,13 +35,13 @@ def reset():
     print('PROJECT_RESET_OK')
 
 
-def unrelated_ids():
-    ids = docker_json(['ps', '-aq']).splitlines()
+def unrelated_ids(running=False):
+    ids = docker_json(['ps', '-q' if running else '-aq']).splitlines()
     if not ids:
         return set()
-    containers = json.loads(docker_json(['inspect', *ids]))
-    return {item['Id'] for item in containers
-            if (item['Config'].get('Labels') or {}).get('com.docker.compose.project') != sandbox.PROJECT}
+    metadata = docker_json(['inspect', '--format', '{{json .Id}}|{{index .Config.Labels "com.docker.compose.project"}}', *ids])
+    return {json.loads(line.partition('|')[0]) for line in metadata.splitlines()
+            if line.partition('|')[2] != sandbox.PROJECT}
 
 
 def sentinel(create=False):
@@ -57,7 +57,10 @@ def sentinel(create=False):
 
 def check():
     env_digest = hashlib.sha256((sandbox.ROOT / '.env').read_bytes()).digest()
-    others = unrelated_ids()
+    others = unrelated_ids(running=True)
+    report = sandbox.ROOT / '.sandbox'
+    report.mkdir(mode=0o700, exist_ok=True)
+    (report / 'lifecycle-before.json').write_text(json.dumps(sorted(others)))
     sandbox.ensure_env()
     identity = sentinel(create=True)
     for _ in range(2):
@@ -73,8 +76,15 @@ def check():
     code = "from dcim.models import Site; assert not Site.objects.filter(slug='cfp-sandbox-persistence').exists(); print('RESET_RECREATED_DATABASE_OK')"
     print(sandbox.django(['shell', '-c', code]).strip())
     assert hashlib.sha256((sandbox.ROOT / '.env').read_bytes()).digest() == env_digest, 'reset rotated credentials'
-    assert others == unrelated_ids(), 'unrelated container identities changed'
+    after = unrelated_ids()
+    (report / 'lifecycle-after.json').write_text(json.dumps(sorted(after)))
+    assert_original_containers(others, after)
     print('CREDENTIALS_STABLE unrelated-containers-unchanged LIFECYCLE_OK')
+
+
+def assert_original_containers(before, after):
+    if not before.issubset(after):
+        raise RuntimeError('original unrelated container identities disappeared; inspect local lifecycle metadata')
 
 
 if __name__ == '__main__':
