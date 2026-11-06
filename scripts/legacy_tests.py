@@ -36,8 +36,7 @@ def counts(output):
 
 
 def execute(args, values):
-    env = {key: value for key, value in os.environ.items() if not key.startswith(('COMPOSE_', 'DOCKER_'))}
-    env.update(values)
+    env = sandbox.docker_environment()
     result = subprocess.run(sandbox.compose_argv(args), cwd=sandbox.ROOT, env=env,
                             text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=600)
     return result.returncode, sandbox.redact(result.stdout)

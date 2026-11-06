@@ -119,10 +119,15 @@ def redact(text):
     return text
 
 
-def run(args, *, capture=False, input=None, timeout=900):
-    values = ensure_env()
+def docker_environment():
+    """Use the same daemon selection for metadata, checks, and mutations."""
     env = {k: v for k, v in os.environ.items() if not k.startswith(('COMPOSE_', 'DOCKER_'))}
-    env.update(values)
+    env.update(ensure_env())
+    return env
+
+
+def run(args, *, capture=False, input=None, timeout=900):
+    env = docker_environment()
     process = subprocess.run(compose_argv(args), cwd=ROOT, env=env, text=True,
                              input=input, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
     if process.returncode:
@@ -153,13 +158,18 @@ def validate_compose():
     config = json.loads(run(['config', '--format', 'json'], capture=True))
     if config.get('name') != PROJECT:
         raise ValueError('wrong rendered project identity')
+    if set(config.get('services', {})) != {'netbox', 'netbox-worker', 'postgres', 'redis', 'redis-cache'}:
+        raise ValueError('unexpected sandbox service set')
     for name, volume in config.get('volumes', {}).items():
-        if volume.get('external') or volume.get('name') != PROJECT + '_' + name:
+        if name not in {'postgres', 'redis', 'redis-cache', 'media'} or volume.get('external') or volume.get('driver_opts') or volume.get('driver', 'local') != 'local' or volume.get('name') != PROJECT + '_' + name:
             raise ValueError('external or shared volume forbidden')
     for name, network in config.get('networks', {}).items():
-        if network.get('external') or network.get('name') != PROJECT + '_' + name:
+        if name != 'default' or network.get('external') or network.get('driver_opts') or network.get('name') != PROJECT + '_' + name:
             raise ValueError('external or shared network forbidden')
     for service, data in config['services'].items():
+        validate_mounts(service, data.get('volumes', []))
+        if data.get('network_mode') or data.get('volumes_from') or data.get('privileged'):
+            raise ValueError('unsafe service namespace override')
         if any(network not in config.get('networks', {}) for network in data.get('networks', {})):
             raise ValueError('undeclared service network')
         if data.get('container_name'):
@@ -168,6 +178,39 @@ def validate_compose():
             if service != 'netbox' or port.get('host_ip') != '127.0.0.1' or port.get('target') != 8080:
                 raise ValueError('unsafe port exposure')
     return config
+
+
+def validate_mounts(service, mounts):
+    native = {'postgres': ('postgres', '/var/lib/postgresql'),
+              'redis': ('redis', '/data'), 'redis-cache': ('redis-cache', '/data')}
+    expected = {}
+    if service in native:
+        source, target = native[service]
+        expected[target] = ('volume', source, False)
+    elif service in ('netbox', 'netbox-worker'):
+        expected['/opt/netbox/netbox/media'] = ('volume', 'media', False)
+        for relative, target, readonly in [
+            ('docker/plugins.py', '/etc/netbox/config/plugins.py', True),
+            ('netbox_custom_field_profiles', '/opt/netbox-custom-field-profiles/netbox_custom_field_profiles', False),
+            ('scripts', '/opt/netbox-custom-field-profiles/scripts', True),
+            ('tests', '/opt/netbox-custom-field-profiles/tests', True),
+            ('testing', '/opt/netbox-custom-field-profiles/testing', True),
+            ('pytest.ini', '/opt/netbox-custom-field-profiles/pytest.ini', True),
+        ]:
+            path = ROOT / relative
+            if path.resolve() != path or not path.exists():
+                raise ValueError('sandbox bind path missing or symlinked')
+            expected[target] = ('bind', str(path), readonly)
+    else:
+        raise ValueError('unexpected sandbox service')
+    actual = {}
+    for mount in mounts:
+        target = mount.get('target')
+        if target in actual or mount.get('volume', {}).get('subpath'):
+            raise ValueError('duplicate or redirected sandbox mount')
+        actual[target] = (mount.get('type'), mount.get('source'), bool(mount.get('read_only')))
+    if actual != expected:
+        raise ValueError('unexpected or external service mount')
 
 
 def setup():
@@ -227,6 +270,8 @@ def main():
         ensure_env()
         print('ENV_READY')
     elif args.command == 'compose':
+        if not args.args or args.args[0] != 'config':
+            validate_compose()
         run(args.args)
     elif args.command == 'check':
         ensure_env()

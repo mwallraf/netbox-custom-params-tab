@@ -2,12 +2,14 @@
 import hashlib
 import json
 import subprocess
+import secrets
 
 import sandbox
 
 
 def docker_json(args):
-    result = subprocess.run(['docker', *args], text=True, capture_output=True, timeout=30)
+    result = subprocess.run(['docker', *args], text=True, capture_output=True, timeout=30,
+                            env=sandbox.docker_environment())
     if result.returncode:
         raise RuntimeError('Docker metadata inspection failed')
     return result.stdout
@@ -42,16 +44,22 @@ def unrelated_ids():
             if (item['Config'].get('Labels') or {}).get('com.docker.compose.project') != sandbox.PROJECT}
 
 
-def sentinel():
-    code = "from dcim.models import Site; s,_=Site.objects.get_or_create(slug='cfp-sandbox-persistence', defaults={'name':'CFP sandbox persistence'}); print('SENTINEL_ID='+str(s.pk))"
+def sentinel(create=False):
+    if create:
+        marker = secrets.token_hex(24)
+        code = "from dcim.models import Site; s,_=Site.objects.update_or_create(slug='cfp-sandbox-persistence', defaults={'name':'CFP sandbox persistence','description':" + repr(marker) + "})"
+    else:
+        code = "from dcim.models import Site; s=Site.objects.get(slug='cfp-sandbox-persistence')"
+    code += "; import json; exec(open('/opt/netbox-custom-field-profiles/scripts/seed_sandbox.py').read()); print('SENTINEL='+json.dumps({'pk':s.pk,'marker':s.description,'seed':seed_snapshot()},sort_keys=True))"
     output = sandbox.django(['shell', '-c', code])
-    return next(line for line in output.splitlines() if line.startswith('SENTINEL_ID='))
+    return next(line for line in output.splitlines() if line.startswith('SENTINEL='))
 
 
 def check():
     env_digest = hashlib.sha256((sandbox.ROOT / '.env').read_bytes()).digest()
     others = unrelated_ids()
-    identity = sentinel()
+    sandbox.ensure_env()
+    identity = sentinel(create=True)
     for _ in range(2):
         sandbox.setup()
         assert sentinel() == identity, 'database identity changed on setup'

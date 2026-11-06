@@ -87,7 +87,7 @@ Do not alter or inspect credentials of the user's other NetBox installation.
 - [x] No secrets in outputs or version control.
 - [x] Set `nyquist_compliant: true` only after the validation contract is satisfied.
 
-**Approval:** Validated 2026-11-06. All four BASE requirements have automated evidence; 29 helper tests plus real runtime/auth/seed/lifecycle checks. Legacy pytest is runner-unavailable (exit 1), not a passed feature suite.
+**Approval:** Validated 2026-11-06. All four BASE requirements have automated evidence; 33 helper tests plus real runtime/auth/seed/lifecycle checks. Legacy pytest is runner-unavailable (exit 1), not a passed feature suite.
 
 ## Validation Audit
 

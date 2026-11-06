@@ -37,3 +37,39 @@ class LifecycleGuards(unittest.TestCase):
         excluded = (lifecycle.sandbox.ROOT / '.dockerignore').read_text().splitlines()
         for name in ('.env', '.recovery', '.sandbox', '.planning'):
             self.assertIn(name, excluded)
+
+    def test_metadata_and_compose_use_same_docker_environment(self):
+        import subprocess
+        from unittest.mock import Mock
+        with patch.dict('os.environ', {'DOCKER_HOST': 'tcp://other:2375', 'DOCKER_CONTEXT': 'other'}), patch.object(lifecycle.sandbox, 'ensure_env', return_value={}):
+            environment = lifecycle.sandbox.docker_environment()
+            self.assertNotIn('DOCKER_HOST', environment)
+            self.assertNotIn('DOCKER_CONTEXT', environment)
+            with patch.object(lifecycle.subprocess, 'run', return_value=Mock(returncode=0, stdout='[]')) as run:
+                lifecycle.docker_json(['ps', '-aq'])
+                metadata_env = run.call_args.kwargs['env']
+                lifecycle.sandbox.run(['ps'], capture=True)
+                self.assertEqual(metadata_env, run.call_args.kwargs['env'])
+
+    def test_foreign_database_bind_rejected(self):
+        with self.assertRaises(ValueError):
+            lifecycle.sandbox.validate_mounts('postgres', [{'type': 'bind', 'source': '/other/database', 'target': '/var/lib/postgresql'}])
+
+    def test_symlinked_source_rejected(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'docker').mkdir()
+            (root / 'docker/plugins.py').symlink_to('/tmp/foreign-plugin.py')
+            with patch.object(lifecycle.sandbox, 'ROOT', root):
+                with self.assertRaises(ValueError):
+                    lifecycle.sandbox.validate_mounts('netbox', [])
+
+    def test_missing_sentinel_is_not_recreated(self):
+        with patch.object(lifecycle.sandbox, 'django', side_effect=RuntimeError('missing')) as django:
+            with self.assertRaises(RuntimeError):
+                lifecycle.sentinel()
+            code = django.call_args.args[0][-1]
+            self.assertIn('Site.objects.get(', code)
+            self.assertNotIn('create(', code)
+            self.assertIn('seed_snapshot()', code)

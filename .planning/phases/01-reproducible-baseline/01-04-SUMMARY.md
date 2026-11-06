@@ -16,7 +16,7 @@ the env-file bytes, and left unrelated container identities unchanged. Native
 schema/registration and real admin/API smoke passed again after reset. Web and
 worker end healthy and running on localhost 18047.
 
-29 helper tests pass (six lifecycle guards); git diff --check b090288 passes.
+33 helper tests pass (ten lifecycle guards); git diff --check b090288 passes.
 Source snapshot at 4dba67e and current layout verification pass. Final make test
 runs the helper suite, rendered configuration validation, real native runtime,
 CSRF session/API auth with negative controls, and seed-check.
@@ -37,3 +37,7 @@ No global cleanup or additional branch/worktree was created.
 ## Self-Check: PASSED
 
 All blocking real lifecycle checks passed. Independent goal verification follows.
+
+## Review corrections
+
+CR-01/02 and WR-01 fixed: one Docker environment for inspection and mutation; exact service mount maps including symlink/readonly/driver controls; read-only random-marker sentinel plus seed identity/native-value snapshots. Ten lifecycle regression tests pass; independent focused fix review found no remaining issues.
