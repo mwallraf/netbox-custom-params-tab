@@ -2,6 +2,8 @@
 import json
 
 from django.test import TestCase
+from django.apps import apps
+from django.urls import Resolver404, resolve
 from dcim.models import Device, DeviceRole, DeviceType
 from extras.models import CustomField, Tag
 
@@ -117,3 +119,31 @@ class ProfilePreservationTests(TestCase):
         self.assertEqual(self.device.custom_field_data['untouched'], 'unrelated value')
         self.assertEqual(list(profile.profile_fields.values_list('field_id', flat=True)), [unrelated.pk])
         self.assertFalse(CustomFieldProfile.objects.get(pk=profile.pk).enabled)
+
+    def test_retired_runtime_has_no_legacy_api_or_panel_registration(self):
+        from netbox.registry import registry
+        from netbox_custom_field_profiles import template_content
+        from netbox_custom_field_profiles.api import serializers, views
+
+        config = apps.get_app_config('netbox_custom_field_profiles')
+        self.assertNotIn('extra_models', config.default_settings)
+        self.assertEqual(template_content.template_extensions, [])
+        self.assertFalse(hasattr(views, 'CustomTabConfigViewSet'))
+        self.assertFalse(hasattr(serializers, 'CustomTabConfigSerializer'))
+        for extensions in registry['plugins']['template_extensions'].values():
+            self.assertFalse(any(extension.__module__ == template_content.__name__
+                                 for extension in extensions))
+        with self.assertRaises(Resolver404):
+            resolve('/api/plugins/custom-field-profiles/custom-tab-configs/')
+
+    def test_profile_runtime_and_event_serialization_survive_retirement(self):
+        from netbox_custom_field_profiles.api.serializers import CustomFieldProfileSerializer
+
+        before = self.snapshot()
+        self.post_unchanged(self.url('_add'), self.data(title='Runtime sentinel', field_mode='all'))
+        profile = CustomFieldProfile.objects.get()
+        self.assertEqual(self.client.get(self.url('_list')).status_code, 200)
+        self.assertEqual(self.client.get(profile.get_absolute_url()).status_code, 200)
+        self.assertEqual(CustomFieldProfileSerializer(profile).data['title'], 'Runtime sentinel')
+        self.post_unchanged(self.url('_delete', profile), {'confirm': True})
+        self.assertEqual(self.snapshot(), before)
