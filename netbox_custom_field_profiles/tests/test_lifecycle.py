@@ -97,6 +97,21 @@ class ProfileLifecycleTests(TestCase):
         profile.refresh_from_db()
         self.assertTrue(profile.enabled)
 
+    def test_each_filter_target_deletion_rolls_back_with_profile_state(self):
+        for kind in ('device_types', 'device_roles', 'applicability_tags'):
+            with self.subTest(kind=kind):
+                target, _ = self.targets(kind, kind + 'transaction')
+                profile = self.profile()
+                getattr(profile, kind).add(target)
+                with self.assertRaises(RuntimeError), transaction.atomic():
+                    type(target).objects.filter(pk=target.pk).delete()
+                    profile.refresh_from_db()
+                    self.assertFalse(profile.enabled)
+                    raise RuntimeError('rollback')
+                profile.refresh_from_db()
+                self.assertTrue(profile.enabled)
+                self.assertTrue(getattr(profile, kind).filter(pk=target.pk).exists())
+
     def test_field_deletion_partial_last_and_all_modes(self):
         for queryset in (False, True):
             with self.subTest(queryset=queryset):
@@ -216,6 +231,7 @@ class ProfileLifecycleTests(TestCase):
     def test_applicability_partial_all_rollback_and_no_reenable(self):
         removed, retained = self.field('rollback_applicability'), self.field('kept_applicability')
         selected, all_fields = self.profile('selected'), self.profile('all')
+        retained_before = CustomField.objects.filter(pk=retained.pk).values().get()
         for profile in (selected, all_fields):
             self.membership(profile, removed)
         self.membership(selected, retained)
@@ -230,6 +246,9 @@ class ProfileLifecycleTests(TestCase):
         self.assertTrue(selected.enabled)
         self.assertTrue(all_fields.enabled)
         self.assertEqual(get_profile_fields(selected), [retained])
+        self.assertEqual(CustomField.objects.filter(pk=retained.pk).values().get(), retained_before)
+        self.device.refresh_from_db()
+        self.assertEqual(self.device.custom_field_data['tracer_value'], 'external value')
         retained.object_types.clear()
         selected.refresh_from_db()
         self.assertFalse(selected.enabled)
