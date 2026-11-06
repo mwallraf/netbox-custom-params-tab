@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netbox-custom-field-profiles"
+version = "0.1.0"
+description = "NetBox plugin: move custom fields into a dedicated section on object detail pages"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-django",
+]
+
+[project.entry-points."netbox.plugins"]
+netbox_custom_field_profiles = "netbox_custom_field_profiles:config"
+
+[tool.setuptools.packages.find]
+include = ["netbox_custom_field_profiles*"]

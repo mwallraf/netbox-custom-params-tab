@@ -1,0 +1,145 @@
+{% extends 'generic/object_edit.html' %}
+{% load form_helpers %}
+
+{% block form %}
+<div class="row mb-3">
+  <div class="col-md-6">
+    <div class="card">
+      <h5 class="card-header">Configuration</h5>
+      <div class="card-body">
+        {% render_form form %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="card-header">Custom Field Groups</h5>
+      <div class="card-body">
+        <p class="text-muted small">Groups rendered in the tab, sorted by ascending weight.</p>
+        {{ group_formset.management_form }}
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th style="width:120px">Weight</th>
+              <th style="width:60px">Delete</th>
+            </tr>
+          </thead>
+          <tbody id="group-formset-body">
+            {% for gform in group_formset %}
+              <tr>
+                <td>{{ gform.group_name }}{% for h in gform.hidden_fields %}{{ h }}{% endfor %}</td>
+                <td>{{ gform.weight }}</td>
+                <td>
+                  <div style="display:none">{{ gform.DELETE }}</div>
+                  <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteRow(this)">
+                    <i class="mdi mdi-trash-can-outline"></i>
+                  </button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                onclick="addFormsetRow('group-formset-body', 'group-empty-form', 'id_config_groups-TOTAL_FORMS')">
+          <i class="mdi mdi-plus-thick"></i> Add Group
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="card-header">Standalone Custom Fields</h5>
+      <div class="card-body">
+        <p class="text-muted small">Individual fields rendered in the tab, sorted by ascending weight.</p>
+        {{ field_formset.management_form }}
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th style="width:120px">Weight</th>
+              <th style="width:60px">Delete</th>
+            </tr>
+          </thead>
+          <tbody id="field-formset-body">
+            {% for ffield in field_formset %}
+              <tr>
+                <td>{{ ffield.field }}{% for h in ffield.hidden_fields %}{{ h }}{% endfor %}</td>
+                <td>{{ ffield.weight }}</td>
+                <td>
+                  <div style="display:none">{{ ffield.DELETE }}</div>
+                  <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteRow(this)">
+                    <i class="mdi mdi-trash-can-outline"></i>
+                  </button>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                onclick="addFormsetRow('field-formset-body', 'field-empty-form', 'id_config_fields-TOTAL_FORMS')">
+          <i class="mdi mdi-plus-thick"></i> Add Field
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Template elements are inert — TomSelect never initializes on their content #}
+<template id="group-empty-form">
+  <tr>
+    <td>{{ group_formset.empty_form.group_name }}{% for h in group_formset.empty_form.hidden_fields %}{{ h }}{% endfor %}</td>
+    <td>{{ group_formset.empty_form.weight }}</td>
+    <td>
+      <div style="display:none">{{ group_formset.empty_form.DELETE }}</div>
+      <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteRow(this)">
+        <i class="mdi mdi-trash-can-outline"></i>
+      </button>
+    </td>
+  </tr>
+</template>
+<template id="field-empty-form">
+  <tr>
+    <td>{{ field_formset.empty_form.field }}{% for h in field_formset.empty_form.hidden_fields %}{{ h }}{% endfor %}</td>
+    <td>{{ field_formset.empty_form.weight }}</td>
+    <td>
+      <div style="display:none">{{ field_formset.empty_form.DELETE }}</div>
+      <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteRow(this)">
+        <i class="mdi mdi-trash-can-outline"></i>
+      </button>
+    </td>
+  </tr>
+</template>
+
+<script>
+function addFormsetRow(bodyId, templateId, totalFormsId) {
+    var body = document.getElementById(bodyId);
+    var tmpl = document.getElementById(templateId);
+    var totalForms = document.getElementById(totalFormsId);
+    var formCount = parseInt(totalForms.value);
+    var html = tmpl.innerHTML.replace(/__prefix__/g, String(formCount));
+    body.insertAdjacentHTML('beforeend', html);
+    totalForms.value = formCount + 1;
+}
+
+function deleteRow(btn) {
+    var row = btn.closest('tr');
+    var deleteInput = row.querySelector('input[type="checkbox"]');
+    console.log('deleteRow: deleteInput=', deleteInput);
+    if (deleteInput) {
+        deleteInput.checked = true;
+        console.log('deleteRow: checked', deleteInput.name);
+    } else {
+        console.log('deleteRow: no checkbox found; inputs in row=',
+            Array.from(row.querySelectorAll('input')).map(i => i.name + ':' + i.type));
+    }
+    row.style.display = 'none';
+}
+</script>
+{% endblock %}
