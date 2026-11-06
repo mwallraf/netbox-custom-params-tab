@@ -9,3 +9,9 @@ tests
 testing
 .DS_Store
 .worktrees
+.env
+.env.*
+.recovery
+.planning
+.sandbox
+.sandbox-env-*

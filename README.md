@@ -38,10 +38,23 @@ configuration, URL namespaces, templates, tests, and Docker paths now use the ne
 name. Internal `CustomTabConfig` model names remain until the profile model is
 designed.
 
-The Django app identifier and URL prefix changed. Existing installations using
-the previous name need a migration strategy before using this version against
-their database. This rename does not migrate an existing database or regenerate
-local editable-install metadata. Rebuild the development image before running it.
+## Development sandbox
+
+Run `make setup`, then open <http://127.0.0.1:18047>. Administrator credentials
+are generated once in the ignored local `.env` file. Run `make test` for native
+runtime, migration, real admin/API authentication and dummy-data checks.
+
+The exercised baseline is NetBox **4.7.4**, Docker packaging **5.1.1**; minimum
+plugin version is 4.7.0. Other versions have not been verified. The dedicated
+Compose project leaves other workstation NetBox installations untouched.
+`make down` preserves data; `make reset` deliberately recreates this project's
+sandbox database while retaining credentials.
+
+See [sandbox guide](docs/development/sandbox.md) and
+[actual baseline status](docs/development/baseline-status.md).
+This is a new, undeployed plugin using a disposable development database: no
+legacy app/data upgrade is needed or supported by this baseline. Profiles,
+matching, tab and editing remain later phases.
 
 ## Earlier documents
 

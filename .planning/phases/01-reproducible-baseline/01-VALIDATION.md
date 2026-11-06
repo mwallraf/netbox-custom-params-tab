@@ -1,9 +1,9 @@
 ---
 phase: "01"
 slug: "reproducible-baseline"
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: validated
+nyquist_compliant: true
+wave_0_complete: true
 created: "2026-11-06"
 ---
 
@@ -20,8 +20,7 @@ created: "2026-11-06"
 | Legacy report | `make test-legacy`; real failures recorded separately |
 | Runtime | Quick checks target <30s; cold image build/setup can take minutes |
 
-Commands here are proposed interfaces, not claims that they already exist.
-Planner must align the final task map with its chosen helper paths and targets.
+All listed baseline commands exist and were exercised. See summaries and baseline-status.md.
 
 ## Sampling Rate
 
@@ -38,20 +37,20 @@ Planner must align the final task map with its chosen helper paths and targets.
 
 All commands run from the canonical repository root. A helper marked new is
 created in the same task before its verify command runs; later tasks depend on
-the preceding plan's verified artifacts. No command is claimed executed yet.
+the preceding plan's verified artifacts. All baseline commands below passed; legacy runner absence was classified honestly.
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------|-------------------|-------------|--------|
-| 01-01-01 | 01 | 1 | BASE-01 | T-01-01/02 | Git/filesystem | `python3 scripts/source_snapshot.py verify --manifest docs/development/source-recovery.md --root .` | New in task | Pending |
-| 01-01-02 | 01 | 1 | BASE-01 | T-01-01/02 | Git/filesystem | `python3 scripts/source_snapshot.py verify-layout --root .` | Prior task | Pending |
-| 01-02-01 | 02 | 2 | BASE-02 | T-01-03 | Unit + env tracer | `python3 -m unittest discover -s tests/sandbox -p test_config.py -v` and `make env` | New in task | Pending |
-| 01-02-02 | 02 | 2 | BASE-02/03 | T-01-04 | Compose configuration | `python3 scripts/sandbox.py compose config --quiet` and `make check` | Prior task + config in task | Pending |
-| 01-02-03 | 02 | 2 | BASE-03 | T-01-05 | Unit sequencing + real container | `make setup`, `python3 scripts/sandbox.py verify-runtime`, `python3 -m unittest discover -s tests/sandbox -p test_config.py -v` | New in task | Pending |
-| 01-03-01 | 03 | 3 | BASE-03/04 | T-01-06/07 | Unit + real HTTP/container | `make test` and `make smoke` | New in task | Pending |
-| 01-03-02 | 03 | 3 | BASE-04 | T-01-07 | Real ORM | `make seed-check` and `make smoke` | New in task | Pending |
-| 01-03-03 | 03 | 3 | BASE-04 | T-01-06/07 | Unit + legacy report | `python3 -m unittest discover -s tests/sandbox -p test_legacy_report.py -v` and `make test-legacy` | New in task | Pending |
-| 01-04-01 | 04 | 4 | BASE-02/04 | T-01-08 | Unit + real lifecycle | `python3 -m unittest discover -s tests/sandbox -p test_lifecycle.py -v` and `make lifecycle-check` | New in task | Pending |
-| 01-04-02 | 04 | 4 | BASE-01..04 | T-01-09 | Baseline + docs | `make check`, `make test`, `git diff --check b090288` | Prior tasks | Pending |
+| 01-01-01 | 01 | 1 | BASE-01 | T-01-01/02 | Git/filesystem | `python3 scripts/source_snapshot.py verify --manifest docs/development/source-recovery.md --root . --commit 4dba67e` | New in task | Passed |
+| 01-01-02 | 01 | 1 | BASE-01 | T-01-01/02 | Git/filesystem | `python3 scripts/source_snapshot.py verify-layout --root .` | Prior task | Passed |
+| 01-02-01 | 02 | 2 | BASE-02 | T-01-03 | Unit + env tracer | `python3 -m unittest discover -s tests/sandbox -p test_config.py -v` and `make env` | New in task | Passed |
+| 01-02-02 | 02 | 2 | BASE-02/03 | T-01-04 | Compose configuration | `python3 scripts/sandbox.py compose config --quiet` and `make check` | Prior task + config in task | Passed |
+| 01-02-03 | 02 | 2 | BASE-03 | T-01-05 | Unit sequencing + real container | `make setup`, `python3 scripts/sandbox.py verify-runtime`, `python3 -m unittest discover -s tests/sandbox -p test_config.py -v` | New in task | Passed |
+| 01-03-01 | 03 | 3 | BASE-03/04 | T-01-06/07 | Unit + real HTTP/container | `make test` and `make smoke` | New in task | Passed |
+| 01-03-02 | 03 | 3 | BASE-04 | T-01-07 | Real ORM | `make seed-check` and `make smoke` | New in task | Passed |
+| 01-03-03 | 03 | 3 | BASE-04 | T-01-06/07 | Unit + legacy report | `python3 -m unittest discover -s tests/sandbox -p test_legacy_report.py -v` and `make test-legacy` | New in task | Passed |
+| 01-04-01 | 04 | 4 | BASE-02/04 | T-01-08 | Unit + real lifecycle | `python3 -m unittest discover -s tests/sandbox -p test_lifecycle.py -v` and `make lifecycle-check` | New in task | Passed |
+| 01-04-02 | 04 | 4 | BASE-01..04 | T-01-09 | Baseline + docs | `make check`, `make test`, `git diff --check b090288` | Prior tasks | Passed |
 
 Legacy outcome contract: make test-legacy returns its real runner status. Nonzero
 legacy feature/setup outcomes are recorded, never silently treated as tests
@@ -80,12 +79,16 @@ Do not alter or inspect credentials of the user's other NetBox installation.
 
 ## Validation Sign-Off
 
-- [ ] Every task has automated verification or a concrete prerequisite.
-- [ ] No three consecutive tasks lack automated checks.
-- [ ] All missing helpers are created before use.
-- [ ] No watch flags or unbounded readiness waits.
-- [ ] Real boot/migrate/register/login evidence recorded.
-- [ ] No secrets in outputs or version control.
-- [ ] Set `nyquist_compliant: true` only after the validation contract is satisfied.
+- [x] Every task has automated verification or a concrete prerequisite.
+- [x] No three consecutive tasks lack automated checks.
+- [x] All missing helpers are created before use.
+- [x] No watch flags or unbounded readiness waits.
+- [x] Real boot/migrate/register/login evidence recorded.
+- [x] No secrets in outputs or version control.
+- [x] Set `nyquist_compliant: true` only after the validation contract is satisfied.
 
-**Approval:** Planning strategy captured; runtime verification pending execution.
+**Approval:** Validated 2026-11-06. All four BASE requirements have automated evidence; 29 helper tests plus real runtime/auth/seed/lifecycle checks. Legacy pytest is runner-unavailable (exit 1), not a passed feature suite.
+
+## Validation Audit
+
+2026-11-06: 4 requirements covered, 0 baseline gaps, 0 manual-only blockers. Source checks, runtime and actual authentication, idempotent seed, and real persistence/project reset passed. Optional legacy suite is explicitly unexecuted.
