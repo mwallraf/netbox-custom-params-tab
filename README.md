@@ -26,10 +26,10 @@ renders a panel. GSD onboarding is complete; the five development phases are in
 
 ## Source location
 
-The implementation is currently in `.worktrees/feature/implement-plugin/` on
-`feature/implement-plugin`. The main checkout contains project documentation.
-The worktree's Git metadata references the repository's previous location and
-needs repair before normal worktree commands can be used.
+The implementation is tracked in this repository root on `milestone/custom-field-profiles`.
+The renamed snapshot and feature history were retained in commit `4dba67e`.
+The obsolete nested directory is preserved locally in ignored `.recovery/implement-plugin`.
+See [source recovery](docs/development/source-recovery.md) for the inventory.
 
 ## Rename status
 

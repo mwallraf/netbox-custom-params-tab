@@ -47,3 +47,10 @@ Original renamed working snapshot; feature history: `42ad9c2`.
   }
 }
 ```
+
+Canonical reconciliation commit: `4dba67e` (merge retaining `42ad9c2`).
+Original snapshot retained unchanged at ignored `.recovery/implement-plugin`; no prune was run.
+Only the normal checkout is registered. Current root docs/planning survived the merge unchanged.
+Initial root status had the old-name historical spec deleted and three .DS_Store files.
+The spec deletion is retained; its renamed content already exists unchanged.
+Verify original bytes after later edits with `python3 scripts/source_snapshot.py verify --commit 4dba67e`.

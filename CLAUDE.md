@@ -98,3 +98,8 @@ The `content_type` dropdown in `CustomTabConfigForm` is restricted to supported 
 - **Weight + alpha ordering.** Groups and standalone fields share one weight space. Equal-weight items sort alphabetically by name.
 - **Cascade safety.** Deleting a `CustomField`, `CustomFieldGroup`, or `ContentType` from NetBox removes the corresponding through-model rows but leaves the rest of the config intact.
 - **Supported types are extensible.** `BUILTIN_MODELS` in `template_content.py` is the fixed list; `extra_models` from `PLUGINS_CONFIG` is appended in `ready()`. Never hardcode the full list outside `template_content.py`.
+
+## Canonical source
+
+Use the normal repository root on milestone/custom-field-profiles; no worktrees.
+The historical sandbox commands above predate Phase 1; consult README and tracked development documentation for current setup.
