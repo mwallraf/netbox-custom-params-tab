@@ -47,7 +47,30 @@ editing, and release verification. No feature phase has started.
   2. Selected mode preserves ordered membership; all-fields mode includes a newly created applicable field without editing the profile.
   3. Profiles support Device Type, role, and tag filters; tests demonstrate AND across rules, OR within values, and no-rules matching all Devices.
   4. Profiles allow duplicate native fields across sections and managing profiles changes neither native settings nor values.
-**Plans**: TBD — created during phase planning.
+**Plans**: 8 plans.
+**Wave 1**
+- [ ] 02-01-PLAN.md — Bounded additive schema, native resolver and isolated test preparation.
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 02-02-PLAN.md — First meaningful native CRUD/resolution tracer and navigation.
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 02-03-PLAN.md — Ordered field selection, native All mode and drag/keyboard controls.
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 02-04-PLAN.md — Searchable fixed rules, deterministic matching and scope summaries.
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 02-05-PLAN.md — Safe target deletion and selected-field applicability cleanup.
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 02-06-PLAN.md — Native permission, preservation and browser evidence.
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 02-07-PLAN.md — Reversible runtime retirement and verified old-row inventory.
+
+**Wave 8** *(blocked on Wave 7 completion)*
+- [ ] 02-08-PLAN.md — Approved legacy schema retirement and final native checks.
 
 ### Phase 3: Parameters tab
 **Goal**: Users can view relevant native fields as ordered profile sections in a dedicated Device tab.
@@ -99,7 +122,7 @@ filter engine or multi-object-type scope is included.
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
-| 2. Profile administration and matching | 0/TBD | Not started | - |
+| 2. Profile administration and matching | 0/8 | Planned | - |
 | 3. Parameters tab | 0/TBD | Not started | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |
