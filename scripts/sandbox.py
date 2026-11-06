@@ -103,7 +103,8 @@ def ensure_env(path=None):
 
 
 def compose_argv(args):
-    if not args or args[0].startswith('-') or any(a in ('-p', '--project-name', '--project-directory', '-f', '--file', '--env-file') for a in args):
+    forbidden = ('-p', '--project-name', '--project-directory', '-f', '--file', '--env-file')
+    if not args or args[0].startswith('-') or any(a in forbidden or any(a.startswith(flag + '=') for flag in forbidden) for a in args):
         raise ValueError('Compose target overrides forbidden')
     return ['docker', 'compose', '--project-directory', str(ROOT), '-p', PROJECT,
             '-f', str(ROOT / 'docker-compose.yml'), '--env-file', str(ROOT / '.env'), *args]
@@ -155,7 +156,12 @@ def validate_compose():
     for name, volume in config.get('volumes', {}).items():
         if volume.get('external') or volume.get('name') != PROJECT + '_' + name:
             raise ValueError('external or shared volume forbidden')
+    for name, network in config.get('networks', {}).items():
+        if network.get('external') or network.get('name') != PROJECT + '_' + name:
+            raise ValueError('external or shared network forbidden')
     for service, data in config['services'].items():
+        if any(network not in config.get('networks', {}) for network in data.get('networks', {})):
+            raise ValueError('undeclared service network')
         if data.get('container_name'):
             raise ValueError('global container names forbidden')
         for port in data.get('ports', []):
@@ -174,7 +180,18 @@ def setup():
     run(['up', '-d', '--wait', '--wait-timeout', '180', 'postgres', 'redis', 'redis-cache'])
     run(['up', '-d', '--wait', '--wait-timeout', '600'])
     runtime()
+    seed()
     print('SANDBOX_READY')
+
+
+def seed(check=False):
+    code = "exec(open('/opt/netbox-custom-field-profiles/scripts/seed_sandbox.py').read()); seed(check=" + str(check) + ")"
+    print(django(['shell', '-c', code]).strip())
+
+
+def smoke():
+    from smoke_sandbox import smoke as verify
+    verify()
 
 
 def prepare_schema():
@@ -203,7 +220,7 @@ def prepare_schema():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=['env', 'compose', 'check', 'setup', 'verify-runtime', 'prepare-schema'])
+    parser.add_argument('command', choices=['env', 'compose', 'check', 'setup', 'verify-runtime', 'prepare-schema', 'seed', 'seed-check', 'smoke', 'reset', 'lifecycle-check'])
     parser.add_argument('args', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if args.command == 'env':
@@ -219,6 +236,13 @@ def main():
         setup()
     elif args.command == 'prepare-schema':
         prepare_schema()
+    elif args.command in ('seed', 'seed-check'):
+        seed(check=args.command == 'seed-check')
+    elif args.command == 'smoke':
+        smoke()
+    elif args.command in ('reset', 'lifecycle-check'):
+        from lifecycle_sandbox import reset, check
+        (reset if args.command == 'reset' else check)()
     else:
         runtime()
 

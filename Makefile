@@ -31,3 +31,24 @@ makemigrations:
 check:
 	@python3 -m unittest discover -s tests/sandbox -v
 	@python3 scripts/sandbox.py check
+
+.PHONY: test smoke seed seed-check test-legacy reset lifecycle-check
+test: check smoke seed-check
+
+smoke:
+	@python3 scripts/sandbox.py smoke
+
+seed:
+	@python3 scripts/sandbox.py seed
+
+seed-check:
+	@python3 scripts/sandbox.py seed-check
+
+test-legacy:
+	@python3 scripts/legacy_tests.py
+
+reset:
+	@python3 scripts/sandbox.py reset
+
+lifecycle-check:
+	@python3 scripts/sandbox.py lifecycle-check
