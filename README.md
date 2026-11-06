@@ -18,11 +18,13 @@ filter matching rules, acceptance examples, and remaining planning details.
 - A separate profile administration interface; NetBox's custom field settings stay unchanged.
 - No independent parameter storage or automatic changes to native field visibility.
 
-These are the agreed direction, not a statement of implemented functionality.
-The existing implementation still uses one configuration per object model and
-renders a panel. GSD onboarding is complete; the five development phases are in
-[the roadmap](.planning/ROADMAP.md), with current progress in
-[the project state](.planning/STATE.md). No feature implementation has started.
+Phase 2 profile administration and matching are implemented: native plugin CRUD,
+ordered Selected/All field modes, fixed applicability filters, and safe lifecycle
+cleanup. The old panel/API and configuration schema have been retired. Final
+phase verification and live browser acceptance remain pending. The Parameters tab
+and Edit Parameters page belong to later phases. See the
+[administration guide](docs/development/profiles.md),
+[roadmap](.planning/ROADMAP.md), and [project state](.planning/STATE.md).
 
 ## Source location
 
@@ -35,14 +37,16 @@ See [source recovery](docs/development/source-recovery.md) for the inventory.
 
 The project was renamed from NetBox Custom Params Tab. Source imports, plugin
 configuration, URL namespaces, templates, tests, and Docker paths now use the new
-name. Internal `CustomTabConfig` model names remain until the profile model is
-designed.
+name. `CustomFieldProfile` and ordered `ProfileField` memberships replace the old
+`CustomTabConfig` models; migrations retain the original history and explicitly
+retire the obsolete configuration schema.
 
 ## Development sandbox
 
 Run `make setup`, then open <http://127.0.0.1:18047>. Administrator credentials
 are generated once in the ignored local `.env` file. Run `make test` for native
-runtime, migration, real admin/API authentication and dummy-data checks.
+runtime, migration, real admin/API authentication and dummy-data checks. Run `make test-profiles`
+for the isolated native profile suite; see the guide for focused test labels.
 
 The exercised baseline is NetBox **4.7.4**, Docker packaging **5.1.1**; minimum
 plugin version is 4.7.0. Other versions have not been verified. The dedicated
@@ -53,8 +57,8 @@ sandbox database while retaining credentials.
 See [sandbox guide](docs/development/sandbox.md) and
 [actual baseline status](docs/development/baseline-status.md).
 This is a new, undeployed plugin using a disposable development database: no
-legacy app/data upgrade is needed or supported by this baseline. Profiles,
-matching, tab and editing remain later phases.
+legacy app/data upgrade is needed or supported by this baseline. Profile administration and matching are implemented; the Parameters tab and
+native value editing remain later phases.
 
 ## Earlier documents
 
