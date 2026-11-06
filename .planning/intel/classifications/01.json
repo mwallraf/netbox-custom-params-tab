@@ -1,0 +1,19 @@
+{
+  "source_path": "docs/REQUIREMENTS.md",
+  "type": "PRD",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "NetBox Custom Field Profiles \u2014 agreed requirements",
+  "summary": "Authoritative agreed requirements for reusable Device profiles, matching filters, a Parameters tab, and native custom field editing.",
+  "scope": [
+    "profiles",
+    "Devices",
+    "custom fields",
+    "filters",
+    "Parameters tab",
+    "editing"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 0
+}

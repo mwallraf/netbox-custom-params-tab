@@ -1,0 +1,16 @@
+{
+  "source_path": "docs/superpowers/specs/2026-05-04-netbox-custom-field-profiles-design.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Design: netbox-custom-field-profiles",
+  "summary": "Historical schema and UI design for one configuration per object type, superseded where it conflicts with the agreed requirements.",
+  "scope": [
+    "legacy configuration",
+    "panel rendering",
+    "custom fields"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 10
+}
