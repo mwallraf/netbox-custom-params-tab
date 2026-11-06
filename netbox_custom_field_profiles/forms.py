@@ -30,6 +30,7 @@ class CustomFieldProfileForm(NetBoxModelForm):
         help_text='Choose applicable fields, then arrange their display order below.',
     )
     field_order = forms.CharField(required=False, widget=forms.HiddenInput)
+    remembered_fields = forms.CharField(required=False, widget=forms.HiddenInput)
     content_type = forms.ModelChoiceField(
         queryset=ContentType.objects.filter(app_label='dcim', model='device'),
         label='Object Type',
@@ -38,11 +39,26 @@ class CustomFieldProfileForm(NetBoxModelForm):
     class Meta:
         model = CustomFieldProfile
         fields = ('title', 'content_type', 'display_order', 'enabled', 'field_mode',
-                  'selected_fields', 'field_order', 'device_types', 'device_roles',
+                  'selected_fields', 'field_order', 'remembered_fields', 'device_types', 'device_roles',
                   'applicability_tags')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if (self.is_bound and self.data.get('field_mode') == CustomFieldProfile.FIELD_MODE_ALL
+                and 'remembered_fields' in self.data and 'selected_fields' not in self.data):
+            try:
+                remembered = self._parse_field_ids(self.data.get('remembered_fields'))
+            except (ValueError, TypeError):
+                pass  # clean() reports malformed remembered state without saving it.
+            else:
+                # All disables the visible selector. Rebind its explicit remembered
+                # values so native field validation/permission restrictions still
+                # apply, and a failed form redisplays the pending choices.
+                self.data = self.data.copy()
+                if hasattr(self.data, 'setlist'):
+                    self.data.setlist('selected_fields', [str(pk) for pk in remembered])
+                else:
+                    self.data['selected_fields'] = remembered
         device_ct = self.fields['content_type'].queryset.first()
         self.fields['applicability_tags'].queryset = Tag.objects.filter(
             Q(object_types=device_ct) | Q(object_types__isnull=True)).distinct()
@@ -50,13 +66,23 @@ class CustomFieldProfileForm(NetBoxModelForm):
         self.fields['selected_fields'].queryset = CustomField.objects.filter(
             object_types__app_label='dcim', object_types__model='device').distinct()
         self.fields['selected_fields'].widget.attrs['class'] = 'form-select'
+        ordered = []
         if not self.instance.pk:
             self.initial.setdefault('content_type', self.fields['content_type'].queryset.first())
             self.initial.setdefault('field_mode', CustomFieldProfile.FIELD_MODE_ALL)
         else:
             ordered = list(self.instance.profile_fields.values_list('field_id', flat=True))
-            self.initial.setdefault('selected_fields', ordered)
-            self.initial.setdefault('field_order', json.dumps(ordered))
+        self.initial.setdefault('selected_fields', ordered)
+        self.initial.setdefault('field_order', json.dumps(ordered))
+        self.initial.setdefault('remembered_fields', json.dumps(ordered))
+
+    @staticmethod
+    def _parse_field_ids(raw):
+        ids = json.loads(raw)
+        if (not isinstance(ids, list) or any(type(pk) is not int or pk <= 0 for pk in ids)
+                or len(ids) != len(set(ids))):
+            raise ValueError
+        return ids
 
     def full_clean(self):
         # Dynamic fields narrow their queryset to bound values when constructing
@@ -76,22 +102,31 @@ class CustomFieldProfileForm(NetBoxModelForm):
                     self.add_error(name, 'This profile has saved references you cannot access. '
                                          'Ask an administrator to review its applicability.')
         self.ordered_field_ids = None
-        if cleaned.get('field_mode') != CustomFieldProfile.FIELD_MODE_SELECTED:
+        selected_mode = cleaned.get('field_mode') == CustomFieldProfile.FIELD_MODE_SELECTED
+        if not selected_mode and 'remembered_fields' not in self.data:
+            # Clients without an explicit remembered payload preserve saved state.
             return cleaned
         selected = cleaned.get('selected_fields')
         if selected is None:
             return cleaned
-        if not selected:
+        if selected_mode and not selected:
             self.add_error('selected_fields', 'Select at least one applicable field.')
+        selected_ids = {field.pk for field in selected}
+        if 'remembered_fields' in self.data:
+            try:
+                remembered = self._parse_field_ids(cleaned.get('remembered_fields'))
+                if set(remembered) != selected_ids:
+                    raise ValueError
+            except (ValueError, TypeError):
+                self.add_error('remembered_fields', 'Remembered fields must contain each selected field exactly once. '
+                                                  'Review the selection and try again.')
         raw_selection = (self.data.getlist('selected_fields') if hasattr(self.data, 'getlist')
                          else self.data.get('selected_fields', []))
         if len(raw_selection) != len(set(raw_selection)):
             self.add_error('selected_fields', 'Select each field only once.')
         try:
-            ordered = json.loads(cleaned.get('field_order') or '[]')
-            if (not isinstance(ordered, list) or any(type(pk) is not int or pk <= 0 for pk in ordered)
-                    or len(ordered) != len(set(ordered))
-                    or set(ordered) != {field.pk for field in selected}):
+            ordered = self._parse_field_ids(cleaned.get('field_order') or '[]')
+            if set(ordered) != selected_ids:
                 raise ValueError
         except (ValueError, TypeError):
             self.add_error('field_order', 'Field order must contain each selected field exactly once.')
@@ -108,7 +143,7 @@ class CustomFieldProfileForm(NetBoxModelForm):
     @transaction.atomic
     def _save_m2m(self):
         super()._save_m2m()
-        if self.instance.field_mode == CustomFieldProfile.FIELD_MODE_SELECTED:
+        if self.ordered_field_ids is not None:
             # Lock the aggregate while replacing positions; never write native fields.
             CustomFieldProfile.objects.select_for_update().get(pk=self.instance.pk)
             self.instance.profile_fields.all().delete()

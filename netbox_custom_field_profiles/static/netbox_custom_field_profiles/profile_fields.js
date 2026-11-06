@@ -2,16 +2,21 @@
   function initialize() {
     const select = document.getElementById('id_selected_fields');
     const order = document.getElementById('id_field_order');
+    const remembered = document.getElementById('id_remembered_fields');
     const mode = document.getElementById('id_field_mode');
     const list = document.getElementById('profile-ordered-fields');
     const status = document.getElementById('profile-order-status');
-    if (!select || !order || !mode || !list || list.dataset.initialized) return;
+    const unavailable = document.getElementById('profile-order-unavailable');
+    if (!select || !order || !remembered || !mode || !list || list.dataset.initialized) return;
     list.dataset.initialized = 'true';
     let ids = [];
     try { ids = JSON.parse(order.value || '[]').map(String); } catch (_) { /* Server shows malformed payload error. */ }
     let dragged = null;
     const chosen = () => Array.from(select.selectedOptions).map(option => option.value);
-    const synchronize = () => { order.value = JSON.stringify(ids.map(Number)); };
+    const synchronize = () => {
+      order.value = JSON.stringify(ids.map(Number));
+      remembered.value = JSON.stringify(chosen().map(Number));
+    };
     function move(id, index, control) {
       const current = ids.indexOf(id);
       ids.splice(current, 1);
@@ -62,6 +67,7 @@
     select.addEventListener('change', render); mode.addEventListener('change', render);
     select.form.addEventListener('submit', synchronize);
     render();
+    if (unavailable) unavailable.hidden = true;
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize); else initialize();
   document.addEventListener('htmx:afterSwap', initialize);

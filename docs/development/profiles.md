@@ -36,15 +36,27 @@ then primary key for exact timestamp ties.
   the new position. Save and reload to confirm persisted order.
 - **All applicable fields** resolves the currently active Device fields in native
   NetBox order (`group_name`, `weight`, `name`). New applicable fields appear
-  dynamically. This mode disables the manual field controls and keeps their saved
-  selection/order; switching back to Selected restores them.
+  dynamically. This mode disables the manual field controls. Saving remembers
+  the current manual selection/order, including pending additions, removals and
+  reordering made before switching to All. Switching back to Selected restores
+  that remembered state; an empty remembered selection is allowed in All mode.
+  The All-mode detail page labels this inactive list **Remembered selected fields**.
 - The same native field may be selected in several profiles. Memberships refer to
   one native field definition and never store a separate value.
 
-The server revalidates choices and exact selected-field order. Invalid saves
-show errors and do not partially change the profile. Native field definitions,
+The server revalidates remembered choices against the same native applicable-field
+and permission restrictions as Selected mode, and validates exact field order.
+Older All-mode requests without remembered state preserve the saved manual
+membership. Invalid saves show errors and do not partially change the profile;
+pending remembered choices/order remain on the form when correcting another
+field such as the title. Native field definitions,
 visibility/editability settings, and Device `custom_field_data` remain unchanged
 when profiles are managed or deleted.
+
+Field ordering requires JavaScript. A loading message stays visible if the
+ordering controls fail to initialize; reload the page and check JavaScript is
+enabled before changing selected fields or their order. A separate noscript
+message provides the same recovery action when JavaScript is disabled.
 
 ### Applicability
 
@@ -53,6 +65,9 @@ Each populated selector accepts **any** selected value (OR); populated selectors
 must **all** match (AND). The tag rule accepts any selected tag on the Device.
 Empty selectors impose no restriction. When all are empty, the edit page shows
 **Applies to all Devices**, with no extra unrestricted-save confirmation.
+An always-present polite status region announces unrestricted or restricted
+scope when these selectors change; actual assistive-technology behavior remains
+part of the pending browser checks below.
 
 The tag selector includes unused tags compatible with Devices and unrestricted
 tags. It does not require a tag to be currently assigned to a Device. Native
@@ -125,19 +140,25 @@ In the dedicated sandbox, using disposable verification profiles:
    field before the first. Save, reopen Edit, and verify the exact order survives.
 2. Tab to **Move down** or **Move up**, activate with Enter/Space, and verify focus
    and the announced position. Save and reopen to confirm persistence.
-3. Switch Selected → All, save/reopen, then switch back to Selected. Verify the
-   manual selection and order are restored. All mode should disable manual
-   controls without losing them.
+3. Before switching to All, reorder fields and add/remove a field. Save/reopen,
+   then switch back to Selected. Verify the pending manual selection and order
+   were remembered. All mode should disable manual controls without losing them.
 4. Submit with an empty title while retaining several selected fields, their
    order, and at least one rule. Verify the required-title error appears and the
    choices/order/rules remain available for correction. Correct and save.
+   Repeat after changing manual fields/order and switching to All before the
+   invalid save; switch back to Selected and verify those pending changes remain.
 5. Through native tag administration, create an unused tag compatible with
    Devices. Search for it in Device tags on the profile form, select/save/reopen,
    and verify it is retained. Do the same with an unrestricted unused tag.
 6. Clear all three rule selectors and verify **Applies to all Devices** appears
    immediately. Add a rule and verify it hides; clear the rule and verify it
-   returns. Save without an extra unrestricted-profile confirmation.
-7. Record the browser/version, profile IDs, exact observed outcomes and redacted
+   returns. Verify the polite status announcement for both scope changes with
+   assistive technology. Save without an extra unrestricted-profile confirmation.
+7. With JavaScript disabled, verify the actionable ordering explanation. With
+   the ordering asset blocked, verify the loading/reload explanation remains.
+   Restore JavaScript/the asset and reload before modifying selected field order.
+8. Record the browser/version, profile IDs, exact observed outcomes and redacted
    screenshot paths. Leave ledger entries open until these interactions have
    actually passed. No native field settings or values need changing for these
    tests.

@@ -4,11 +4,15 @@
   {{ block.super }}
   <p>All populated applicability criteria must match (AND). Any selected value within a criterion matches (OR), including any selected tag.</p>
   <p class="alert alert-info" id="profile-unrestricted-notice"{% if not form.applies_to_all_devices %} hidden{% endif %}>Applies to all Devices</p>
+  <p id="profile-scope-status" role="status" aria-live="polite" aria-atomic="true" class="visually-hidden">{% if form.applies_to_all_devices %}Applies to all Devices{% else %}Applies only to Devices matching all configured criteria.{% endif %}</p>
   <section class="card mt-3" id="profile-field-order" aria-labelledby="field-order-heading">
     <h2 class="card-header" id="field-order-heading">Selected field order</h2>
     <div class="card-body">
-      <p id="profile-mode-help">Drag a field using its handle, or use Move up and Move down. All applicable fields follows native NetBox ordering; your manual selection is remembered.</p>
+      <p id="profile-mode-help">Drag a field using its handle, or use Move up and Move down. Saving All applicable fields remembers your current manual selection and order for switching back to Selected fields. All mode uses native NetBox ordering.</p>
+      <p id="profile-order-unavailable" role="status">Field ordering controls are loading. If this message remains, reload this page and check that JavaScript is enabled before changing selected fields or their order.</p>
+      <noscript><p class="alert alert-warning">Field ordering requires JavaScript. Enable JavaScript and reload this page before changing selected fields or their order.</p></noscript>
       {% for error in form.field_order.errors %}<p class="text-danger" role="alert">{{ error }}</p>{% endfor %}
+      {% for error in form.remembered_fields.errors %}<p class="text-danger" role="alert">{{ error }}</p>{% endfor %}
       <ol id="profile-ordered-fields" class="list-group list-group-numbered" aria-describedby="profile-mode-help"></ol>
       <p id="profile-order-status" role="status" aria-live="polite" class="visually-hidden"></p>
     </div>
@@ -18,10 +22,15 @@
     (() => {
       function initializeScopeNotice() {
         const notice = document.getElementById('profile-unrestricted-notice');
+        const status = document.getElementById('profile-scope-status');
         const selectors = ['id_device_types', 'id_device_roles', 'id_applicability_tags'].map(id => document.getElementById(id));
-        if (!notice || selectors.some(field => !field) || notice.dataset.initialized) return;
+        if (!notice || !status || selectors.some(field => !field) || notice.dataset.initialized) return;
         notice.dataset.initialized = 'true';
-        const update = () => { notice.hidden = selectors.some(field => field.selectedOptions.length > 0); };
+        const update = () => {
+          const restricted = selectors.some(field => field.selectedOptions.length > 0);
+          notice.hidden = restricted;
+          status.textContent = restricted ? 'Applies only to Devices matching all configured criteria.' : 'Applies to all Devices';
+        };
         selectors.forEach(field => field.addEventListener('change', update));
         update();
       }

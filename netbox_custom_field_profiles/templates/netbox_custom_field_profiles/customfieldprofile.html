@@ -14,7 +14,7 @@
       {% if object.applicability_tags.all %}<dt>Tag</dt><dd>{% for item in object.applicability_tags.all %}{{ item }}{% if not forloop.last %} OR {% endif %}{% endfor %}</dd>{% endif %}
     </dl>
   {% endif %}
-  <h3>Configured fields</h3><ol>{% for membership in object.profile_fields.all %}<li>{{ membership.field }}</li>{% empty %}<li>No manual fields configured.</li>{% endfor %}</ol>
+  <h3>{% if object.field_mode == 'all' %}Remembered selected fields{% else %}Configured fields{% endif %}</h3><ol>{% for membership in object.profile_fields.all %}<li>{{ membership.field }}</li>{% empty %}<li>No manual fields configured.</li>{% endfor %}</ol>
   {% if object.field_mode == 'all' %}<p>All applicable fields are resolved dynamically in native NetBox order. The manual selection above is remembered.</p>{% endif %}
 </div></div>
 {% endblock %}
