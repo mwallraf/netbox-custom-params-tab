@@ -4,17 +4,17 @@
 **Core Value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
 
 Source: `docs/REQUIREMENTS.md`; synthesis: `.planning/intel/SYNTHESIS.md`.
-All entries are pending. BASE and REL items make the agreed scope reproducible
+BASE requirements are verified complete; feature/release requirements remain pending. BASE and REL items make the agreed scope reproducible
 and verifiable; they do not add new product functionality.
 
 ## v1 Requirements
 
 ### Reproducible baseline
 
-- [ ] **BASE-01**: Establish one usable source checkout while preserving all existing work.
-- [ ] **BASE-02**: Select/document a supported NetBox version and reproducible dev/test stack.
-- [ ] **BASE-03**: Install and register the renamed plugin and verify its schema/migrations; define a safe legacy-app/configuration migration policy before applying changes.
-- [ ] **BASE-04**: Establish a repeatable test baseline with known failures documented and required baseline checks passing before profile development proceeds.
+- [x] **BASE-01**: Establish one usable source checkout while preserving all existing work.
+- [x] **BASE-02**: Select/document a supported NetBox version and reproducible dev/test stack.
+- [x] **BASE-03**: Install and register the renamed plugin and verify its schema/migrations; define a safe legacy-app/configuration migration policy before applying changes.
+- [x] **BASE-04**: Establish a repeatable test baseline with known failures documented and required baseline checks passing before profile development proceeds.
 
 ### Profile administration and matching
 
@@ -66,10 +66,10 @@ and verifiable; they do not add new product functionality.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BASE-01 | Phase 1 | Pending |
-| BASE-02 | Phase 1 | Pending |
-| BASE-03 | Phase 1 | Pending |
-| BASE-04 | Phase 1 | Pending |
+| BASE-01 | Phase 1 | Complete |
+| BASE-02 | Phase 1 | Complete |
+| BASE-03 | Phase 1 | Complete |
+| BASE-04 | Phase 1 | Complete |
 | PROF-01 | Phase 2 | Pending |
 | PROF-02 | Phase 2 | Pending |
 | PROF-03 | Phase 2 | Pending |
@@ -95,4 +95,4 @@ and verifiable; they do not add new product functionality.
 
 **Coverage:** 26 v1 requirements; 26 mapped; 0 unmapped.
 
-*Last updated: 2026-11-06 after approved onboarding.*
+*Last updated: 2026-11-06 after Phase 1 verification.*

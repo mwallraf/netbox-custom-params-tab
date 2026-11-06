@@ -8,7 +8,7 @@ editing, and release verification. No feature phase has started.
 
 ## Phases
 
-- [ ] **Phase 1: Reproducible baseline** - A developer can install, run, and test the renamed plugin from a usable checkout without losing prior work.
+- [x] **Phase 1: Reproducible baseline** - A developer can install, run, and test the renamed plugin from a usable checkout without losing prior work. (completed 2026-11-06)
 - [ ] **Phase 2: Profile administration and matching** - Administrators can define reusable Device profiles and determine which profiles match a Device.
 - [ ] **Phase 3: Parameters tab** - Users can view relevant native fields as ordered profile sections in a dedicated Device tab.
 - [ ] **Phase 4: Edit Parameters** - Authorized users can edit relevant native values once, with native validation and safe persistence.
@@ -25,18 +25,18 @@ editing, and release verification. No feature phase has started.
   2. A documented supported NetBox version runs the renamed plugin and its reproducible test stack.
   3. Schema checks and the chosen legacy-app/config migration policy are verified before applying destructive or incompatible changes.
   4. Required baseline checks pass; known residual failures and their scope are explicitly recorded.
-**Plans**: TBD — created during phase planning.
+**Plans**: 4/4 complete.
 **Wave 1**
 - [x] 01-01-PLAN.md
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 01-02-PLAN.md
+- [x] 01-02-PLAN.md
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 01-03-PLAN.md
+- [x] 01-03-PLAN.md
 
 **Wave 4** *(blocked on Wave 3 completion)*
-- [ ] 01-04-PLAN.md
+- [x] 01-04-PLAN.md
 
 ### Phase 2: Profile administration and matching
 **Goal**: Administrators can define reusable Device profiles and determine which profiles match a Device.
@@ -98,10 +98,10 @@ filter engine or multi-object-type scope is included.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Reproducible baseline | 1/4 | In Progress | - |
+| 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
 | 2. Profile administration and matching | 0/TBD | Not started | - |
 | 3. Parameters tab | 0/TBD | Not started | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |
 
-*Last updated: 2026-11-06 after approved onboarding.*
+*Last updated: 2026-11-06 after Phase 1 verification.*
