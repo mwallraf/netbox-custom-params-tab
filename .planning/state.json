@@ -30,9 +30,9 @@
     }
   ],
   "next": {
-    "command": "$gsd-execute-phase 2",
-    "label": "Execute Phase 2",
-    "reason": "Eight plans verified; execution not started"
+    "command": "$gsd-progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 2 of 5 · 20% · executing"
   },
-  "updated_at": "2026-11-06T18:29:12.574Z"
+  "updated_at": "2026-11-06T18:42:43.383Z"
 }
