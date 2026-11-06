@@ -1,7 +1,3 @@
-from netbox.api.routers import NetBoxRouter
-from . import views
+"""Keep NetBox's API discovery importable without legacy configuration routes."""
 
-router = NetBoxRouter()
-router.register('custom-tab-configs', views.CustomTabConfigViewSet)
-
-urlpatterns = router.urls
+urlpatterns = []
