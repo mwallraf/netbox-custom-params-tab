@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from dcim.models import Device, DeviceRole, DeviceType, Manufacturer, Site
 from extras.models import CustomField
+from users.models import ObjectPermission
 
 from netbox_custom_field_profiles.matching import get_matching_profiles, get_profile_fields
 from netbox_custom_field_profiles.models import CustomFieldProfile
@@ -93,3 +94,30 @@ class ProfileTracerTests(TestCase):
         profile.refresh_from_db()
         self.assertEqual(profile.title, 'Restricted')
         self.assertEqual(CustomFieldProfile.objects.count(), 1)
+
+    def test_navigation_and_view_only_authority(self):
+        from netbox_custom_field_profiles.navigation import menu_items
+
+        item = menu_items[0]
+        self.assertEqual(str(item.url), self.url('_list'))
+        self.assertEqual(item.permissions, ['netbox_custom_field_profiles.view_customfieldprofile'])
+        self.assertEqual(str(item.buttons[0].url), self.url('_add'))
+        self.assertEqual(item.buttons[0].permissions, ['netbox_custom_field_profiles.add_customfieldprofile'])
+        self.assertContains(self.client.get(self.url('_list')), 'href="' + self.url('_add') + '"')
+
+        viewer = get_user_model().objects.create_user('profile-viewer', password='test-only')
+        permission = ObjectPermission.objects.create(name='Profile read only', actions=['view'])
+        permission.object_types.add(ContentType.objects.get_for_model(CustomFieldProfile))
+        permission.users.add(viewer)
+        self.client.force_login(viewer)
+        response = self.client.get(self.url('_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Custom Field Profiles')
+        self.assertNotContains(response, 'href="' + self.url('_add') + '"')
+        self.assertEqual(self.client.get(self.url('_add')).status_code, 403)
+
+    def test_native_csrf_rejects_untrusted_mutation(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.admin)
+        self.assertEqual(client.post(self.url('_add'), self.data()).status_code, 403)
+        self.assertEqual(CustomFieldProfile.objects.count(), 0)
