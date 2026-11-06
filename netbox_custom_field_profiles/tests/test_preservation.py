@@ -3,7 +3,7 @@ import json
 
 from django.test import TestCase
 from django.apps import apps
-from django.urls import Resolver404, resolve
+from django.urls import Resolver404, resolve, reverse
 from dcim.models import Device, DeviceRole, DeviceType
 from extras.models import CustomField, Tag
 
@@ -146,4 +146,11 @@ class ProfilePreservationTests(TestCase):
         self.assertEqual(self.client.get(profile.get_absolute_url()).status_code, 200)
         self.assertEqual(CustomFieldProfileSerializer(profile).data['title'], 'Runtime sentinel')
         self.post_unchanged(self.url('_delete', profile), {'confirm': True})
+        self.assertEqual(self.snapshot(), before)
+
+    def test_native_device_page_does_not_render_retired_plugin_panel(self):
+        before = self.snapshot()
+        response = self.client.get(reverse('dcim:device', args=[self.device.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateNotUsed(response, 'netbox_custom_field_profiles/tab_panel.html')
         self.assertEqual(self.snapshot(), before)
