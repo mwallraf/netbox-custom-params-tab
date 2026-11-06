@@ -6,7 +6,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.forms import inlineformset_factory
 from netbox.forms import NetBoxModelForm
-from extras.models import CustomField
+from extras.models import CustomField, Tag
+from dcim.models import DeviceType, DeviceRole
+from utilities.forms.fields import DynamicModelMultipleChoiceField
 from .models import CustomFieldProfile, ProfileField, CustomTabConfig, CustomTabConfigGroup, CustomTabConfigField
 from .template_content import BUILTIN_MODELS
 
@@ -15,6 +17,19 @@ FIELD_FORMSET_PREFIX = 'config_fields'
 
 
 class CustomFieldProfileForm(NetBoxModelForm):
+    rule_fields = ('device_types', 'device_roles', 'applicability_tags')
+    device_types = DynamicModelMultipleChoiceField(
+        queryset=DeviceType.objects.all(), required=False,
+        help_text='Match any selected Device Type. Empty means any type.',
+    )
+    device_roles = DynamicModelMultipleChoiceField(
+        queryset=DeviceRole.objects.all(), required=False,
+        label='Device roles', help_text='Match any selected role. Empty means any role.',
+    )
+    applicability_tags = DynamicModelMultipleChoiceField(
+        queryset=Tag.objects.none(), required=False, label='Device tags',
+        help_text='Match any selected tag. Empty means no tag restriction.',
+    )
     selected_fields = forms.ModelMultipleChoiceField(
         queryset=CustomField.objects.none(), required=False,
         help_text='Choose applicable fields, then arrange their display order below.',
@@ -28,10 +43,15 @@ class CustomFieldProfileForm(NetBoxModelForm):
     class Meta:
         model = CustomFieldProfile
         fields = ('title', 'content_type', 'display_order', 'enabled', 'field_mode',
-                  'selected_fields', 'field_order')
+                  'selected_fields', 'field_order', 'device_types', 'device_roles',
+                  'applicability_tags')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        device_ct = self.fields['content_type'].queryset.first()
+        self.fields['applicability_tags'].queryset = Tag.objects.filter(
+            Q(object_types=device_ct) | Q(object_types__isnull=True)).distinct()
+        self.fields['applicability_tags'].query_params = {'for_object_type_id': device_ct.pk}
         self.fields['selected_fields'].queryset = CustomField.objects.filter(
             object_types__app_label='dcim', object_types__model='device').distinct()
         self.fields['selected_fields'].widget.attrs['class'] = 'form-select'
@@ -43,9 +63,23 @@ class CustomFieldProfileForm(NetBoxModelForm):
             self.initial.setdefault('selected_fields', ordered)
             self.initial.setdefault('field_order', json.dumps(ordered))
 
+    def full_clean(self):
+        # Dynamic fields narrow their queryset to bound values when constructing
+        # BoundFields. Capture native permission restrictions before that happens.
+        self.rule_authority = {name: self.fields[name].queryset.all() for name in self.rule_fields}
+        super().full_clean()
+
     def clean(self):
         super().clean()
         cleaned = self.cleaned_data
+        if self.instance.pk:
+            for name in self.rule_fields:
+                # Native views restrict these querysets by the editor's authority.
+                # A hidden/inaccessible saved reference must not become an empty rule.
+                existing = getattr(self.instance, name).values_list('pk', flat=True)
+                if set(existing) - set(self.rule_authority[name].values_list('pk', flat=True)):
+                    self.add_error(name, 'This profile has saved references you cannot access. '
+                                         'Ask an administrator to review its applicability.')
         self.ordered_field_ids = None
         if cleaned.get('field_mode') != CustomFieldProfile.FIELD_MODE_SELECTED:
             return cleaned
@@ -69,6 +103,12 @@ class CustomFieldProfileForm(NetBoxModelForm):
         else:
             self.ordered_field_ids = ordered
         return cleaned
+
+    @property
+    def applies_to_all_devices(self):
+        if self.is_bound:
+            return not any(self.data.get(name) for name in self.rule_fields)
+        return not any(self.initial.get(name) for name in self.rule_fields)
 
     @transaction.atomic
     def _save_m2m(self):
