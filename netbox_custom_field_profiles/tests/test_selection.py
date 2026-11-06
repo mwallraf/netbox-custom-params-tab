@@ -1,6 +1,7 @@
 import json
 
 from django.db import transaction
+from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from dcim.models import Site
 from extras.models import CustomField
@@ -8,10 +9,15 @@ from extras.models import CustomField
 from netbox_custom_field_profiles.forms import CustomFieldProfileForm
 from netbox_custom_field_profiles.models import CustomFieldProfile, ProfileField
 from netbox_custom_field_profiles.matching import get_profile_fields
-from .test_tracer import ProfileTracerTests
+from . import test_tracer
 
 
-class ProfileSelectionTests(ProfileTracerTests):
+class ProfileSelectionTests(TestCase):
+    setUpTestData = classmethod(test_tracer.ProfileTracerTests.setUpTestData.__func__)
+    setUp = test_tracer.ProfileTracerTests.setUp
+    data = test_tracer.ProfileTracerTests.data
+    url = test_tracer.ProfileTracerTests.url
+    snapshot = test_tracer.ProfileTracerTests.snapshot
     def form_data(self, fields, **extra):
         return self.data(field_mode='selected', selected_fields=[f.pk for f in fields],
                          field_order=json.dumps([f.pk for f in fields]), **extra)
@@ -56,6 +62,7 @@ class ProfileSelectionTests(ProfileTracerTests):
                  {**self.form_data([self.native_field]), 'field_order': 'broken'},
                  {**self.form_data([self.native_field]), 'field_order': '[]'},
                  {**self.form_data([self.native_field]), 'field_order': json.dumps([self.native_field.pk]*2)}]
+        cases.append({**self.form_data([self.native_field]), 'selected_fields': [self.native_field.pk]*2})
         before = self.snapshot()
         for data in cases:
             form = CustomFieldProfileForm(data=data, instance=profile)
@@ -83,3 +90,16 @@ class ProfileSelectionTests(ProfileTracerTests):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
         self.assertContains(response, 'field_order')
+
+    def test_native_page_saves_selection_and_restores_manual_order(self):
+        other = CustomField.objects.create(name='page_second', type='text')
+        other.object_types.add(self.device_ct)
+        response = self.client.post(self.url('_add'), self.form_data([other, self.native_field]))
+        self.assertEqual(response.status_code, 302)
+        profile = CustomFieldProfile.objects.get()
+        self.assertEqual(get_profile_fields(profile), [other, self.native_field])
+        response = self.client.post(self.url('_edit', profile), self.data(field_mode='all'))
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(self.url('_edit', profile))
+        self.assertEqual(response.context['form'].initial['selected_fields'], [other.pk, self.native_field.pk])
+        self.assertContains(response, 'profile_fields.js')

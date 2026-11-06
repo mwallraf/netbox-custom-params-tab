@@ -1,0 +1,15 @@
+{% extends 'generic/object_edit.html' %}
+{% load static %}
+{% block form %}
+  {{ block.super }}
+  <section class="card mt-3" id="profile-field-order" aria-labelledby="field-order-heading">
+    <h2 class="card-header" id="field-order-heading">Selected field order</h2>
+    <div class="card-body">
+      <p id="profile-mode-help">Drag a field using its handle, or use Move up and Move down. All applicable fields follows native NetBox ordering; your manual selection is remembered.</p>
+      {% for error in form.field_order.errors %}<p class="text-danger" role="alert">{{ error }}</p>{% endfor %}
+      <ol id="profile-ordered-fields" class="list-group list-group-numbered" aria-describedby="profile-mode-help"></ol>
+      <p id="profile-order-status" role="status" aria-live="polite" class="visually-hidden"></p>
+    </div>
+  </section>
+  <script src="{% static 'netbox_custom_field_profiles/profile_fields.js' %}" defer></script>
+{% endblock %}

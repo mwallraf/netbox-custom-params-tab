@@ -1,0 +1,9 @@
+{% extends 'generic/object.html' %}
+{% block content %}
+<div class="card"><h2 class="card-header">Profile configuration</h2><div class="card-body">
+  <dl><dt>Title</dt><dd>{{ object.title }}</dd><dt>Field selection</dt><dd>{{ object.get_field_mode_display }}</dd>
+  <dt>Display order</dt><dd>{{ object.display_order }}</dd><dt>Enabled</dt><dd>{{ object.enabled|yesno:"Yes,No" }}</dd></dl>
+  <h3>Configured fields</h3><ol>{% for membership in object.profile_fields.all %}<li>{{ membership.field }}</li>{% empty %}<li>No manual fields configured.</li>{% endfor %}</ol>
+  {% if object.field_mode == 'all' %}<p>All applicable fields are resolved dynamically in native NetBox order. The manual selection above is remembered.</p>{% endif %}
+</div></div>
+{% endblock %}

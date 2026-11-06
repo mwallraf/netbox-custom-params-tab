@@ -54,6 +54,10 @@ class CustomFieldProfileForm(NetBoxModelForm):
             return cleaned
         if not selected:
             self.add_error('selected_fields', 'Select at least one applicable field.')
+        raw_selection = (self.data.getlist('selected_fields') if hasattr(self.data, 'getlist')
+                         else self.data.get('selected_fields', []))
+        if len(raw_selection) != len(set(raw_selection)):
+            self.add_error('selected_fields', 'Select each field only once.')
         try:
             ordered = json.loads(cleaned.get('field_order') or '[]')
             if (not isinstance(ordered, list) or any(type(pk) is not int or pk <= 0 for pk in ordered)
@@ -66,6 +70,7 @@ class CustomFieldProfileForm(NetBoxModelForm):
             self.ordered_field_ids = ordered
         return cleaned
 
+    @transaction.atomic
     def _save_m2m(self):
         super()._save_m2m()
         if self.instance.field_mode == CustomFieldProfile.FIELD_MODE_SELECTED:

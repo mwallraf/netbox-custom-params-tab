@@ -20,3 +20,6 @@ netbox_custom_field_profiles = "netbox_custom_field_profiles:config"
 
 [tool.setuptools.packages.find]
 include = ["netbox_custom_field_profiles*"]
+
+[tool.setuptools.package-data]
+netbox_custom_field_profiles = ["templates/**/*.html", "static/**/*.js"]

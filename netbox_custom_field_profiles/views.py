@@ -25,13 +25,13 @@ class CustomFieldProfileListView(ObjectListView):
 
 class CustomFieldProfileView(ObjectView):
     queryset = CustomFieldProfile.objects.select_related('content_type')
-    template_name = 'generic/object.html'
+    template_name = 'netbox_custom_field_profiles/customfieldprofile.html'
 
 
 class CustomFieldProfileEditView(ObjectEditView):
     queryset = CustomFieldProfile.objects.all()
     form = CustomFieldProfileForm
-    template_name = 'generic/object_edit.html'
+    template_name = 'netbox_custom_field_profiles/customfieldprofile_edit.html'
     default_return_url = 'plugins:netbox_custom_field_profiles:customfieldprofile_list'
 
 
