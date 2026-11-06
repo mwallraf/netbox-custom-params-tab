@@ -6,7 +6,7 @@ class CustomFieldProfilesConfig(PluginConfig):
     verbose_name = 'Custom Field Profiles'
     version = '0.1.0'
     description = 'Moves selected custom fields into a dedicated section on object detail pages'
-    min_version = '4.0.0'
+    min_version = '4.7.0'
     base_url = 'custom-field-profiles'
     template_extensions = 'template_content.template_extensions'
     menu_items = 'navigation.menu_items'

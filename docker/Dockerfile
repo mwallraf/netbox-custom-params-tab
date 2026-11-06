@@ -1,7 +1,6 @@
-FROM netboxcommunity/netbox:v4.6-5.0.1
-
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-
-# Copy plugin source and install as editable so volume-mounted edits are live
-COPY . /opt/netbox-custom-field-profiles/
-RUN uv pip install --python /opt/netbox/venv/bin/python --no-cache-dir -e /opt/netbox-custom-field-profiles/
+FROM netboxcommunity/netbox:v4.7.4-5.1.1
+USER root
+COPY pyproject.toml /opt/netbox-custom-field-profiles/pyproject.toml
+COPY netbox_custom_field_profiles /opt/netbox-custom-field-profiles/netbox_custom_field_profiles
+RUN uv pip install --python /opt/netbox/venv/bin/python --no-deps --editable /opt/netbox-custom-field-profiles
+USER netbox

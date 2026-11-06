@@ -1,20 +1,29 @@
 services:
-  netbox:
+  netbox: &netbox
+    image: netbox-custom-field-profiles:dev
     build:
       context: .
       dockerfile: docker/Dockerfile
-    image: netbox-custom-field-profiles-dev:latest
-    ports:
-      - '8000:8080'
-    environment:
-      SUPERUSER_NAME: admin
-      SUPERUSER_EMAIL: admin@example.com
-      SUPERUSER_PASSWORD: admin
-      DB_WAIT_DEBUG: "1"
-    volumes:
-      - .:/opt/netbox-custom-field-profiles
-      - ./docker/configuration.py:/etc/netbox/config/configuration.py:ro
-      - netbox-media:/opt/netbox/netbox/media
+    user: netbox:root
+    environment: &environment
+      DB_HOST: postgres
+      DB_NAME: netbox
+      DB_USER: netbox
+      DB_PASSWORD: ${DB_PASSWORD:?required}
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?required}
+      REDIS_CACHE_HOST: redis-cache
+      REDIS_CACHE_PASSWORD: ${REDIS_CACHE_PASSWORD:?required}
+      SECRET_KEY: ${SECRET_KEY:?required}
+      SUPERUSER_NAME: ${SUPERUSER_NAME:?required}
+      SUPERUSER_EMAIL: ${SUPERUSER_EMAIL:?required}
+      SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD:?required}
+      SUPERUSER_API_KEY: ${SUPERUSER_API_KEY:?required}
+      SUPERUSER_API_TOKEN: ${SUPERUSER_API_TOKEN:?required}
+      API_TOKEN_PEPPER_1: ${API_TOKEN_PEPPER_1:?required}
+      ALLOWED_HOSTS: localhost 127.0.0.1 netbox
+      CORS_ORIGIN_ALLOW_ALL: 'false'
+      SANDBOX_PROJECT: netbox-custom-field-profiles
     depends_on:
       postgres:
         condition: service_healthy
@@ -22,65 +31,67 @@ services:
         condition: service_healthy
       redis-cache:
         condition: service_healthy
-    healthcheck:
-      test: ['CMD', 'curl', '-sf', 'http://localhost:8080/login/']
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 90s
-    restart: unless-stopped
-
-  netbox-worker:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    image: netbox-custom-field-profiles-dev:latest
-    command: /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py rqworker
     volumes:
-      - .:/opt/netbox-custom-field-profiles
-      - ./docker/configuration.py:/etc/netbox/config/configuration.py:ro
+      - ./docker/plugins.py:/etc/netbox/config/plugins.py:ro
+      - ./netbox_custom_field_profiles:/opt/netbox-custom-field-profiles/netbox_custom_field_profiles
+      - ./scripts:/opt/netbox-custom-field-profiles/scripts:ro
+      - ./tests:/opt/netbox-custom-field-profiles/tests:ro
+      - ./testing:/opt/netbox-custom-field-profiles/testing:ro
+      - ./pytest.ini:/opt/netbox-custom-field-profiles/pytest.ini:ro
+      - media:/opt/netbox/netbox/media
+    ports:
+      - 127.0.0.1:${NETBOX_PORT:?required}:8080
+    healthcheck:
+      test: /opt/netbox/health.sh
+      start_period: 90s
+      timeout: 3s
+      interval: 15s
+      retries: 30
+  netbox-worker:
+    <<: *netbox
+    ports: []
+    command: [/opt/netbox/venv/bin/python, /opt/netbox/netbox/manage.py, rqworker]
     depends_on:
       netbox:
         condition: service_healthy
-    restart: unless-stopped
-
+    healthcheck:
+      test: [CMD-SHELL, 'ps -aux | grep -v grep | grep -q rqworker']
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: netbox
       POSTGRES_USER: netbox
-      POSTGRES_PASSWORD: netbox
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?required}
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U netbox']
-      interval: 10s
+      test: [CMD-SHELL, 'pg_isready -q -t 2 -d netbox -U netbox']
+      interval: 5s
       timeout: 5s
-      retries: 5
-
-  redis:
-    image: redis:7-alpine
-    command: redis-server --appendonly yes
+      retries: 30
+  redis: &redis
+    image: valkey/valkey:9.1-alpine
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?required}
+    command: [sh, -c, 'exec valkey-server --appendonly yes --requirepass "$$REDIS_PASSWORD"']
     volumes:
-      - redis-data:/data
+      - redis:/data
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
+      test: [CMD-SHELL, 'valkey-cli --pass "$$REDIS_PASSWORD" ping | grep -q PONG']
+      interval: 5s
+      timeout: 3s
+      retries: 30
   redis-cache:
-    image: redis:7-alpine
+    <<: *redis
+    environment:
+      REDIS_PASSWORD: ${REDIS_CACHE_PASSWORD:?required}
     volumes:
-      - redis-cache-data:/data
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
+      - redis-cache:/data
 volumes:
-  netbox-media:
-  postgres-data:
-  redis-data:
-  redis-cache-data:
+  postgres:
+  redis:
+  redis-cache:
+  media:
