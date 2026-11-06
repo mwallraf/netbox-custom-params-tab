@@ -27,7 +27,7 @@ editing, and release verification. No feature phase has started.
   4. Required baseline checks pass; known residual failures and their scope are explicitly recorded.
 **Plans**: TBD — created during phase planning.
 **Wave 1**
-- [ ] 01-01-PLAN.md
+- [x] 01-01-PLAN.md
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 01-02-PLAN.md
@@ -98,7 +98,7 @@ filter engine or multi-object-type scope is included.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Reproducible baseline | 0/4 | Planned     | - |
+| 1. Reproducible baseline | 1/4 | In Progress | - |
 | 2. Profile administration and matching | 0/TBD | Not started | - |
 | 3. Parameters tab | 0/TBD | Not started | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
