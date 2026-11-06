@@ -4,11 +4,30 @@ from django.db.models import Q
 from django.forms import inlineformset_factory
 from netbox.forms import NetBoxModelForm
 from extras.models import CustomField
-from .models import CustomTabConfig, CustomTabConfigGroup, CustomTabConfigField
+from .models import CustomFieldProfile, CustomTabConfig, CustomTabConfigGroup, CustomTabConfigField
 from .template_content import BUILTIN_MODELS
 
 GROUP_FORMSET_PREFIX = 'config_groups'
 FIELD_FORMSET_PREFIX = 'config_fields'
+
+
+class CustomFieldProfileForm(NetBoxModelForm):
+    content_type = forms.ModelChoiceField(
+        queryset=ContentType.objects.filter(app_label='dcim', model='device'),
+        label='Object Type',
+    )
+
+    class Meta:
+        model = CustomFieldProfile
+        fields = ('title', 'content_type', 'display_order', 'enabled')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # This first administration slice offers unrestricted All-fields profiles.
+        # Explicit field selection and rule controls are added in the next slices.
+        self.instance.field_mode = CustomFieldProfile.FIELD_MODE_ALL
+        if not self.instance.pk:
+            self.initial.setdefault('content_type', self.fields['content_type'].queryset.first())
 
 
 def _supported_content_type_pks():

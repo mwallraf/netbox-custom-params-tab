@@ -4,16 +4,41 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views import View
-from netbox.views.generic import ObjectListView, ObjectView, ObjectDeleteView
-from .models import CustomTabConfig
-from .tables import CustomTabConfigTable
+from netbox.views.generic import ObjectListView, ObjectView, ObjectEditView, ObjectDeleteView
+from .models import CustomFieldProfile, CustomTabConfig
+from .tables import CustomFieldProfileTable, CustomTabConfigTable
 from .forms import (
     CustomTabConfigForm,
     CustomTabConfigGroupFormSet,
     CustomTabConfigFieldFormSet,
     GROUP_FORMSET_PREFIX,
     FIELD_FORMSET_PREFIX,
+    CustomFieldProfileForm,
 )
+
+
+class CustomFieldProfileListView(ObjectListView):
+    queryset = CustomFieldProfile.objects.select_related('content_type')
+    table = CustomFieldProfileTable
+    template_name = 'generic/object_list.html'
+
+
+class CustomFieldProfileView(ObjectView):
+    queryset = CustomFieldProfile.objects.select_related('content_type')
+    template_name = 'generic/object.html'
+
+
+class CustomFieldProfileEditView(ObjectEditView):
+    queryset = CustomFieldProfile.objects.all()
+    form = CustomFieldProfileForm
+    template_name = 'generic/object_edit.html'
+    default_return_url = 'plugins:netbox_custom_field_profiles:customfieldprofile_list'
+
+
+class CustomFieldProfileDeleteView(ObjectDeleteView):
+    queryset = CustomFieldProfile.objects.all()
+    template_name = 'generic/object_delete.html'
+    default_return_url = 'plugins:netbox_custom_field_profiles:customfieldprofile_list'
 
 
 class CustomTabConfigListView(ObjectListView):

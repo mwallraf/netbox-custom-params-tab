@@ -1,6 +1,17 @@
 import django_tables2 as tables
 from netbox.tables import NetBoxTable, columns
-from .models import CustomTabConfig
+from .models import CustomFieldProfile, CustomTabConfig
+
+
+class CustomFieldProfileTable(NetBoxTable):
+    title = tables.Column(linkify=True)
+    enabled = columns.BooleanColumn()
+    actions = columns.ActionsColumn(actions=('edit', 'delete'))
+
+    class Meta(NetBoxTable.Meta):
+        model = CustomFieldProfile
+        fields = ('pk', 'title', 'enabled', 'display_order', 'field_mode', 'actions')
+        default_columns = ('title', 'enabled', 'display_order', 'field_mode', 'actions')
 
 
 class CustomTabConfigTable(NetBoxTable):
