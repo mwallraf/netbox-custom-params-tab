@@ -16,6 +16,8 @@ class CustomFieldProfilesConfig(PluginConfig):
 
     def ready(self):
         super().ready()
+        from . import signals
+        signals.register()
         from django.conf import settings as django_settings
         plugin_cfg = django_settings.PLUGINS_CONFIG.get('netbox_custom_field_profiles', {})
         extra = plugin_cfg.get('extra_models', [])
