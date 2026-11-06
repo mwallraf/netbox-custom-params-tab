@@ -1,40 +1,33 @@
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := check
+.PHONY: env setup build up down logs shell migrate makemigrations check
 
-.PHONY: help build up down restart logs shell nbshell migrate superuser clean
+env:
+	@python3 scripts/sandbox.py env
 
-help:  ## Show this help message
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+setup:
+	@python3 scripts/sandbox.py setup
 
-build:  ## Build (or rebuild) the dev Docker image
-	docker compose build
+build:
+	@python3 scripts/sandbox.py compose build
 
-up:  ## Start the full stack in the background
-	docker compose up -d
+up:
+	@python3 scripts/sandbox.py compose up -d --wait --wait-timeout 600
 
-down:  ## Stop and remove containers (data volumes are preserved)
-	docker compose down
+down:
+	@python3 scripts/sandbox.py compose down
 
-restart:  ## Restart all services
-	docker compose restart
+logs:
+	@python3 scripts/sandbox.py compose logs --tail 100
 
-logs:  ## Tail logs from all services (Ctrl-C to stop)
-	docker compose logs -f
+shell:
+	@python3 scripts/sandbox.py compose exec netbox /bin/bash
 
-shell:  ## Open a bash shell inside the netbox container
-	docker compose exec netbox bash
+migrate:
+	@python3 scripts/sandbox.py compose exec -T netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py migrate
 
-nbshell:  ## Open NetBox's Django shell_plus inside the netbox container
-	docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py shell_plus
+makemigrations:
+	@python3 scripts/sandbox.py compose exec -T netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py makemigrations netbox_custom_field_profiles
 
-makemigrations:  ## Generate new migrations for the plugin inside the netbox container
-	docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py make_plugin_migrations
-
-migrate:  ## Run pending database migrations inside the netbox container
-	docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py migrate
-
-superuser:  ## Interactively create a Django superuser
-	docker compose exec netbox /opt/netbox/venv/bin/python /opt/netbox/netbox/manage.py createsuperuser
-
-clean:  ## Destroy containers, volumes, and the locally-built image
-	docker compose down -v --rmi local
+check:
+	@python3 -m unittest discover -s tests/sandbox -v
+	@python3 scripts/sandbox.py check

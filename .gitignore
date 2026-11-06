@@ -12,3 +12,7 @@ venv/
 
 .recovery/
 .DS_Store
+
+.env.env.lock
+.sandbox-env-*
+.sandbox/

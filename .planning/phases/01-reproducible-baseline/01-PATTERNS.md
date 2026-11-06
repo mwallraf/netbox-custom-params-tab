@@ -1,7 +1,7 @@
 # Phase 1: Reproducible baseline - Pattern Map
 
-**Mapped:** 2026-11-06  
-**Scope:** baseline only; no profile features.  
+**Mapped:** 2026-11-06
+**Scope:** baseline only; no profile features.
 **Files classified:** 12 file groups; 7 have useful tracked-source analogs.
 
 ## Provenance and Tracked-Source Gate
