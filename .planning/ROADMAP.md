@@ -47,7 +47,7 @@ editing, and release verification. No feature phase has started.
   2. Selected mode preserves ordered membership; all-fields mode includes a newly created applicable field without editing the profile.
   3. Profiles support Device Type, role, and tag filters; tests demonstrate AND across rules, OR within values, and no-rules matching all Devices.
   4. Profiles allow duplicate native fields across sections and managing profiles changes neither native settings nor values.
-**Plans**: 4/8 plans executed.
+**Plans**: 5/8 plans executed.
 **Wave 1**
 - [x] 02-01-PLAN.md — Bounded additive schema, native resolver and isolated test preparation.
 
@@ -61,7 +61,7 @@ editing, and release verification. No feature phase has started.
 - [x] 02-04-PLAN.md — Searchable fixed rules, deterministic matching and scope summaries.
 
 **Wave 5** *(blocked on Wave 4 completion)*
-- [ ] 02-05-PLAN.md — Safe target deletion and selected-field applicability cleanup.
+- [x] 02-05-PLAN.md — Safe target deletion and selected-field applicability cleanup.
 
 **Wave 6** *(blocked on Wave 5 completion)*
 - [ ] 02-06-PLAN.md — Native permission, preservation and browser evidence.
@@ -122,7 +122,7 @@ filter engine or multi-object-type scope is included.
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
-| 2. Profile administration and matching | 4/8 | In Progress | - |
+| 2. Profile administration and matching | 5/8 | In Progress | - |
 | 3. Parameters tab | 0/TBD | Not started | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |
