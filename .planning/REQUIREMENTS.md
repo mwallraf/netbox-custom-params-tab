@@ -18,8 +18,8 @@ and verifiable; they do not add new product functionality.
 
 ### Profile administration and matching
 
-- [ ] **PROF-01**: Administrators can list, create, edit, and delete multiple Device profiles.
-- [ ] **PROF-02**: Profile object-type selection initially offers Device only; field choices are restricted to native fields applicable to the selected type.
+- [x] **PROF-01**: Administrators can list, create, edit, and delete multiple Device profiles.
+- [x] **PROF-02**: Profile object-type selection initially offers Device only; field choices are restricted to native fields applicable to the selected type.
 - [ ] **PROF-03**: Each profile has a section title, order, and enabled/disabled state.
 - [ ] **PROF-04**: Selected-fields mode stores an ordered explicit field selection.
 - [ ] **PROF-05**: All-applicable-fields mode includes new matching fields dynamically.
@@ -27,7 +27,7 @@ and verifiable; they do not add new product functionality.
 - [ ] **MATCH-01**: Configure zero or more Device Type, role, and tag rules.
 - [ ] **MATCH-02**: Require AND between rules and OR between selected values; tags match any.
 - [ ] **MATCH-03**: No rules matches all Devices; only matching enabled profiles apply.
-- [ ] **DATA-01**: Profile management changes neither native definitions/visibility nor stored field values.
+- [x] **DATA-01**: Profile management changes neither native definitions/visibility nor stored field values.
 
 ### Parameters tab
 
@@ -70,8 +70,8 @@ and verifiable; they do not add new product functionality.
 | BASE-02 | Phase 1 | Complete |
 | BASE-03 | Phase 1 | Complete |
 | BASE-04 | Phase 1 | Complete |
-| PROF-01 | Phase 2 | Pending |
-| PROF-02 | Phase 2 | Pending |
+| PROF-01 | Phase 2 | Complete |
+| PROF-02 | Phase 2 | Complete |
 | PROF-03 | Phase 2 | Pending |
 | PROF-04 | Phase 2 | Pending |
 | PROF-05 | Phase 2 | Pending |
@@ -79,7 +79,7 @@ and verifiable; they do not add new product functionality.
 | MATCH-01 | Phase 2 | Pending |
 | MATCH-02 | Phase 2 | Pending |
 | MATCH-03 | Phase 2 | Pending |
-| DATA-01 | Phase 2 | Pending |
+| DATA-01 | Phase 2 | Complete |
 | TAB-01 | Phase 3 | Pending |
 | TAB-02 | Phase 3 | Pending |
 | TAB-03 | Phase 3 | Pending |
