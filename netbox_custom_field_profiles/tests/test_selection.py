@@ -1,0 +1,85 @@
+import json
+
+from django.db import transaction
+from django.contrib.contenttypes.models import ContentType
+from dcim.models import Site
+from extras.models import CustomField
+
+from netbox_custom_field_profiles.forms import CustomFieldProfileForm
+from netbox_custom_field_profiles.models import CustomFieldProfile, ProfileField
+from netbox_custom_field_profiles.matching import get_profile_fields
+from .test_tracer import ProfileTracerTests
+
+
+class ProfileSelectionTests(ProfileTracerTests):
+    def form_data(self, fields, **extra):
+        return self.data(field_mode='selected', selected_fields=[f.pk for f in fields],
+                         field_order=json.dumps([f.pk for f in fields]), **extra)
+
+    def save_form(self, data, profile=None, commit=True):
+        form = CustomFieldProfileForm(data=data, instance=profile)
+        self.assertTrue(form.is_valid(), form.errors)
+        with transaction.atomic():
+            obj = form.save(commit=commit)
+            if not commit:
+                obj.save()
+                form.save_m2m()
+        return obj
+
+    def test_selected_order_mode_roundtrip_and_dynamic_all(self):
+        other = CustomField.objects.create(name='a_second', type='text', group_name='Z')
+        other.object_types.add(self.device_ct)
+        before = self.snapshot()
+        profile = self.save_form(self.form_data([other, self.native_field]), commit=False)
+        self.assertEqual(get_profile_fields(profile), [other, self.native_field])
+        self.save_form(self.data(field_mode='all'), profile)
+        self.assertEqual(list(profile.profile_fields.values_list('field_id', flat=True)), [other.pk, self.native_field.pk])
+        self.assertEqual(get_profile_fields(profile), list(CustomField.objects.get_for_model(self.device)))
+        self.save_form(self.form_data([other, self.native_field]), profile)
+        self.assertEqual(get_profile_fields(profile), [other, self.native_field])
+        second = self.save_form(self.form_data([self.native_field]))
+        self.assertEqual(get_profile_fields(second), [self.native_field])
+        self.assertEqual(self.snapshot(), before)
+        new = CustomField.objects.create(name='new_dynamic', type='text', group_name='A', weight=1)
+        new.object_types.add(self.device_ct)
+        self.assertNotIn(new, get_profile_fields(profile))
+        self.save_form(self.data(field_mode='all'), profile)
+        self.assertIn(new, get_profile_fields(profile))
+
+    def test_invalid_selection_payloads_rejected_atomically(self):
+        profile = self.save_form(self.form_data([self.native_field]))
+        other = CustomField.objects.create(name='foreign_field', type='text')
+        other.object_types.add(ContentType.objects.get_for_model(Site))
+        cases = [self.form_data([]), self.form_data([other]),
+                 {**self.form_data([self.native_field]), 'field_order': '[true]'},
+                 {**self.form_data([self.native_field]), 'field_order': '["bad"]'},
+                 {**self.form_data([self.native_field]), 'field_order': 'broken'},
+                 {**self.form_data([self.native_field]), 'field_order': '[]'},
+                 {**self.form_data([self.native_field]), 'field_order': json.dumps([self.native_field.pk]*2)}]
+        before = self.snapshot()
+        for data in cases:
+            form = CustomFieldProfileForm(data=data, instance=profile)
+            self.assertFalse(form.is_valid(), data)
+            profile.refresh_from_db()
+            self.assertEqual(list(profile.profile_fields.values_list('field_id', flat=True)), [self.native_field.pk])
+        self.assertEqual(self.snapshot(), before)
+
+    def test_restricted_choices_reject_even_otherwise_applicable_field(self):
+        form = CustomFieldProfileForm(data=self.form_data([self.native_field]))
+        form.fields['selected_fields'].queryset = CustomField.objects.none()
+        self.assertFalse(form.is_valid())
+
+    def test_all_empty_and_temporary_inactive_preserve_membership(self):
+        profile = self.save_form(self.form_data([self.native_field]))
+        CustomField.objects.filter(pk=self.native_field.pk).update(status='provisioning')
+        self.assertEqual(get_profile_fields(profile), [])
+        self.assertEqual(profile.profile_fields.count(), 1)
+        self.save_form(self.data(field_mode='all'), profile)
+        self.assertEqual(get_profile_fields(profile), [])
+        self.assertEqual(profile.profile_fields.count(), 1)
+
+    def test_invalid_browser_form_retains_order_and_errors(self):
+        response = self.client.post(self.url('_add'), self.form_data([self.native_field], title=''))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
+        self.assertContains(response, 'field_order')
