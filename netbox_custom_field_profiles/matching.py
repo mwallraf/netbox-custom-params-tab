@@ -1,5 +1,6 @@
 """Read-only native field resolution and reusable Device profile matching."""
 from dcim.models import Device
+from extras.choices import CustomFieldStatusChoices
 from extras.models import CustomField
 
 from .models import CustomFieldProfile
@@ -40,7 +41,15 @@ def get_profile_fields(profile):
     """Resolve current active native fields without writing native definitions."""
     if (profile.content_type.app_label, profile.content_type.model) != ('dcim', 'device'):
         return []
-    native = CustomField.objects.get_for_model(Device)
+    # Native resolution owns ordering, while a fresh applicability/status guard
+    # excludes stale cached entries even after direct through-table/status writes.
+    database = profile._state.db or 'default'
+    live_ids = set(CustomField.objects.using(database).filter(
+        object_types__app_label='dcim', object_types__model='device',
+        status=CustomFieldStatusChoices.STATUS_ACTIVE,
+    ).values_list('pk', flat=True))
+    native = [field for field in CustomField.objects.db_manager(database).get_for_model(Device)
+              if field.pk in live_ids]
     if profile.field_mode == CustomFieldProfile.FIELD_MODE_ALL:
         return native
     active = {field.pk: field for field in native}

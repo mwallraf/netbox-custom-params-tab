@@ -1,5 +1,4 @@
 """Native lifecycle contracts: cleanup owns plugin configuration only."""
-import json
 from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
@@ -145,6 +144,29 @@ class ProfileLifecycleTests(TestCase):
         # A worker replay of deletion signals must be harmless.
         from django.db.models.signals import pre_delete
         pre_delete.send(sender=CustomField, instance=field, using='default', origin=field)
+        profile.refresh_from_db()
+        self.assertFalse(profile.enabled)
+
+    def test_field_deletion_rollback_and_registration_replay(self):
+        from netbox_custom_field_profiles.signals import register, remove_field_memberships
+
+        register()
+        register()
+        field = self.field('field_rollback')
+        profile = self.profile('selected')
+        self.membership(profile, field)
+        with self.assertRaises(RuntimeError), transaction.atomic():
+            CustomField.objects.filter(pk=field.pk).delete()
+            profile.refresh_from_db()
+            self.assertFalse(profile.enabled)
+            self.assertFalse(profile.profile_fields.exists())
+            raise RuntimeError('rollback')
+        profile.refresh_from_db()
+        self.assertTrue(profile.enabled)
+        self.assertTrue(CustomField.objects.filter(pk=field.pk).exists())
+        self.assertTrue(profile.profile_fields.filter(field=field).exists())
+        remove_field_memberships([field.pk], 'default')
+        remove_field_memberships([field.pk], 'default')
         profile.refresh_from_db()
         self.assertFalse(profile.enabled)
 
