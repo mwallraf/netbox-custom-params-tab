@@ -1,0 +1,187 @@
+{
+  "status": "ok",
+  "commands": [
+    {
+      "command": "python3 scripts/source_snapshot.py verify --manifest docs/development/source-recovery.md --root .",
+      "statement": "Non-zero exit, a missing/extra inventoried source file, differing content hash, or absence of SOURCE_SNAPSHOT_OK in output.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-01-PLAN.md",
+      "task": "Recover the complete source snapshot into a verified milestone checkout"
+    },
+    {
+      "command": "git branch --show-current",
+      "statement": "Non-zero exit or branch output other than milestone/custom-field-profiles.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-01-PLAN.md",
+      "task": "Recover the complete source snapshot into a verified milestone checkout"
+    },
+    {
+      "command": "python3 scripts/source_snapshot.py verify-layout --root .",
+      "statement": "Non-zero exit, an active linked worktree/orphan Git pointer still used for development, untracked canonical plugin files, missing root planning documents, or no SOURCE_LAYOUT_OK marker.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-01-PLAN.md",
+      "task": "Retire the orphaned layout after source retention is proven"
+    },
+    {
+      "command": "git diff --check b090288",
+      "statement": "Non-zero exit or whitespace/error output.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-01-PLAN.md",
+      "task": "Retire the orphaned layout after source retention is proven"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/sandbox -p test_config.py -v",
+      "statement": "Non-zero exit, zero tests run, or any test detects rotation, partial write, unsafe parsing, missing variables, wrong permissions or secret output.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-02-PLAN.md",
+      "task": "Generate a persistent sandbox environment through the Make entry point"
+    },
+    {
+      "command": "make env",
+      "statement": "Non-zero exit or no ENV_READY marker; output includes a secret value.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-02-PLAN.md",
+      "task": "Generate a persistent sandbox environment through the Make entry point"
+    },
+    {
+      "command": "python3 scripts/sandbox.py compose config --quiet",
+      "statement": "Non-zero exit, unresolved environment variables, invalid service configuration, or invalid project identity.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-02-PLAN.md",
+      "task": "Wire the pinned isolated NetBox image and native configuration"
+    },
+    {
+      "command": "make check",
+      "statement": "Non-zero exit, zero helper tests, public/non-localhost port binding, shared/external resources, or configuration output containing secrets.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-02-PLAN.md",
+      "task": "Wire the pinned isolated NetBox image and native configuration"
+    },
+    {
+      "command": "make setup",
+      "statement": "Non-zero exit, bounded startup timeout, failed schema generation/application, missing plugin registration, or no SANDBOX_READY marker.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-02-PLAN.md",
+      "task": "Apply a clean native schema and start NetBox through make setup"
+    },
+    {
+      "command": "python3 scripts/sandbox.py verify-runtime",
+      "statement": "Non-zero exit, wrong runtime version, failed Django system check, unapplied plugin migration, migration drift, missing renamed app, or no RUNTIME_OK marker.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-02-PLAN.md",
+      "task": "Apply a clean native schema and start NetBox through make setup"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/sandbox -p test_config.py -v",
+      "statement": "Non-zero exit, zero tests run, generation invocation permits native bootstrap before replacement, web/worker starts before successful generation, or generation failure does not prevent startup.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-02-PLAN.md",
+      "task": "Apply a clean native schema and start NetBox through make setup"
+    },
+    {
+      "command": "make test",
+      "statement": "Non-zero exit, zero helper tests, any runtime/schema/login/token check missing or failed, or absence of BASELINE_SMOKE_OK.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-03-PLAN.md",
+      "task": "Prove real administrator and token authentication through make smoke"
+    },
+    {
+      "command": "make smoke",
+      "statement": "Non-zero exit, anonymous/invalid credentials accepted, missing real authenticated-session evidence, migration drift or missing renamed app.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-03-PLAN.md",
+      "task": "Prove real administrator and token authentication through make smoke"
+    },
+    {
+      "command": "make seed-check",
+      "statement": "Non-zero exit, duplicate owned records, changed stable identities on rerun, wrong project targeting, or missing SEED_IDEMPOTENT_OK marker.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-03-PLAN.md",
+      "task": "Seed repeatable native dummy devices and custom fields"
+    },
+    {
+      "command": "make smoke",
+      "statement": "Non-zero exit or loss of startup, schema, registration or authentication after seeding.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-03-PLAN.md",
+      "task": "Seed repeatable native dummy devices and custom fields"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/sandbox -p test_legacy_report.py -v",
+      "statement": "Non-zero exit, zero tests run, or runner/setup/feature failure cases are converted to a successful outcome.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-03-PLAN.md",
+      "task": "Report legacy feature tests separately with truthful exit status"
+    },
+    {
+      "command": "make test-legacy",
+      "statement": "Nonzero is a reported legacy-suite failure/setup outcome, not phase-baseline failure by itself; absence of an exit-classified sanitized report or an exit-zero report with unexecuted/failed tests is a blocking reporting failure.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-03-PLAN.md",
+      "task": "Report legacy feature tests separately with truthful exit status"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests/sandbox -p test_lifecycle.py -v",
+      "statement": "Non-zero exit, zero tests run, reset accepts a nonproject/external target, or normal lifecycle rotates configuration.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-04-PLAN.md",
+      "task": "Exercise persistence and project-only reset through the Make lifecycle"
+    },
+    {
+      "command": "make lifecycle-check",
+      "statement": "Non-zero exit, data or env changed on repeat setup/down-up, project reset escapes its namespace, unrelated container IDs are changed by the operation, smoke fails, or no LIFECYCLE_OK marker.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-04-PLAN.md",
+      "task": "Exercise persistence and project-only reset through the Make lifecycle"
+    },
+    {
+      "command": "make check",
+      "statement": "Non-zero exit, helper tests absent, or secret/configuration invariant failure.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-04-PLAN.md",
+      "task": "Publish the runnable baseline guide and exact verification status"
+    },
+    {
+      "command": "make test",
+      "statement": "Non-zero exit or no real passing startup/schema/registration/admin/token evidence.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-04-PLAN.md",
+      "task": "Publish the runnable baseline guide and exact verification status"
+    },
+    {
+      "command": "git diff --check b090288",
+      "statement": "Non-zero exit or formatting/whitespace errors.",
+      "status": "ok",
+      "severity": "none",
+      "plan": "01-04-PLAN.md",
+      "task": "Publish the runnable baseline guide and exact verification status"
+    }
+  ],
+  "counts": {
+    "blocker": 0,
+    "warning": 0,
+    "total": 22
+  },
+  "readError": null
+}

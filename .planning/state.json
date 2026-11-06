@@ -1,0 +1,38 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": null,
+  "phases": [
+    {
+      "number": "1",
+      "name": "Reproducible baseline",
+      "status": "in_progress"
+    },
+    {
+      "number": "2",
+      "name": "Profile administration and matching",
+      "status": "pending"
+    },
+    {
+      "number": "3",
+      "name": "Parameters tab",
+      "status": "pending"
+    },
+    {
+      "number": "4",
+      "name": "Edit Parameters",
+      "status": "pending"
+    },
+    {
+      "number": "5",
+      "name": "Release verification",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "$gsd-progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 1 of 5 · 0% · executing"
+  },
+  "updated_at": "2026-11-06T15:58:32.669Z"
+}
