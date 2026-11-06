@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 from dcim.models import Site
 from extras.models import CustomField
+from extras.choices import CustomFieldStatusChoices
 from users.models import ObjectPermission
 from utilities.exceptions import AbortRequest
 
@@ -275,3 +276,62 @@ class ProfileSelectionTests(TestCase):
         self.assertFalse(profile.enabled)
         self.assertNotEqual(profile.title, 'Stale title')
         self.assertFalse(profile.profile_fields.exists())
+
+    def test_deferred_deletion_rejected_by_fresh_selected_and_remembered_forms(self):
+        with patch.object(CustomField, '_exceeds_inline_limit', return_value=True):
+            self.native_field.delete()
+        self.native_field.refresh_from_db()
+        self.assertEqual(self.native_field.status, CustomFieldStatusChoices.STATUS_DELETING)
+        before = (list(CustomFieldProfile.objects.values()), list(ProfileField.objects.values()), self.snapshot())
+        for data in (self.form_data([self.native_field], enabled=True),
+                     self.remembered_data([self.native_field], enabled=True)):
+            with self.subTest(mode=data['field_mode']):
+                form = CustomFieldProfileForm(data=data)
+                self.assertFalse(form.fields['selected_fields'].queryset.filter(pk=self.native_field.pk).exists())
+                self.assertFalse(form.is_valid())
+                self.assertIn('selected_fields', form.errors)
+                response = self.client.post(self.url('_add'), data)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('selected_fields', response.context['form'].errors)
+        self.assertEqual((list(CustomFieldProfile.objects.values()),
+                          list(ProfileField.objects.values()), self.snapshot()), before)
+
+    def test_deletion_after_validation_rejects_normal_and_split_saves(self):
+        for commit in (True, False):
+            for remembered in (False, True):
+                with self.subTest(commit=commit, remembered=remembered):
+                    field = CustomField.objects.create(name=f'deferred_{commit}_{remembered}', type='text')
+                    field.object_types.add(self.device_ct)
+                    profile = self.save_form(self.form_data([field], enabled=True))
+                    data = (self.remembered_data([field], enabled=True) if remembered
+                            else self.form_data([field], enabled=True))
+                    form = CustomFieldProfileForm(data=data, instance=profile)
+                    self.assertTrue(form.is_valid(), form.errors)
+                    pending = form.save(commit=False) if not commit else None
+                    with patch.object(CustomField, '_exceeds_inline_limit', return_value=True):
+                        field.delete()
+                    field.refresh_from_db()
+                    self.assertEqual(field.status, CustomFieldStatusChoices.STATUS_DELETING)
+                    before = (list(CustomFieldProfile.objects.values()), list(ProfileField.objects.values()))
+                    with self.assertRaisesMessage(AbortRequest, 'selected custom fields changed'):
+                        with transaction.atomic():
+                            if commit:
+                                form.save()
+                            else:
+                                pending.save()
+                                form.save_m2m()
+                    profile.refresh_from_db()
+                    self.assertFalse(profile.enabled)
+                    self.assertFalse(profile.profile_fields.exists())
+                    self.assertEqual((list(CustomFieldProfile.objects.values()),
+                                      list(ProfileField.objects.values())), before)
+
+    def test_provisioning_fields_still_allow_selected_and_remembered_memberships(self):
+        CustomField.objects.filter(pk=self.native_field.pk).update(
+            status=CustomFieldStatusChoices.STATUS_PROVISIONING)
+        for data in (self.form_data([self.native_field], enabled=True),
+                     self.remembered_data([self.native_field], enabled=True)):
+            profile = self.save_form(data)
+            self.assertTrue(profile.profile_fields.filter(field=self.native_field).exists())
+            self.assertTrue(profile.enabled)
+            self.assertEqual(get_profile_fields(profile), [])

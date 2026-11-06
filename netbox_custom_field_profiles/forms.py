@@ -5,6 +5,7 @@ from django.db import router, transaction
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from netbox.forms import NetBoxModelForm
+from extras.choices import CustomFieldStatusChoices
 from extras.models import CustomField, Tag
 from dcim.models import DeviceType, DeviceRole
 from utilities.forms.fields import DynamicModelMultipleChoiceField
@@ -66,7 +67,8 @@ class CustomFieldProfileForm(NetBoxModelForm):
             Q(object_types=device_ct) | Q(object_types__isnull=True)).distinct()
         self.fields['applicability_tags'].query_params = {'for_object_type_id': device_ct.pk}
         self.fields['selected_fields'].queryset = CustomField.objects.filter(
-            object_types__app_label='dcim', object_types__model='device').distinct()
+            object_types__app_label='dcim', object_types__model='device',
+        ).exclude(status=CustomFieldStatusChoices.STATUS_DELETING).distinct()
         self.fields['selected_fields'].widget.attrs['class'] = 'form-select'
         ordered = []
         if not self.instance.pk:
@@ -155,7 +157,7 @@ class CustomFieldProfileForm(NetBoxModelForm):
         if field_ids is not None:
             applicable_ids = set(CustomField.objects.using(using).filter(
                 pk__in=field_ids, object_types__app_label='dcim', object_types__model='device',
-            ).values_list('pk', flat=True))
+            ).exclude(status=CustomFieldStatusChoices.STATUS_DELETING).values_list('pk', flat=True))
             if set(field_ids) != applicable_ids:
                 raise AbortRequest('The selected custom fields changed while this form was open. '
                                    'Review the field selection and try again.')

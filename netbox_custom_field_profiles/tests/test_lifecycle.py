@@ -309,6 +309,12 @@ class ProfileLifecycleConcurrencyTests(TransactionTestCase):
         obj.save()
 
     def test_native_cleanup_waits_for_inserting_form_then_removes_membership(self):
+        self.assert_cleanup_waits_for_insert('remove')
+
+    def test_native_deletion_waits_for_inserting_form_then_removes_membership(self):
+        self.assert_cleanup_waits_for_insert('delete')
+
+    def assert_cleanup_waits_for_insert(self, operation):
         from netbox_custom_field_profiles.signals import lock_profile_fields
 
         locked, release, cleanup_started = Event(), Event(), Event()
@@ -344,7 +350,11 @@ class ProfileLifecycleConcurrencyTests(TransactionTestCase):
                     cursor.execute('SELECT pg_backend_pid()')
                     cleanup_pid.append(cursor.fetchone()[0])
                 cleanup_started.set()
-                CustomField.objects.get(pk=self.native_field.pk).object_types.remove(self.device_ct)
+                field = CustomField.objects.get(pk=self.native_field.pk)
+                if operation == 'delete':
+                    field.delete()
+                else:
+                    field.object_types.remove(self.device_ct)
             finally:
                 connection.close()
 
