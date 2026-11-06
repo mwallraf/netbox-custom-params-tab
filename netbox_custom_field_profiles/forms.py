@@ -1,10 +1,13 @@
+import json
+
 from django import forms
+from django.db import transaction
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.forms import inlineformset_factory
 from netbox.forms import NetBoxModelForm
 from extras.models import CustomField
-from .models import CustomFieldProfile, CustomTabConfig, CustomTabConfigGroup, CustomTabConfigField
+from .models import CustomFieldProfile, ProfileField, CustomTabConfig, CustomTabConfigGroup, CustomTabConfigField
 from .template_content import BUILTIN_MODELS
 
 GROUP_FORMSET_PREFIX = 'config_groups'
@@ -12,6 +15,11 @@ FIELD_FORMSET_PREFIX = 'config_fields'
 
 
 class CustomFieldProfileForm(NetBoxModelForm):
+    selected_fields = forms.ModelMultipleChoiceField(
+        queryset=CustomField.objects.none(), required=False,
+        help_text='Choose applicable fields, then arrange their display order below.',
+    )
+    field_order = forms.CharField(required=False, widget=forms.HiddenInput)
     content_type = forms.ModelChoiceField(
         queryset=ContentType.objects.filter(app_label='dcim', model='device'),
         label='Object Type',
@@ -19,15 +27,61 @@ class CustomFieldProfileForm(NetBoxModelForm):
 
     class Meta:
         model = CustomFieldProfile
-        fields = ('title', 'content_type', 'display_order', 'enabled')
+        fields = ('title', 'content_type', 'display_order', 'enabled', 'field_mode',
+                  'selected_fields', 'field_order')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # This first administration slice offers unrestricted All-fields profiles.
-        # Explicit field selection and rule controls are added in the next slices.
-        self.instance.field_mode = CustomFieldProfile.FIELD_MODE_ALL
+        self.fields['selected_fields'].queryset = CustomField.objects.filter(
+            object_types__app_label='dcim', object_types__model='device').distinct()
+        self.fields['selected_fields'].widget.attrs['class'] = 'form-select'
         if not self.instance.pk:
             self.initial.setdefault('content_type', self.fields['content_type'].queryset.first())
+            self.initial.setdefault('field_mode', CustomFieldProfile.FIELD_MODE_ALL)
+        else:
+            ordered = list(self.instance.profile_fields.values_list('field_id', flat=True))
+            self.initial.setdefault('selected_fields', ordered)
+            self.initial.setdefault('field_order', json.dumps(ordered))
+
+    def clean(self):
+        super().clean()
+        cleaned = self.cleaned_data
+        self.ordered_field_ids = None
+        if cleaned.get('field_mode') != CustomFieldProfile.FIELD_MODE_SELECTED:
+            return cleaned
+        selected = cleaned.get('selected_fields')
+        if selected is None:
+            return cleaned
+        if not selected:
+            self.add_error('selected_fields', 'Select at least one applicable field.')
+        try:
+            ordered = json.loads(cleaned.get('field_order') or '[]')
+            if (not isinstance(ordered, list) or any(type(pk) is not int or pk <= 0 for pk in ordered)
+                    or len(ordered) != len(set(ordered))
+                    or set(ordered) != {field.pk for field in selected}):
+                raise ValueError
+        except (ValueError, TypeError):
+            self.add_error('field_order', 'Field order must contain each selected field exactly once.')
+        else:
+            self.ordered_field_ids = ordered
+        return cleaned
+
+    def _save_m2m(self):
+        super()._save_m2m()
+        if self.instance.field_mode == CustomFieldProfile.FIELD_MODE_SELECTED:
+            # Lock the aggregate while replacing positions; never write native fields.
+            CustomFieldProfile.objects.select_for_update().get(pk=self.instance.pk)
+            self.instance.profile_fields.all().delete()
+            ProfileField.objects.bulk_create([
+                ProfileField(profile=self.instance, field_id=pk, position=position)
+                for position, pk in enumerate(self.ordered_field_ids)
+            ])
+
+    def save(self, commit=True):
+        if not commit:
+            return super().save(commit=False)
+        with transaction.atomic():
+            return super().save(commit=True)
 
 
 def _supported_content_type_pks():

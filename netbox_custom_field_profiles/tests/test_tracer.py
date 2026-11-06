@@ -34,7 +34,7 @@ class ProfileTracerTests(TestCase):
 
     def data(self, **kwargs):
         return {'title': 'Service Details', 'content_type': self.device_ct.pk,
-                'display_order': 10, **kwargs}
+                'display_order': 10, 'field_mode': 'all', **kwargs}
 
     def snapshot(self):
         return (list(CustomField.objects.values().order_by('pk')),
