@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 1
+open_count: 2
 waived_count: 0
 fixed_count: 0
-total_count: 1
-last_updated: 2026-11-06T19:06:48.877Z
+total_count: 2
+last_updated: 2026-11-06T19:16:21.944Z
 ---
 
 # Broken Windows Ledger
@@ -16,6 +16,7 @@ last_updated: 2026-11-06T19:06:48.877Z
 | id | phase | kind | file | line | description | status | reason | recorded_at | resolved_at |
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
 | 1 | 02 | unrun-verify | netbox_custom_field_profiles/static/netbox_custom_field_profiles/profile_fields.js |  | Plan 02-03 browser drag, keyboard and mode-round-trip verification pending: browser access host unavailable; native Safari target timed out. Recheck in Plan 02-06. | open |  | 2026-11-06T19:06:48.877Z |  |
+| 2 | 02 | unrun-verify | netbox_custom_field_profiles/templates/netbox_custom_field_profiles/customfieldprofile_edit.html |  | Live unused-tag widget search/save/reload and dynamic unrestricted-notice interaction unverified: browser access host unavailable; Plan 02-06 must verify. | open |  | 2026-11-06T19:16:21.944Z |  |
 
 ````json
 [
@@ -29,6 +30,19 @@ last_updated: 2026-11-06T19:06:48.877Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-11-06T19:06:48.877Z",
+    "resolved_at": null,
+    "milestone": null
+  },
+  {
+    "id": 2,
+    "kind": "unrun-verify",
+    "phase": "02",
+    "file": "netbox_custom_field_profiles/templates/netbox_custom_field_profiles/customfieldprofile_edit.html",
+    "line": null,
+    "description": "Live unused-tag widget search/save/reload and dynamic unrestricted-notice interaction unverified: browser access host unavailable; Plan 02-06 must verify.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-11-06T19:16:21.944Z",
     "resolved_at": null,
     "milestone": null
   }
