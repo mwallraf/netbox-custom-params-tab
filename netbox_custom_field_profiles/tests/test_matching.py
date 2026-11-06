@@ -1,8 +1,10 @@
 from django.db import transaction
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth import get_user_model
 from dcim.models import Device, DeviceRole, DeviceType, Site
 from extras.models import Tag
+from users.models import ObjectPermission
 from utilities.forms.fields import DynamicModelMultipleChoiceField
 
 from netbox_custom_field_profiles.forms import CustomFieldProfileForm
@@ -122,3 +124,42 @@ class ProfileMatchingTests(TestCase):
                 raise RuntimeError('rollback')
         self.assertEqual(list(profile.device_roles.all()), [self.device.role])
         self.assertFalse(profile.device_types.exists())
+
+    def test_native_restricted_reference_post_cannot_broaden_profile(self):
+        tag = Tag.objects.create(name='Not visible', slug='not-visible')
+        profile = self.profile()
+        profile.applicability_tags.add(tag)
+        user = get_user_model().objects.create_user('limited-editor', password='test-only')
+        permission = ObjectPermission.objects.create(name='Edit profiles', actions=['view', 'change'])
+        permission.object_types.add(ContentType.objects.get_for_model(CustomFieldProfile))
+        permission.users.add(user)
+        self.client.force_login(user)
+        response = self.client.post(self.url('_edit', profile), self.data(title='Should not save'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'saved references you cannot access')
+        profile.refresh_from_db()
+        self.assertEqual(profile.title, 'Profile')
+        self.assertEqual(list(profile.applicability_tags.all()), [tag])
+
+    def test_scope_columns_notice_and_escaped_labels(self):
+        tag = Tag.objects.create(name='<script>tag()</script>', slug='escaped-tag')
+        profile = self.profile('<script>title()</script>')
+        response = self.client.get(self.url('_list'))
+        for column in ('title', 'enabled', 'display_order', 'field_mode', 'applicability'):
+            self.assertIn(column, response.context['table'].columns.names())
+        self.assertContains(response, 'All applicable fields')
+        self.assertContains(response, 'Applies to all Devices')
+        profile.applicability_tags.add(tag)
+        response = self.client.get(self.url('_list'))
+        self.assertContains(response, '&lt;script&gt;tag()&lt;/script&gt;')
+        self.assertNotContains(response, '<script>tag()</script>')
+        response = self.client.get(profile.get_absolute_url())
+        self.assertContains(response, '&lt;script&gt;title()&lt;/script&gt;')
+        self.assertContains(response, '&lt;script&gt;tag()&lt;/script&gt;')
+        self.assertNotContains(response, 'Applies to all Devices')
+        response = self.client.get(self.url('_edit', profile))
+        self.assertContains(response, 'id="profile-unrestricted-notice" hidden')
+        profile.applicability_tags.clear()
+        response = self.client.get(self.url('_edit', profile))
+        self.assertContains(response, 'id="profile-unrestricted-notice">Applies to all Devices')
+        self.assertEqual(self.client.post(self.url('_edit', profile), self.data()).status_code, 302)

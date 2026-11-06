@@ -2,6 +2,8 @@
 {% load static %}
 {% block form %}
   {{ block.super }}
+  <p>All populated applicability criteria must match (AND). Any selected value within a criterion matches (OR), including any selected tag.</p>
+  <p class="alert alert-info" id="profile-unrestricted-notice"{% if not form.applies_to_all_devices %} hidden{% endif %}>Applies to all Devices</p>
   <section class="card mt-3" id="profile-field-order" aria-labelledby="field-order-heading">
     <h2 class="card-header" id="field-order-heading">Selected field order</h2>
     <div class="card-body">
@@ -12,4 +14,19 @@
     </div>
   </section>
   <script src="{% static 'netbox_custom_field_profiles/profile_fields.js' %}" defer></script>
+  <script>
+    (() => {
+      function initializeScopeNotice() {
+        const notice = document.getElementById('profile-unrestricted-notice');
+        const selectors = ['id_device_types', 'id_device_roles', 'id_applicability_tags'].map(id => document.getElementById(id));
+        if (!notice || selectors.some(field => !field) || notice.dataset.initialized) return;
+        notice.dataset.initialized = 'true';
+        const update = () => { notice.hidden = selectors.some(field => field.selectedOptions.length > 0); };
+        selectors.forEach(field => field.addEventListener('change', update));
+        update();
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeScopeNotice); else initializeScopeNotice();
+      document.addEventListener('htmx:afterSwap', initializeScopeNotice);
+    })();
+  </script>
 {% endblock %}

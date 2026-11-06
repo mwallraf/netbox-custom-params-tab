@@ -3,6 +3,17 @@
 <div class="card"><h2 class="card-header">Profile configuration</h2><div class="card-body">
   <dl><dt>Title</dt><dd>{{ object.title }}</dd><dt>Field selection</dt><dd>{{ object.get_field_mode_display }}</dd>
   <dt>Display order</dt><dd>{{ object.display_order }}</dd><dt>Enabled</dt><dd>{{ object.enabled|yesno:"Yes,No" }}</dd></dl>
+  <h3>Applicability</h3>
+  {% if not object.device_types.all and not object.device_roles.all and not object.applicability_tags.all %}
+    <p>Applies to all Devices</p>
+  {% else %}
+    <p>All configured criteria must match (AND). Any value within a criterion matches (OR).</p>
+    <dl>
+      {% if object.device_types.all %}<dt>Device Type</dt><dd>{% for item in object.device_types.all %}{{ item }}{% if not forloop.last %} OR {% endif %}{% endfor %}</dd>{% endif %}
+      {% if object.device_roles.all %}<dt>Role</dt><dd>{% for item in object.device_roles.all %}{{ item }}{% if not forloop.last %} OR {% endif %}{% endfor %}</dd>{% endif %}
+      {% if object.applicability_tags.all %}<dt>Tag</dt><dd>{% for item in object.applicability_tags.all %}{{ item }}{% if not forloop.last %} OR {% endif %}{% endfor %}</dd>{% endif %}
+    </dl>
+  {% endif %}
   <h3>Configured fields</h3><ol>{% for membership in object.profile_fields.all %}<li>{{ membership.field }}</li>{% empty %}<li>No manual fields configured.</li>{% endfor %}</ol>
   {% if object.field_mode == 'all' %}<p>All applicable fields are resolved dynamically in native NetBox order. The manual selection above is remembered.</p>{% endif %}
 </div></div>
