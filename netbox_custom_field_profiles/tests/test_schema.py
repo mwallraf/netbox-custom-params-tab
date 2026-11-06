@@ -3,12 +3,23 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError, connection, transaction
 from django.db.migrations.recorder import MigrationRecorder
 from django.test import TestCase
+from django.test import SimpleTestCase
+from unittest import TestSuite
+from unittest.mock import patch
 
 from dcim.models import Device, DeviceRole, DeviceType, Manufacturer, Site
 from extras.models import CustomField
 
 from netbox_custom_field_profiles.matching import get_matching_profiles, get_profile_fields
 from netbox_custom_field_profiles.models import CustomFieldProfile, ProfileField
+from netbox_custom_field_profiles.tests.runner import ProfileTestRunner
+
+
+class ProfileRunnerTests(SimpleTestCase):
+    def test_empty_suite_rejected_before_database_setup(self):
+        with patch('django.test.runner.DiscoverRunner.build_suite', return_value=TestSuite()):
+            with self.assertRaisesRegex(RuntimeError, 'PROFILE_TESTS_EMPTY'):
+                ProfileTestRunner().build_suite([])
 
 
 class ProfileSchemaTests(TestCase):

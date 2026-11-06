@@ -32,8 +32,11 @@ check:
 	@python3 -m unittest discover -s tests/sandbox -v
 	@python3 scripts/sandbox.py check
 
-.PHONY: test smoke seed seed-check test-legacy reset lifecycle-check
+.PHONY: test smoke seed seed-check test-legacy reset lifecycle-check test-profiles
 test: check smoke seed-check
+
+test-profiles:
+	@python3 scripts/test_profiles.py
 
 smoke:
 	@python3 scripts/sandbox.py smoke
