@@ -31,10 +31,10 @@ and verifiable; they do not add new product functionality.
 
 ### Parameters tab
 
-- [ ] **TAB-01**: Provide a dedicated Parameters tab on Device detail pages.
-- [ ] **TAB-02**: Render matching enabled profiles as ordered sections with ordered fields.
-- [ ] **TAB-03**: Display native values consistently, including duplicates across sections, with field-type-appropriate formatting and relevant empty fields handled clearly.
-- [ ] **AUTH-01**: Tab and direct view URLs enforce native object/field viewing rules; matching filters do not confer access.
+- [x] **TAB-01**: Provide a dedicated Parameters tab on Device detail pages.
+- [x] **TAB-02**: Render matching enabled profiles as ordered sections with ordered fields.
+- [x] **TAB-03**: Display native values consistently, including duplicates across sections, with field-type-appropriate formatting and relevant empty fields handled clearly.
+- [x] **AUTH-01**: Tab and direct view URLs enforce native object/field viewing rules; matching filters do not confer access.
 
 ### Edit Parameters
 
@@ -80,10 +80,10 @@ and verifiable; they do not add new product functionality.
 | MATCH-02 | Phase 2 | Complete |
 | MATCH-03 | Phase 2 | Complete |
 | DATA-01 | Phase 2 | Complete |
-| TAB-01 | Phase 3 | Pending |
-| TAB-02 | Phase 3 | Pending |
-| TAB-03 | Phase 3 | Pending |
-| AUTH-01 | Phase 3 | Pending |
+| TAB-01 | Phase 3 | Complete |
+| TAB-02 | Phase 3 | Complete |
+| TAB-03 | Phase 3 | Complete |
+| AUTH-01 | Phase 3 | Complete |
 | EDIT-01 | Phase 4 | Pending |
 | EDIT-02 | Phase 4 | Pending |
 | EDIT-03 | Phase 4 | Pending |

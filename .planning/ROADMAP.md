@@ -84,7 +84,7 @@ are verified complete; the Parameters tab is next.
   4. Native viewing rules apply on both navigation and direct URLs.
 **Plans**: TBD — created during phase planning.
 **Wave 1**
-- [ ] 03-01-PLAN.md
+- [x] 03-01-PLAN.md
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 03-02-PLAN.md
@@ -135,7 +135,7 @@ filter engine or multi-object-type scope is included.
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
 | 2. Profile administration and matching | 8/8 | Complete    | 2026-11-07 |
-| 3. Parameters tab | 0/4 | Planned     | - |
+| 3. Parameters tab | 1/4 | In Progress | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |
 
