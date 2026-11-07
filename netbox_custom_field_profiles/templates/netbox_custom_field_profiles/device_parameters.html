@@ -1,0 +1,35 @@
+{% extends 'dcim/device/base.html' %}
+
+{% block content %}
+<div id="device-parameters">
+  {% for section in sections %}
+    <div class="card">
+      <h2 class="card-header">{{ section.profile.title }}</h2>
+      {% if section.rows %}
+        <table class="table table-hover attr-table">
+          <tbody>
+            {% for row in section.rows %}
+              <tr>
+                <th scope="row">{{ row.field.label|default:row.field.name }}</th>
+                <td>
+                  {% if row.unavailable %}
+                    <span class="text-muted">Unavailable</span>
+                  {% elif row.is_unset %}
+                    <span class="text-muted">Not set</span>
+                  {% else %}
+                    {% customfield_value row.field row.value %}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="card-body text-muted">No fields are available in this profile.</div>
+      {% endif %}
+    </div>
+  {% empty %}
+    <div class="card"><div class="card-body text-muted">No parameter profiles apply to this device.</div></div>
+  {% endfor %}
+</div>
+{% endblock %}

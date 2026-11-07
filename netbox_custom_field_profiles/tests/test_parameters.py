@@ -36,4 +36,4 @@ class ParametersTabTests(TestCase):
         self.assertContains(response, 'external value')
         self.assertTemplateUsed(response, 'dcim/device/base.html')
         self.assertRegex(response.content.decode(),
-                         rf'<a[^>]*class="[^"]*active[^"]*"[^>]*href="{re.escape(url)}"')
+                         rf'<a(?=[^>]*class="[^"]*active[^"]*")(?=[^>]*href="{re.escape(url)}")[^>]*>')

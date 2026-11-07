@@ -14,6 +14,8 @@ class CustomFieldProfilesConfig(PluginConfig):
         super().ready()
         from . import signals
         signals.register()
+        # Core Device URLs are assembled before plugin URL modules are loaded.
+        from . import views  # noqa: F401
 
 
 config = CustomFieldProfilesConfig
