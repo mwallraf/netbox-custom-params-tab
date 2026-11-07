@@ -30,9 +30,9 @@
     }
   ],
   "next": {
-    "command": "$gsd-discuss-phase 3",
-    "label": "Discuss the Parameters tab",
-    "reason": "Phase 2 complete; Phase 3 context not yet gathered"
+    "command": "$gsd-progress --next",
+    "label": "Advance to the next step",
+    "reason": "Phase 3 of 5 · 40% · executing"
   },
-  "updated_at": "2026-11-07T06:20:32.616Z"
+  "updated_at": "2026-11-07T07:02:59.977Z"
 }

@@ -83,6 +83,17 @@ are verified complete; the Parameters tab is next.
   3. Native values, repeated fields, and supported field types render correctly; no-match and empty-value behavior is agreed and verified.
   4. Native viewing rules apply on both navigation and direct URLs.
 **Plans**: TBD — created during phase planning.
+**Wave 1**
+- [ ] 03-01-PLAN.md
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 03-02-PLAN.md
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 03-03-PLAN.md
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 03-04-PLAN.md
 
 ### Phase 4: Edit Parameters
 **Goal**: Authorized users can edit relevant native values once, with native validation and safe persistence.
@@ -124,7 +135,7 @@ filter engine or multi-object-type scope is included.
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
 | 2. Profile administration and matching | 8/8 | Complete    | 2026-11-07 |
-| 3. Parameters tab | 0/TBD | Not started | - |
+| 3. Parameters tab | 0/4 | Planned     | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |
 
