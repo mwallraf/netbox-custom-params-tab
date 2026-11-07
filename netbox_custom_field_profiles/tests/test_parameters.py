@@ -37,3 +37,31 @@ class ParametersTabTests(TestCase):
         self.assertTemplateUsed(response, 'dcim/device/base.html')
         self.assertRegex(response.content.decode(),
                          rf'<a(?=[^>]*class="[^"]*active[^"]*")(?=[^>]*href="{re.escape(url)}")[^>]*>')
+
+    def test_disabled_or_nonmatching_profiles_hide_navigation_and_direct_empty_state(self):
+        for state in ('disabled', 'nonmatching'):
+            with self.subTest(state=state):
+                self.profile.enabled = state != 'disabled'
+                self.profile.save()
+                if state == 'nonmatching':
+                    from dcim.models import DeviceRole
+                    role = DeviceRole.objects.create(name='Other role', slug='other-role')
+                    self.profile.device_roles.add(role)
+                detail = self.client.get(reverse('dcim:device', args=[self.device.pk]))
+                self.assertNotContains(detail, f'href="{self.parameter_url()}"')
+                response = self.client.get(self.parameter_url())
+                self.assertContains(response, 'No parameter profiles apply to this device.', count=1)
+                self.assertTemplateUsed(response, 'dcim/device/base.html')
+                self.assertNotContains(response, 'No fields are available in this profile.')
+
+    def test_zero_fields_keeps_matching_navigation_and_section(self):
+        # All mode is allowed to have no fields and stays enabled.
+        self.profile.field_mode = 'all'
+        self.profile.save()
+        self.native_field.object_types.clear()
+        detail = self.client.get(reverse('dcim:device', args=[self.device.pk]))
+        self.assertContains(detail, f'href="{self.parameter_url()}"')
+        response = self.client.get(self.parameter_url())
+        self.assertContains(response, 'Service parameters')
+        self.assertContains(response, 'No fields are available in this profile.', count=1)
+        self.assertNotContains(response, 'No parameter profiles apply to this device.')
