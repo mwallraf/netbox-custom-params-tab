@@ -40,12 +40,15 @@
               <tr>
                 <th scope="row">{{ row.field.label|default:row.field.name }}
                   {% if row.field.description %}
-                    <i
-                      class="mdi mdi-information text-primary"
+                    <button
+                      type="button"
+                      class="btn btn-link p-0 border-0 align-baseline"
                       data-bs-toggle="tooltip"
                       data-bs-placement="right"
+                      data-bs-trigger="hover focus"
+                      aria-label="{{ row.field.description|escape }}"
                       title="{{ row.field.description|escape }}"
-                    ></i>
+                    ><i class="mdi mdi-information text-primary" aria-hidden="true"></i></button>
                   {% endif %}
                 </th>
                 <td>

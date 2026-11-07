@@ -182,6 +182,10 @@ class ParameterRenderingTests(TestCase):
         self.assertNotIn('Raw internal name', rows[0])
         self.assertIn('title="&lt;script&gt;help&lt;/script&gt; &quot;quoted&quot;"', rows[0])
         self.assertIn('data-bs-toggle="tooltip"', rows[0])
+        self.assertIn('<button', rows[0])
+        self.assertIn('type="button"', rows[0])
+        self.assertIn('data-bs-trigger="hover focus"', rows[0])
+        self.assertIn('aria-label="&lt;script&gt;help&lt;/script&gt; &quot;quoted&quot;"', rows[0])
         self.assertIn('&lt;b&gt;Native label&lt;/b&gt;', rows[1])
         self.assertNotIn('<script>', ''.join(rows))
 
