@@ -18,11 +18,15 @@ filter matching rules, acceptance examples, and remaining planning details.
 - A separate profile administration interface; NetBox's custom field settings stay unchanged.
 - No independent parameter storage or automatic changes to native field visibility.
 
-Phase 2 profile administration and matching are implemented: native plugin CRUD,
+Profile administration and matching are implemented: native plugin CRUD,
 ordered Selected/All field modes, fixed applicability filters, and safe lifecycle
-cleanup. The old panel/API and configuration schema have been retired. Final
-phase verification and live browser acceptance remain pending. The Parameters tab
-and Edit Parameters page belong to later phases. See the
+cleanup. The old panel/API and configuration schema have been retired. Phase 3
+adds a read-only Device **Parameters** tab with matching ordered sections,
+native typed values, explicit empty states and native viewing permissions.
+Native script writes appear on the next request; profile changes preserve values
+and native visibility settings. Phase 3 desktop/narrow browser acceptance remains
+pending because the browser access host is unavailable. **Edit Parameters** is
+planned for Phase 4. See the
 [administration guide](docs/development/profiles.md),
 [roadmap](.planning/ROADMAP.md), and [project state](.planning/STATE.md).
 
@@ -57,8 +61,9 @@ sandbox database while retaining credentials.
 See [sandbox guide](docs/development/sandbox.md) and
 [actual baseline status](docs/development/baseline-status.md).
 This is a new, undeployed plugin using a disposable development database: no
-legacy app/data upgrade is needed or supported by this baseline. Profile administration and matching are implemented; the Parameters tab and
-native value editing remain later phases.
+legacy app/data upgrade is needed or supported by this baseline. Profile administration,
+matching and the read-only Parameters tab are implemented; native value editing
+remains the next roadmap capability.
 
 ## Earlier documents
 

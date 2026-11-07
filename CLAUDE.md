@@ -5,12 +5,12 @@ README.md and `.planning/STATE.md` for source/workflow/environment constraints.
 The canonical source is the root checkout on milestone/custom-field-profiles.
 Do not create worktrees or edit the preserved ignored `.recovery` source.
 
-## Implemented through Phase 2
+## Implemented through Phase 3 (browser acceptance pending)
 
 NetBox Custom Field Profiles (`netbox_custom_field_profiles`) stores presentation
-configuration referencing native Device custom fields. Phase 2 implementation is
-complete; final phase verification/live browser acceptance remain pending.
-Parameters tab and native-value editing are later phases and are not implemented.
+configuration referencing native Device custom fields. Phase 2 is verified complete.
+Phase 3 implements the read-only Parameters tab; actual desktop/narrow browser
+acceptance remains pending. Native-value editing belongs to Phase 4.
 
 - `models.py`: CustomFieldProfile (nonunique title, display order, disabled by
   default, Device content type, Selected/All mode, fixed reference sets) and
@@ -28,8 +28,20 @@ Parameters tab and native-value editing are later phases and are not implemented
   memberships are removed; losing the last selected field disables the profile.
   Cleanup never re-enables automatically. Direct SQL bypass is documented.
 - `static/.../profile_fields.js` and profile templates: reorder controls, mode
-  switching, scope feedback and editor recovery guidance. Actual browser
-  acceptance remains recorded in `.planning/WINDOWS.md`.
+  switching, scope feedback and editor recovery guidance. Phase 2 browser
+  acceptance passed; its ledger entries are closed.
+- `views.py`: registered native Device Parameters view, constrained Device lookup
+  before resolution/method rejection, matching-controlled tab visibility and normal
+  direct no-match state. Viewing requires Device access, not profile administration.
+- `presentation.py`, `templatetags/parameter_tags.py`, Parameters templates:
+  request-local ordered sections/rows, native type formatting, restricted references,
+  escaped native labels/help, full URLs, sanitized multiline Markdown and local JSON
+  overflow. Hidden/If Set presentation does not remove relevant rows; unset uses
+  Not set, while false, zero and empty JSON remain values. Denied/missing references
+  expose no stored IDs; all-denied references show Unavailable. No edit action.
+- `tests/test_parameter*.py`: native tab/navigation, order/type, permission,
+  freshness and complete native/plugin preservation regressions. Phase 3 visual
+  cases and the browser-host failure are recorded in `03-UAT.md` under its phase.
 - `api/serializers.py`: internal profile serializer required by native events;
   no profile REST endpoint is exposed. The obsolete API/panel is retired.
 - `migrations/0001_initial.py` and `0002_profiles.py` retain schema history;
@@ -53,6 +65,8 @@ See `docs/development/profiles.md`, `sandbox.md` and `baseline-status.md`.
 All values stay in native custom_field_data. Profile management must never alter
 native field settings, applicability, visibility or values. Native operations own
 their own effects; plugin cleanup writes only plugin configuration tables.
+The Parameters view reads native values on every request; external native writes
+need no synchronization. Do not claim browser layout acceptance from server HTML.
 
 ## Historical design
 

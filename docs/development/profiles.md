@@ -1,9 +1,10 @@
-# Device profile administration
+# Device profiles and Parameters
 
 The exercised runtime is NetBox **4.7.4**, Docker packaging **5.1.1**. Phase 2
-provides profile administration and reusable matching/field resolution. The Device
-Parameters tab and native-value editing are later phases; this guide does not
-claim those workflows are available.
+provides profile administration and reusable matching/field resolution. Phase 3
+adds the read-only Device **Parameters** tab. Native-value editing remains Phase 4.
+Phase 2 is verified complete; Phase 3 browser acceptance is pending as recorded
+in `.planning/phases/03-parameters-tab/03-UAT.md`.
 
 ## Manage profiles
 
@@ -20,7 +21,7 @@ reference they cannot access. Such a profile needs review by an authorized
 administrator.
 
 Choose **Add** to create a profile. Devices are the only supported Object Type.
-The title identifies the profile and will supply its eventual section heading;
+The title identifies the profile and supplies its Parameters section heading;
 duplicate titles are allowed. New profiles start **disabled**. Set display order,
 configure fields/rules, and explicitly enable the profile when ready. The list
 shows title, enabled state, display order, field mode, and readable applicability.
@@ -97,6 +98,47 @@ operations. Defensive field resolution excludes nonapplicable/inactive fields
 if stale memberships were introduced by a bypass. NetBox retains ownership of
 its own field-data cleanup; the plugin does not write native definitions/values.
 
+## View Device Parameters
+
+Open a Device's native detail page and choose **Parameters**. The tab appears when
+at least one enabled profile matches, including a matching profile that currently
+has no fields. Each profile is an expanded full-width card; duplicate titles are
+retained. Sections use the same deterministic profile order described above;
+Selected fields use saved membership order and All uses current native order.
+
+Users need native Device viewing access, including any object constraints. They
+do not need profile or custom-field definition administration permissions. Matching
+never grants access. Direct tab URLs enforce the same Device boundary. An
+authorized direct visit with no match says **No parameter profiles apply to this
+device.** A matching section without fields says **No fields are available in this
+profile.** Parameters has no edit action or profile administration metadata.
+
+Every relevant field appears, including fields set to native **Hidden** or **If
+Set** presentation on the normal detail page. Those native settings remain
+unchanged. Missing/null values, empty text and empty multi-value collections show
+muted **Not set**. False and numeric zero are values. JSON `{}`, `[]`, `false`, `0`
+and empty string remain JSON values. Labels fall back to the exact internal field
+name; descriptions use secondary native help tooltips with escaped text.
+
+Values use native type formatting, choice labels/colors and sanitized Markdown.
+URLs retain their complete visible text; links obey NetBox's configured URL scheme
+policy. Long text retains complete content and line breaks; JSON uses native
+preformatted output with local horizontal overflow. Actual desktop/narrow wrapping,
+tooltip usability and keyboard behavior still require browser acceptance.
+
+Related object values resolve only through the viewer's native restricted queryset.
+A missing/denied scalar or entirely unavailable collection shows **Unavailable**,
+without stored IDs, labels or links. Mixed collections show only accessible members,
+without a hidden-member count. Native Device access does not grant related-object
+access.
+
+Repeated fields show the same native value in every matching section. Values are
+read from Device `custom_field_data` on each ordinary request: native script/API
+writes appear on the next GET without importing or synchronizing anything. Changing
+profile selection, filters or enable state changes relevance while retaining native
+stored values. GETs and unsupported POSTs leave native definitions, settings,
+choices, applicability, values and every profile aggregate table unchanged.
+
 ## Repeatable checks
 
 Run from the canonical repository root:
@@ -105,6 +147,9 @@ Run from the canonical repository root:
 make test-profiles
 python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_permissions
 python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_preservation
+python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameters
+python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_rendering
+python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_permissions
 make test
 ```
 
@@ -126,13 +171,20 @@ baseline results are recorded in
 `.planning/phases/02-profile-administration-and-matching/02-06-SUMMARY.md`.
 The optional historical pytest suite is separate and is not claimed as passing.
 
-## Browser acceptance checks
+## Browser acceptance status
 
-Server tests do not prove drag/drop, keyboard interaction, or live search widget
-behavior. Browser automation was retried during Plan 02-06 but returned
-`Browsers: Error: The browser access host is unavailable` with no browser targets.
-The following checks remain **pending**, tracked by `.planning/WINDOWS.md` entries
-1 and 2. Do not treat this guide as browser acceptance evidence.
+Phase 2's eight user acceptance checks passed and its two WINDOWS entries are
+closed. The sequence below remains useful when rechecking profile administration.
+It is not outstanding Phase 2 work.
+
+Phase 3 browser discovery was retried on 2026-11-07 during Plan 03-04 through
+`mcp__cua_repl` and returned `Browsers: Error: The browser access host is unavailable`
+with no browser targets. No browser fixture was created and no live data was
+changed. Every required Parameters visual case remains **pending**, with fixture,
+viewport and expected outcomes in `.planning/phases/03-parameters-tab/03-UAT.md`.
+Server tests establish response content and permissions; they do not establish
+layout, focus, tooltip interaction or actual horizontal scrolling. Phase 3 is not
+visually accepted until those cases have observed evidence.
 
 In the dedicated sandbox, using disposable verification profiles:
 
@@ -159,6 +211,5 @@ In the dedicated sandbox, using disposable verification profiles:
    the ordering asset blocked, verify the loading/reload explanation remains.
    Restore JavaScript/the asset and reload before modifying selected field order.
 8. Record the browser/version, profile IDs, exact observed outcomes and redacted
-   screenshot paths. Leave ledger entries open until these interactions have
-   actually passed. No native field settings or values need changing for these
+   screenshot paths. No native field settings or values need changing for these
    tests.

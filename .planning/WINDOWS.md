@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 0
+open_count: 1
 waived_count: 0
 fixed_count: 2
-total_count: 2
-last_updated: 2026-11-07T06:16:09.179Z
+total_count: 3
+last_updated: 2026-11-07T14:48:15.282Z
 ---
 
 # Broken Windows Ledger
@@ -17,6 +17,7 @@ last_updated: 2026-11-07T06:16:09.179Z
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
 | 1 | 02 | unrun-verify | netbox_custom_field_profiles/static/netbox_custom_field_profiles/profile_fields.js |  | Plan 02-03 browser drag, keyboard and mode-round-trip verification pending: browser access host unavailable; native Safari target timed out. Recheck in Plan 02-06. | fixed |  | 2026-11-06T19:06:48.877Z | 2026-11-07T06:16:09.112Z |
 | 2 | 02 | unrun-verify | netbox_custom_field_profiles/templates/netbox_custom_field_profiles/customfieldprofile_edit.html |  | Live unused-tag widget search/save/reload and dynamic unrestricted-notice interaction unverified: browser access host unavailable; Plan 02-06 must verify. | fixed |  | 2026-11-06T19:16:21.944Z | 2026-11-07T06:16:09.179Z |
+| 3 | 03 | unrun-verify | .planning/phases/03-parameters-tab/03-UAT.md |  | Phase 3 desktop/narrow Parameters cases UAT-01 through UAT-15 pending: CUA browser access host unavailable; no browser target or visual observations. | open |  | 2026-11-07T14:48:15.282Z |  |
 
 ````json
 [
@@ -44,6 +45,19 @@ last_updated: 2026-11-07T06:16:09.179Z
     "reason": "",
     "recorded_at": "2026-11-06T19:16:21.944Z",
     "resolved_at": "2026-11-07T06:16:09.179Z",
+    "milestone": null
+  },
+  {
+    "id": 3,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": ".planning/phases/03-parameters-tab/03-UAT.md",
+    "line": null,
+    "description": "Phase 3 desktop/narrow Parameters cases UAT-01 through UAT-15 pending: CUA browser access host unavailable; no browser target or visual observations.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-11-07T14:48:15.282Z",
+    "resolved_at": null,
     "milestone": null
   }
 ]
