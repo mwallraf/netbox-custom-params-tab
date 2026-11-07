@@ -1,5 +1,7 @@
 """Real-response contracts for all native custom-field types and empty values."""
 import re
+from html.parser import HTMLParser
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from django.contrib.contenttypes.models import ContentType
@@ -8,8 +10,43 @@ from django.test import TestCase
 from dcim.models import Device, Site
 from extras.choices import CustomFieldTypeChoices, CustomFieldUIVisibleChoices
 from extras.models import CustomField, CustomFieldChoiceSet
+from utilities.templatetags.builtins.tags import url_scheme_is_allowed
 
 from . import test_parameters, test_tracer
+
+
+class ParametersHTML(HTMLParser):
+    """Inspect executable markup and visible text only inside Parameters."""
+    def __init__(self, html):
+        super().__init__(convert_charrefs=True)
+        self.depth = 0
+        self.elements = []
+        self.links = []
+        self.text = []
+        self.anchor = None
+        self.feed(html)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == 'div' and (self.depth or attrs.get('id') == 'device-parameters'):
+            self.depth += 1
+        if self.depth:
+            self.elements.append((tag, attrs))
+            if tag == 'a':
+                self.anchor = [attrs.get('href'), '']
+                self.links.append(self.anchor)
+
+    def handle_endtag(self, tag):
+        if tag == 'a':
+            self.anchor = None
+        if tag == 'div' and self.depth:
+            self.depth -= 1
+
+    def handle_data(self, data):
+        if self.depth:
+            self.text.append(data)
+            if self.anchor is not None:
+                self.anchor[1] += data
 
 
 class ParameterRenderingTests(TestCase):
@@ -147,3 +184,73 @@ class ParameterRenderingTests(TestCase):
         self.assertIn('data-bs-toggle="tooltip"', rows[0])
         self.assertIn('&lt;b&gt;Native label&lt;/b&gt;', rows[1])
         self.assertNotIn('<script>', ''.join(rows))
+
+    def test_full_url_text_and_runtime_configured_scheme_policy(self):
+        field = self.field('full_url', 'url')
+        self.create_profile('Full URLs', [field])
+        long_url = 'https://example.test/' + 'long-segment/' * 16 + '?a=1&b="quoted"'
+        values = (long_url, 'custom-safe:resource?x=1&y=2', '/relative/path?a=1&b=2',
+                  'javascript:alert(1)', 'data:text/html,<script>alert(1)</script>',
+                  'vbscript:msgbox(1)', 'https://example.test/blocked-by-config')
+        for value in values:
+            # Model validation would reject unsafe legacy/script-written data.
+            Device.objects.filter(pk=self.device.pk).update(custom_field_data={field.name: value})
+            schemes = ['custom-safe'] if value.endswith('blocked-by-config') else ['https', 'custom-safe']
+            with self.subTest(value=value), patch(
+                    url_scheme_is_allowed.__module__ + '.get_config',
+                    return_value=SimpleNamespace(ALLOWED_URL_SCHEMES=schemes)):
+                permitted = url_scheme_is_allowed(value)
+                response = self.parameter_response()
+                parsed = ParametersHTML(response.content.decode())
+                if permitted:
+                    self.assertIn([value, value], parsed.links)
+                else:
+                    self.assertFalse(parsed.links)
+                    self.assertIn(value, ''.join(parsed.text))
+
+    def test_full_multiline_markdown_and_json_have_scoped_readable_containers(self):
+        longtext = self.field('full_multiline', 'longtext')
+        json_field = self.field('full_nested_json', 'json')
+        self.create_profile('Long values', [longtext, json_field])
+        self.create_profile('Repeated long values', [longtext, json_field])
+        text = '**Start of text**\nsingle line break\n' + 'unbroken-word' * 160 + '\nFinal line'
+        payload = {'nested': {'items': ['wide-value' * 140, {'unsafe': '<script>json()</script>'}]}}
+        self.save_values({longtext.name: text, json_field.name: payload})
+        response = self.parameter_response()
+        rows = self.rows(response)
+        self.assertEqual(rows[:2], rows[2:])
+        self.assertIn('<strong>Start of text</strong>\nsingle line break\n', rows[0])
+        self.assertIn('unbroken-word' * 160, rows[0])
+        self.assertIn('Final line', rows[0])
+        self.assertIn('wide-value' * 140, rows[1])
+        self.assertIn('&lt;script&gt;json()&lt;/script&gt;', rows[1])
+        html = response.content.decode()
+        for rule in ('#device-parameters .rendered-markdown', 'white-space: pre-wrap',
+                     '#device-parameters pre', 'overflow-x: auto',
+                     'table-layout: fixed', 'overflow-wrap: anywhere'):
+            self.assertTrue(rule in html, 'Missing Parameters layout rule: ' + rule)
+
+    def test_hostile_stored_metadata_and_values_cannot_create_executable_dom(self):
+        payload = '<script>storedAttack()</script><img src=x onerror="storedAttack()">'
+        fields = [self.field('hostile_' + kind, kind, label='<img src=x onerror=alert(1)>',
+                             description='\" onmouseover=\"storedAttack() ' + payload)
+                  for kind in ('text', 'longtext', 'json', 'url')]
+        self.create_profile(payload, fields)
+        Device.objects.filter(pk=self.device.pk).update(custom_field_data={
+            fields[0].name: payload,
+            fields[1].name: payload + '\n[unsafe](javascript:storedAttack())\n**Safe emphasis**',
+            fields[2].name: {'attack': payload},
+            fields[3].name: 'javascript:storedAttack()\" onmouseover=\"storedAttack()',
+        })
+        response = self.parameter_response()
+        parsed = ParametersHTML(response.content.decode())
+        self.assertTrue(parsed.elements)
+        self.assertIn(payload, ''.join(parsed.text))  # safely escaped text remains readable
+        self.assertIn('Safe emphasis', ''.join(parsed.text))
+        for tag, attrs in parsed.elements:
+            self.assertNotIn(tag, ('script', 'iframe', 'object', 'embed', 'svg'))
+            self.assertFalse(any(name.lower().startswith('on') for name in attrs), (tag, attrs))
+            self.assertNotIn('srcdoc', attrs)
+            for name in ('href', 'src'):
+                if name in attrs:
+                    self.assertNotRegex(attrs[name].lower().lstrip(), r'^(javascript|data|vbscript):')
