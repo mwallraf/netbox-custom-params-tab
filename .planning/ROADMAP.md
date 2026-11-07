@@ -90,7 +90,7 @@ are verified complete; the Parameters tab is next.
 - [x] 03-02-PLAN.md
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 03-03-PLAN.md
+- [x] 03-03-PLAN.md
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 03-04-PLAN.md
@@ -135,7 +135,7 @@ filter engine or multi-object-type scope is included.
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
 | 2. Profile administration and matching | 8/8 | Complete    | 2026-11-07 |
-| 3. Parameters tab | 2/4 | In Progress | - |
+| 3. Parameters tab | 3/4 | In Progress | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |
 
