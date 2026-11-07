@@ -30,9 +30,9 @@
     }
   ],
   "next": {
-    "command": "$gsd-verify-work 2",
-    "label": "Complete Phase 2 browser acceptance",
-    "reason": "Eight plans implemented; 37/39 truths verified; eight manual browser checks pending"
+    "command": "Confirm phase transition",
+    "label": "Complete Phase 2 and advance to Phase 3 planning",
+    "reason": "UAT 8/8 and canonical verification pass; gates.confirm_transition=true"
   },
   "updated_at": "2026-11-06T20:29:03.074Z"
 }
