@@ -8,6 +8,12 @@
   {% for object in row.value %}
     {{ object|linkify }}{% if not forloop.last %}<br />{% endif %}
   {% endfor %}
+{% elif row.field.type == 'url' %}
+  {% if url_allowed %}
+    <a href="{{ row.value }}">{{ row.value }}</a>
+  {% else %}
+    {{ row.value }}
+  {% endif %}
 {% else %}
   {% customfield_value row.field row.value %}
 {% endif %}

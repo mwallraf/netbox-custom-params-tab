@@ -2,6 +2,33 @@
 {% load parameter_tags %}
 
 {% block content %}
+<style>
+  #device-parameters .card-header,
+  #device-parameters th,
+  #device-parameters td {
+    overflow-wrap: anywhere;
+  }
+  #device-parameters table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  #device-parameters th {
+    width: 30%;
+  }
+  #device-parameters .rendered-markdown {
+    white-space: pre-wrap;
+  }
+  #device-parameters pre {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  @media (max-width: 575.98px) {
+    #device-parameters th {
+      width: 38%;
+    }
+  }
+</style>
 <div id="device-parameters">
   {% for section in sections %}
     <div class="card">
