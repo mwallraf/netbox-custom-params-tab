@@ -98,12 +98,12 @@ status: complete
 
 ## Files Created/Modified
 
-- `__init__.py`: import decorated views after existing signal setup.
-- `views.py`: Device ObjectView/tab registration and constrained method rejection.
-- `presentation.py`: immutable section/row records and secure native value resolution.
-- `templates/netbox_custom_field_profiles/device_parameters.html`: native Device cards/tables and exact empty-state messages.
-- `tests/test_parameters.py`: three cold-start navigation and empty-state tests.
-- `tests/test_parameter_permissions.py`: six access/reference/mutation tests.
+- `netbox_custom_field_profiles/__init__.py`: import decorated views after existing signal setup.
+- `netbox_custom_field_profiles/views.py`: Device ObjectView/tab registration and constrained method rejection.
+- `netbox_custom_field_profiles/presentation.py`: immutable section/row records and secure native value resolution.
+- `netbox_custom_field_profiles/templates/netbox_custom_field_profiles/device_parameters.html`: native Device cards/tables and exact empty-state messages.
+- `netbox_custom_field_profiles/tests/test_parameters.py`: three cold-start navigation and empty-state tests.
+- `netbox_custom_field_profiles/tests/test_parameter_permissions.py`: six access/reference/mutation tests.
 - `03-01-T1-RED.json`, `03-01-T2-RED.json`: complete runner reports, expected/actual results and semantic RED assessments.
 
 ## Decisions Made
