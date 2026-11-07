@@ -1,0 +1,13 @@
+{% if row.unavailable %}
+  <span class="text-muted">Unavailable</span>
+{% elif row.is_unset %}
+  <span class="text-muted">Not set</span>
+{% elif row.field.type == 'object' %}
+  {{ row.value|linkify }}
+{% elif row.field.type == 'multiobject' %}
+  {% for object in row.value %}
+    {{ object|linkify }}{% if not forloop.last %}<br />{% endif %}
+  {% endfor %}
+{% else %}
+  {% customfield_value row.field row.value %}
+{% endif %}

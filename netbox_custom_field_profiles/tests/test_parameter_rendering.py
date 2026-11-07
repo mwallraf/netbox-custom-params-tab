@@ -110,16 +110,30 @@ class ParameterRenderingTests(TestCase):
                 self.assertNotIn('Not set', json_row)
                 self.assertFalse(response.context['sections'][0].rows[0].is_unset)
 
+    def test_missing_and_null_are_unset_for_every_native_type(self):
+        fields = [self.field('nullable_' + kind, kind) for kind in CustomFieldTypeChoices.values()]
+        self.create_profile('Missing and null', fields)
+        for values in ({}, {field.name: None for field in fields}):
+            with self.subTest(values=values):
+                self.save_values(values)
+                before = self.native_snapshot()
+                response = self.parameter_response()
+                self.assertEqual(len(self.rows(response)), 13)
+                self.assertContains(response, '<span class="text-muted">Not set</span>', count=13)
+                self.assertEqual(self.native_snapshot(), before)
+
     def test_all_visibility_modes_keep_relevant_unset_rows_and_native_settings(self):
         fields = [self.field('visibility_' + str(mode), 'text', ui_visible=mode)
                   for mode in CustomFieldUIVisibleChoices.values()]
         self.create_profile('Every presentation mode', fields)
-        self.save_values({})
-        before = self.native_snapshot()
-        response = self.parameter_response()
-        self.assertEqual(len(self.rows(response)), len(fields))
-        self.assertContains(response, 'Not set', count=len(fields))
-        self.assertEqual(self.native_snapshot(), before)
+        for values in ({}, {field.name: 'Visible native value' for field in fields}):
+            with self.subTest(values=values):
+                self.save_values(values)
+                before = self.native_snapshot()
+                response = self.parameter_response()
+                self.assertEqual(len(self.rows(response)), len(fields))
+                self.assertContains(response, 'Visible native value' if values else 'Not set', count=len(fields))
+                self.assertEqual(self.native_snapshot(), before)
 
     def test_exact_name_fallback_escaped_label_and_secondary_native_help(self):
         raw = self.field('raw_internal_name', 'text', description='<script>help</script> "quoted"')

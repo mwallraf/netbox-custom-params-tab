@@ -1,4 +1,5 @@
 {% extends 'dcim/device/base.html' %}
+{% load parameter_tags %}
 
 {% block content %}
 <div id="device-parameters">
@@ -10,15 +11,18 @@
           <tbody>
             {% for row in section.rows %}
               <tr>
-                <th scope="row">{{ row.field.label|default:row.field.name }}</th>
-                <td>
-                  {% if row.unavailable %}
-                    <span class="text-muted">Unavailable</span>
-                  {% elif row.is_unset %}
-                    <span class="text-muted">Not set</span>
-                  {% else %}
-                    {% customfield_value row.field row.value %}
+                <th scope="row">{{ row.field.label|default:row.field.name }}
+                  {% if row.field.description %}
+                    <i
+                      class="mdi mdi-information text-primary"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      title="{{ row.field.description|escape }}"
+                    ></i>
                   {% endif %}
+                </th>
+                <td>
+                  {% parameter_value row %}
                 </td>
               </tr>
             {% endfor %}
