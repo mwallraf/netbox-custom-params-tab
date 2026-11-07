@@ -1,4 +1,4 @@
-# Phase 03 — Plan Verification
+# Phase 03 — Planning Review
 
 **Date:** 2026-11-07
 **Status:** Passed
