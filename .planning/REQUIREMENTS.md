@@ -4,7 +4,7 @@
 **Core Value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
 
 Source: `docs/REQUIREMENTS.md`; synthesis: `.planning/intel/SYNTHESIS.md`.
-BASE requirements are verified complete; feature/release requirements remain pending. BASE and REL items make the agreed scope reproducible
+BASE requirements are verified complete. Phase 2 is implemented with native test evidence; final browser acceptance remains pending. Later feature/release requirements remain planned. BASE and REL items make the agreed scope reproducible
 and verifiable; they do not add new product functionality.
 
 ## v1 Requirements

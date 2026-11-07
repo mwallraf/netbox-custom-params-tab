@@ -30,9 +30,9 @@
     }
   ],
   "next": {
-    "command": "$gsd-progress --next",
-    "label": "Advance to the next step (verify)",
-    "reason": "Phase 2 of 5 · 20% · ready to verify"
+    "command": "$gsd-verify-work 2",
+    "label": "Complete Phase 2 browser acceptance",
+    "reason": "Eight plans implemented; 37/39 truths verified; eight manual browser checks pending"
   },
   "updated_at": "2026-11-06T20:29:03.074Z"
 }

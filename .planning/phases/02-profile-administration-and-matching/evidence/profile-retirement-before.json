@@ -1,0 +1,19 @@
+{
+  "counts": {
+    "dcim_device": 2,
+    "extras_customfield": 2,
+    "extras_customfield_object_types": 2,
+    "extras_customfieldchoiceset": 0,
+    "netbox_custom_field_profiles_customfieldprofile": 0,
+    "netbox_custom_field_profiles_customfieldprofile_applicabili1f2d": 0,
+    "netbox_custom_field_profiles_customfieldprofile_device_roles": 0,
+    "netbox_custom_field_profiles_customfieldprofile_device_types": 0,
+    "netbox_custom_field_profiles_profilefield": 0
+  },
+  "legacy_counts": {
+    "netbox_custom_field_profiles_customtabconfig": 1,
+    "netbox_custom_field_profiles_customtabconfigfield": 1,
+    "netbox_custom_field_profiles_customtabconfiggroup": 1
+  },
+  "sha256": "a9eea3c6e89766d10110e8ad3087930607b5318e4d28ce065350254cab9207f3"
+}

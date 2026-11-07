@@ -122,7 +122,7 @@ filter engine or multi-object-type scope is included.
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
-| 2. Profile administration and matching | 8/8 | In Progress | - |
+| 2. Profile administration and matching | 8/8 | Awaiting browser acceptance | - |
 | 3. Parameters tab | 0/TBD | Not started | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |

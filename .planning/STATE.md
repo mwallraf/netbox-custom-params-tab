@@ -3,10 +3,10 @@ gsd_state_version: "1.0"
 current_phase: 2
 current_phase_name: Profile administration and matching
 status: verifying
-stopped_at: Completed 02-08 approved schema retirement; Phase 2 review/verifier pending, browser acceptance still open
+stopped_at: Phase 2 implemented and reviewed; awaiting eight browser acceptance checks
 last_updated: "2026-11-06T20:29:03.536Z"
 last_activity: 2026-11-06
-last_activity_desc: All eight Phase 2 plans implemented; independent phase verification pending
+last_activity_desc: Phase 2 final verification human_needed; 37/39 must-haves verified
 state_head: c365936424d9cbaee287967c35d8170163667460
 progress:
   total_phases: 5
@@ -23,13 +23,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-06)
 
 **Core value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
-**Current focus:** Phase 2 — Profile administration and matching
+**Current focus:** Phase 2 — implementation and reviews complete; browser acceptance pending.
 
 ## Current Position
 
-Phase: 2 (Profile administration and matching) — VERIFYING
-Plan: 8 of 8
-Status: Implementation complete — phase review and verification pending
+Phase: 2 — Profile administration and matching; awaiting acceptance
+Plan: 8/8 implemented and summarized
+Status: Human verification needed (8 browser checks)
 Last activity: 2026-11-06 — Approved legacy schema retired; final native and baseline checks pass.
 
 Progress: [██░░░░░░░░] 20%
@@ -83,6 +83,6 @@ None outside the roadmap.
 ## Session Continuity
 
 Last session: 2026-11-06T20:29:03.496Z
-Stopped at: Completed 02-08 approved schema retirement; Phase 2 review/verifier pending, browser acceptance still open
-Resume file: .planning/phases/02-profile-administration-and-matching/02-08-SUMMARY.md
-Next command: `$gsd-execute-phase 2` — resume phase review/verifier gates; no implementation plans remain.
+Stopped at: Phase 2 human_needed; see 02-VERIFICATION.md and 02-UAT.md.
+Resume file: .planning/phases/02-profile-administration-and-matching/02-UAT.md
+Next command: `$gsd-verify-work 2`
