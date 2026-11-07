@@ -22,6 +22,12 @@ class DeviceParametersView(ObjectView):
         # ObjectView has already applied native Device view constraints.
         return {'sections': build_sections(instance, request.user)}
 
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        # Native dispatch checks the action grant first. Apply the constrained
+        # object lookup too before reporting this read-only destination's methods.
+        self.get_object(**kwargs)
+        return super().http_method_not_allowed(request, *args, **kwargs)
+
 
 class CustomFieldProfileListView(ObjectListView):
     queryset = CustomFieldProfile.objects.select_related('content_type')
