@@ -4,12 +4,13 @@
 
 Deliver the first Device-profile milestone from the existing panel-based code.
 Restore a trustworthy baseline, then build administration/matching, display,
-editing, and release verification. No feature phase has started.
+editing, and release verification. Baseline and profile administration/matching
+are verified complete; the Parameters tab is next.
 
 ## Phases
 
 - [x] **Phase 1: Reproducible baseline** - A developer can install, run, and test the renamed plugin from a usable checkout without losing prior work. (completed 2026-11-06)
-- [ ] **Phase 2: Profile administration and matching** - Administrators can define reusable Device profiles and determine which profiles match a Device.
+- [x] **Phase 2: Profile administration and matching** - Administrators can define reusable Device profiles and determine which profiles match a Device. (completed 2026-11-07)
 - [ ] **Phase 3: Parameters tab** - Users can view relevant native fields as ordered profile sections in a dedicated Device tab.
 - [ ] **Phase 4: Edit Parameters** - Authorized users can edit relevant native values once, with native validation and safe persistence.
 - [ ] **Phase 5: Release verification** - The agreed Device workflow is verified, installable, and documented.
@@ -47,7 +48,7 @@ editing, and release verification. No feature phase has started.
   2. Selected mode preserves ordered membership; all-fields mode includes a newly created applicable field without editing the profile.
   3. Profiles support Device Type, role, and tag filters; tests demonstrate AND across rules, OR within values, and no-rules matching all Devices.
   4. Profiles allow duplicate native fields across sections and managing profiles changes neither native settings nor values.
-**Plans**: 8/8 plans executed.
+**Plans**: 8/8 plans complete.
 **Wave 1**
 - [x] 02-01-PLAN.md — Bounded additive schema, native resolver and isolated test preparation.
 
@@ -122,9 +123,9 @@ filter engine or multi-object-type scope is included.
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
-| 2. Profile administration and matching | 8/8 | Awaiting browser acceptance | - |
+| 2. Profile administration and matching | 8/8 | Complete    | 2026-11-07 |
 | 3. Parameters tab | 0/TBD | Not started | - |
 | 4. Edit Parameters | 0/TBD | Not started | - |
 | 5. Release verification | 0/TBD | Not started | - |
 
-*Last updated: 2026-11-06 after Phase 1 verification.*
+*Last updated: 2026-11-07 after Phase 2 acceptance and completion.*

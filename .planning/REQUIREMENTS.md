@@ -4,7 +4,7 @@
 **Core Value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
 
 Source: `docs/REQUIREMENTS.md`; synthesis: `.planning/intel/SYNTHESIS.md`.
-BASE requirements are verified complete. Phase 2 is implemented with native test evidence; final browser acceptance remains pending. Later feature/release requirements remain planned. BASE and REL items make the agreed scope reproducible
+BASE requirements are verified complete. Phase 2 is verified complete, including all eight user-confirmed browser acceptance checks. Later feature/release requirements remain planned. BASE and REL items make the agreed scope reproducible
 and verifiable; they do not add new product functionality.
 
 ## v1 Requirements
@@ -20,13 +20,13 @@ and verifiable; they do not add new product functionality.
 
 - [x] **PROF-01**: Administrators can list, create, edit, and delete multiple Device profiles.
 - [x] **PROF-02**: Profile object-type selection initially offers Device only; field choices are restricted to native fields applicable to the selected type.
-- [ ] **PROF-03**: Each profile has a section title, order, and enabled/disabled state.
-- [ ] **PROF-04**: Selected-fields mode stores an ordered explicit field selection.
-- [ ] **PROF-05**: All-applicable-fields mode includes new matching fields dynamically.
-- [ ] **PROF-06**: The same native field can belong to several profiles.
-- [ ] **MATCH-01**: Configure zero or more Device Type, role, and tag rules.
-- [ ] **MATCH-02**: Require AND between rules and OR between selected values; tags match any.
-- [ ] **MATCH-03**: No rules matches all Devices; only matching enabled profiles apply.
+- [x] **PROF-03**: Each profile has a section title, order, and enabled/disabled state.
+- [x] **PROF-04**: Selected-fields mode stores an ordered explicit field selection.
+- [x] **PROF-05**: All-applicable-fields mode includes new matching fields dynamically.
+- [x] **PROF-06**: The same native field can belong to several profiles.
+- [x] **MATCH-01**: Configure zero or more Device Type, role, and tag rules.
+- [x] **MATCH-02**: Require AND between rules and OR between selected values; tags match any.
+- [x] **MATCH-03**: No rules matches all Devices; only matching enabled profiles apply.
 - [x] **DATA-01**: Profile management changes neither native definitions/visibility nor stored field values.
 
 ### Parameters tab
@@ -72,13 +72,13 @@ and verifiable; they do not add new product functionality.
 | BASE-04 | Phase 1 | Complete |
 | PROF-01 | Phase 2 | Complete |
 | PROF-02 | Phase 2 | Complete |
-| PROF-03 | Phase 2 | Pending |
-| PROF-04 | Phase 2 | Pending |
-| PROF-05 | Phase 2 | Pending |
-| PROF-06 | Phase 2 | Pending |
-| MATCH-01 | Phase 2 | Pending |
-| MATCH-02 | Phase 2 | Pending |
-| MATCH-03 | Phase 2 | Pending |
+| PROF-03 | Phase 2 | Complete |
+| PROF-04 | Phase 2 | Complete |
+| PROF-05 | Phase 2 | Complete |
+| PROF-06 | Phase 2 | Complete |
+| MATCH-01 | Phase 2 | Complete |
+| MATCH-02 | Phase 2 | Complete |
+| MATCH-03 | Phase 2 | Complete |
 | DATA-01 | Phase 2 | Complete |
 | TAB-01 | Phase 3 | Pending |
 | TAB-02 | Phase 3 | Pending |
@@ -95,4 +95,4 @@ and verifiable; they do not add new product functionality.
 
 **Coverage:** 26 v1 requirements; 26 mapped; 0 unmapped.
 
-*Last updated: 2026-11-06 after Phase 1 verification.*
+*Last updated: 2026-11-07 after Phase 2 completion.*
