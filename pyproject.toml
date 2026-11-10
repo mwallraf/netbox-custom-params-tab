@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "netbox-custom-field-profiles"
 version = "0.1.0"
-description = "NetBox plugin: move custom fields into a dedicated section on object detail pages"
+description = "Reusable native custom field profiles for NetBox Devices"
 requires-python = ">=3.10"
 dependencies = []
 

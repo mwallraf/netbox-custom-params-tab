@@ -1,6 +1,6 @@
 ---
 phase: 03-parameters-tab
-status: testing
+status: deferred
 source: [03-VERIFICATION.md]
 started: 2026-11-07T15:09:06Z
 updated: 2026-11-07T15:09:06Z
@@ -20,7 +20,7 @@ expected: |
   Open matching CMTS and nonmatching CPE native Device detail pages, including
   a matching profile with zero available fields. Parameters appears only when
   an enabled profile matches, independently of field count.
-awaiting: user response
+awaiting: final manual acceptance by user
 
 ## Tests
 
@@ -171,3 +171,14 @@ screenshot/browser reference when these cases can be executed.
 Measured command results are in `03-VALIDATION.md` and `03-04-SUMMARY.md`. No
 manual case is passed by those commands. No phase visual acceptance or Nyquist
 sign-off is granted by this record.
+
+## User-directed deferral — 2026-11-10
+
+Deferred to final project acceptance at the user’s explicit instruction. User will perform browser UAT manually. No case is newly passed or skipped; all 15 remain pending. Development of Phase 4/5 may proceed on automated evidence.
+
+## Phase 4 supersession
+
+The historical no-edit-action expectation in case 15 applies to the Phase 3-only
+implementation. Phase 4 intentionally adds Edit Parameters for authorized editors
+with matching editable fields. Final UAT verifies that action boundary; the
+Parameters view itself still rejects POST. See `docs/development/final-uat.md`.

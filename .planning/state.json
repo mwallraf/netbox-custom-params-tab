@@ -16,23 +16,32 @@
     {
       "number": "3",
       "name": "Parameters tab",
-      "status": "in_progress"
+      "status": "in_progress",
+      "implementation": "complete",
+      "automated_verification": "passed",
+      "manual_verification": "deferred_to_final_user_uat"
     },
     {
       "number": "4",
       "name": "Edit Parameters",
-      "status": "pending"
+      "status": "in_progress",
+      "implementation": "complete",
+      "automated_verification": "passed",
+      "manual_verification": "deferred_to_final_user_uat"
     },
     {
       "number": "5",
       "name": "Release verification",
-      "status": "pending"
+      "status": "in_progress",
+      "implementation": "complete",
+      "automated_verification": "passed",
+      "manual_verification": "deferred_to_final_user_uat"
     }
   ],
   "next": {
-    "command": "$gsd-progress --next",
-    "label": "Advance to the next step (verify)",
-    "reason": "Phase 3 of 5 · 40% · ready to verify"
+    "command": "$gsd-verify-work",
+    "label": "Record final manual acceptance observations",
+    "reason": "Implementation and automated release gates complete; user owns final manual browser UAT. See docs/development/final-uat.md."
   },
-  "updated_at": "2026-11-07T14:51:19.010Z"
+  "updated_at": "2026-11-10T14:51:46.214469+00:00"
 }

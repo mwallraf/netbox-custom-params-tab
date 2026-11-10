@@ -38,11 +38,11 @@ and verifiable; they do not add new product functionality.
 
 ### Edit Parameters
 
-- [ ] **EDIT-01**: One Edit Parameters page covers the currently applicable sections.
-- [ ] **EDIT-02**: Repeated fields have one edit input and save one native value.
-- [ ] **EDIT-03**: Native custom field validation/types apply and errors are shown clearly.
-- [ ] **EDIT-04**: Save to native custom_field_data while preserving unrelated field values.
-- [ ] **AUTH-02**: Editing and direct POSTs enforce native object/field editing permissions.
+- [x] **EDIT-01**: One Edit Parameters page covers the currently applicable sections.
+- [x] **EDIT-02**: Repeated fields have one edit input and save one native value.
+- [x] **EDIT-03**: Native custom field validation/types apply and errors are shown clearly.
+- [x] **EDIT-04**: Save to native custom_field_data while preserving unrelated field values.
+- [x] **AUTH-02**: Editing and direct POSTs enforce native object/field editing permissions.
 
 ### Release verification
 
@@ -84,11 +84,11 @@ and verifiable; they do not add new product functionality.
 | TAB-02 | Phase 3 | Complete |
 | TAB-03 | Phase 3 | Complete |
 | AUTH-01 | Phase 3 | Complete |
-| EDIT-01 | Phase 4 | Pending |
-| EDIT-02 | Phase 4 | Pending |
-| EDIT-03 | Phase 4 | Pending |
-| EDIT-04 | Phase 4 | Pending |
-| AUTH-02 | Phase 4 | Pending |
+| EDIT-01 | Phase 4 | Implemented; automated pass; manual UAT deferred |
+| EDIT-02 | Phase 4 | Implemented; automated pass; manual UAT deferred |
+| EDIT-03 | Phase 4 | Implemented; automated pass; manual UAT deferred |
+| EDIT-04 | Phase 4 | Implemented; automated pass; manual UAT deferred |
+| AUTH-02 | Phase 4 | Implemented; automated pass; manual UAT deferred |
 | REL-01 | Phase 5 | Pending |
 | REL-02 | Phase 5 | Pending |
 | REL-03 | Phase 5 | Pending |
@@ -96,3 +96,11 @@ and verifiable; they do not add new product functionality.
 **Coverage:** 26 v1 requirements; 26 mapped; 0 unmapped.
 
 *Last updated: 2026-11-07 after Phase 2 completion.*
+
+## Verification disposition — 2026-11-10
+
+Phase 4 implementation is covered by native request/form/persistence tests.
+Checked implementation requirements do not imply browser acceptance. The user
+explicitly deferred all remaining UAT to final manual testing. Phase 3’s 15 cases
+and Phase 4’s eight cases remain pending. REL requirements remain open until the
+final acceptance observations are recorded.

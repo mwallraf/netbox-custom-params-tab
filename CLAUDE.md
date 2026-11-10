@@ -5,12 +5,13 @@ README.md and `.planning/STATE.md` for source/workflow/environment constraints.
 The canonical source is the root checkout on milestone/custom-field-profiles.
 Do not create worktrees or edit the preserved ignored `.recovery` source.
 
-## Implemented through Phase 3 (browser acceptance pending)
+## Implemented through Phase 4 (final manual acceptance pending)
 
 NetBox Custom Field Profiles (`netbox_custom_field_profiles`) stores presentation
 configuration referencing native Device custom fields. Phase 2 is verified complete.
 Phase 3 implements the read-only Parameters tab; actual desktop/narrow browser
-acceptance remains pending. Native-value editing belongs to Phase 4.
+acceptance remains pending and is deferred to final user-run UAT. Phase 4 adds
+native value editing through DeviceParametersForm/DeviceParametersEditView.
 
 - `models.py`: CustomFieldProfile (nonunique title, display order, disabled by
   default, Device content type, Selected/All mode, fixed reference sets) and
@@ -38,7 +39,8 @@ acceptance remains pending. Native-value editing belongs to Phase 4.
   escaped native labels/help, full URLs, sanitized multiline Markdown and local JSON
   overflow. Hidden/If Set presentation does not remove relevant rows; unset uses
   Not set, while false, zero and empty JSON remain values. Denied/missing references
-  expose no stored IDs; all-denied references show Unavailable. No edit action.
+  expose no stored IDs; all-denied references show Unavailable. Device editors see
+  Edit Parameters when matching editable fields exist.
 - `tests/test_parameter*.py`: native tab/navigation, order/type, permission,
   freshness and complete native/plugin preservation regressions. Phase 3 visual
   cases and the browser-host failure are recorded in `03-UAT.md` under its phase.
@@ -74,3 +76,18 @@ The original panel-based spec and implementation plan in `docs/superpowers/`
 remain background only. Agreed requirements and locked phase context supersede
 their conflicting assumptions about one configuration per type, groups, extra
 object types and injected panels.
+
+## Verification direction (user instruction 2026-11-10)
+
+Defer all remaining browser UAT to the end, to be performed manually by the user.
+Do not attempt browser access or block Phase 4/5 on browser availability. Keep
+unobserved cases pending and maintain the final manual checklist. Native tests
+and required baseline checks remain mandatory.
+
+The edit form deduplicates current matching fields and honors native UI editability.
+It restricts reference choices, omits inaccessible saved references, preserves all
+untouched stored values through native validation, and signs the current field
+scope to reject stale membership/definition changes. The native edit view handles
+change permissions, constrained querysets, validation, change logging and post-save
+authority checks. An outer transaction locks the Device before POST reads. No
+plugin schema or native field settings are changed.

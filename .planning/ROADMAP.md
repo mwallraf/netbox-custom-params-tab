@@ -5,7 +5,7 @@
 Deliver the first Device-profile milestone from the existing panel-based code.
 Restore a trustworthy baseline, then build administration/matching, display,
 editing, and release verification. Baseline and profile administration/matching
-are verified complete; the Parameters tab is next.
+are verified complete. Parameters and native editing are implemented; automated release checks pass. Final manual UAT is deferred to the user.
 
 ## Phases
 
@@ -82,7 +82,7 @@ are verified complete; the Parameters tab is next.
   2. Only matching enabled profiles appear, in a deterministic section/field order.
   3. Native values, repeated fields, and supported field types render correctly; no-match and empty-value behavior is agreed and verified.
   4. Native viewing rules apply on both navigation and direct URLs.
-**Plans**: TBD — created during phase planning.
+**Plans**: 4/4 implementation plans complete; browser acceptance deferred.
 **Wave 1**
 - [x] 03-01-PLAN.md
 
@@ -97,14 +97,15 @@ are verified complete; the Parameters tab is next.
 
 ### Phase 4: Edit Parameters
 **Goal**: Authorized users can edit relevant native values once, with native validation and safe persistence.
-**Depends on**: Phase 3
+**Depends on**: Phase 3 implementation and automated checks (browser UAT deferred to final manual acceptance by user on 2026-11-10)
 **Requirements**: EDIT-01, EDIT-02, EDIT-03, EDIT-04, AUTH-02
 **Success Criteria** (what must be TRUE):
   1. A single Edit Parameters page offers each applicable field once, including fields repeated in display sections.
   2. Native field validation and widgets work; invalid values show actionable errors without saving invalid data.
   3. Successful saves update native values and preserve fields outside the edit set.
   4. Unauthorized direct requests and POSTs cannot read or change restricted objects; permission behavior matches native editing.
-**Plans**: TBD — created during phase planning.
+**Plans**: 1/1 implementation plan complete; automated checks pass, manual acceptance deferred.
+- [x] 04-01-PLAN.md — Native deduplicated editor, permissions, validation and preservation.
 
 ### Phase 5: Release verification
 **Goal**: The agreed Device workflow is verified, installable, and documented.
@@ -115,7 +116,8 @@ are verified complete; the Parameters tab is next.
   2. Native script writes appear in the tab and plugin edits remain available through native NetBox facilities.
   3. Clean package installation and migration checks pass on the supported version.
   4. Installation/configuration/limitations documentation and manual UI evidence are present; all 26 requirements have verified evidence.
-**Plans**: TBD — created during phase planning.
+**Plans**: 1/1 automated release plan complete; final manual acceptance pending.
+- [x] 05-01-PLAN.md — Installed wheel/fresh-schema tests, baseline and final UAT handoff.
 
 ## Discussion and Research Gates
 
@@ -135,8 +137,12 @@ filter engine or multi-object-type scope is included.
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
 | 2. Profile administration and matching | 8/8 | Complete    | 2026-11-07 |
-| 3. Parameters tab | 4/4 | In Progress | - |
-| 4. Edit Parameters | 0/TBD | Not started | - |
-| 5. Release verification | 0/TBD | Not started | - |
+| 3. Parameters tab | 4/4 | Implemented; manual UAT deferred | - |
+| 4. Edit Parameters | 1/1 | Implemented; automated pass; manual UAT deferred | - |
+| 5. Release verification | 1/1 | Automated pass; final manual acceptance pending | - |
 
-*Last updated: 2026-11-07 after Phase 2 acceptance and completion.*
+*Last updated: 2026-11-10 after Phase 4 implementation and automated Phase 5 release checks; final manual UAT deferred.*
+
+## Final manual acceptance
+
+User instruction (2026-11-10): defer all remaining browser UAT until the end of the project, to be performed manually by the user. Phase 3 implementation/automated gates permit Phase 4 to proceed. The 15 Phase 3 cases remain pending; include Phase 4 editing cases in the final handoff. Final acceptance remains open until those observations are recorded.

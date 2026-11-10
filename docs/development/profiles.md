@@ -2,7 +2,7 @@
 
 The exercised runtime is NetBox **4.7.4**, Docker packaging **5.1.1**. Phase 2
 provides profile administration and reusable matching/field resolution. Phase 3
-adds the read-only Device **Parameters** tab. Native-value editing remains Phase 4.
+adds the Device **Parameters** tab. Phase 4 adds **Edit Parameters** using native values.
 Phase 2 is verified complete; Phase 3 browser acceptance is pending as recorded
 in `.planning/phases/03-parameters-tab/03-UAT.md`.
 
@@ -111,7 +111,8 @@ do not need profile or custom-field definition administration permissions. Match
 never grants access. Direct tab URLs enforce the same Device boundary. An
 authorized direct visit with no match says **No parameter profiles apply to this
 device.** A matching section without fields says **No fields are available in this
-profile.** Parameters has no edit action or profile administration metadata.
+profile.** Parameters exposes no profile administration metadata. Authorized Device
+editors see **Edit Parameters** when at least one matching field can be edited.
 
 Every relevant field appears, including fields set to native **Hidden** or **If
 Set** presentation on the normal detail page. Those native settings remain
@@ -139,6 +140,36 @@ profile selection, filters or enable state changes relevance while retaining nat
 stored values. GETs and unsupported POSTs leave native definitions, settings,
 choices, applicability, values and every profile aggregate table unchanged.
 
+## Edit Device Parameters
+
+On a matching Device’s Parameters tab, choose **Edit Parameters**. The single form
+follows first-occurrence section/field order and offers each native field once,
+including fields repeated across profiles. Native Device change permission and
+object constraints apply to both the action and direct GET/POST requests; profile
+administration permission is not required. The route is
+`/dcim/devices/<id>/parameters/edit/`. Save and Cancel return to Parameters.
+
+Only active, applicable fields in currently matching enabled profiles whose native
+UI editability is Yes are offered. Native Hidden and noneditable fields retain
+their stored values. A field containing inaccessible saved references is omitted
+as a whole, preserving its complete value without exposing denied IDs or labels.
+New reference choices use native restricted querysets. If no editable fields
+remain, the page explains this and has no Save action.
+
+Native widgets, required/type/range/regex/choice/uniqueness validation and change
+logging are reused. Invalid submissions display errors and save nothing. Changes
+to the available fields or native definitions while the form is open require a
+reload. Native stale-Device protection is retained. POST re-resolves matching
+profiles and locks the Device before reading its current values. Fields outside
+the edit set, including existing orphaned storage keys, remain unchanged; forged
+extra inputs cannot change Device properties, tags, or excluded fields. Native
+save behavior, including default population, still applies.
+
+Saved values live in native `custom_field_data`; native APIs/scripts and normal
+Device editing see the same values. The next Parameters request reflects the save
+in every repeated occurrence. Native field definitions and visibility settings
+are unchanged.
+
 ## Repeatable checks
 
 Run from the canonical repository root:
@@ -150,6 +181,7 @@ python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test
 python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameters
 python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_rendering
 python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_permissions
+python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_editing
 make test
 ```
 
@@ -213,3 +245,8 @@ In the dedicated sandbox, using disposable verification profiles:
 8. Record the browser/version, profile IDs, exact observed outcomes and redacted
    screenshot paths. No native field settings or values need changing for these
    tests.
+
+On 2026-11-10 the user explicitly deferred all remaining browser UAT to final
+manual acceptance. Phase 3’s 15 cases remain pending, and Phase 4 editing cases
+are in `.planning/phases/04-edit-parameters/04-UAT.md`. This no longer blocks
+development or automated release checks. It does not establish visual acceptance.

@@ -38,6 +38,10 @@ test: check smoke seed-check
 test-profiles:
 	@python3 scripts/test_profiles.py
 
+.PHONY: release-check
+release-check:
+	@python3 scripts/release_check.py
+
 smoke:
 	@python3 scripts/sandbox.py smoke
 

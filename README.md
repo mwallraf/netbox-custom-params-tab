@@ -24,9 +24,10 @@ cleanup. The old panel/API and configuration schema have been retired. Phase 3
 adds a read-only Device **Parameters** tab with matching ordered sections,
 native typed values, explicit empty states and native viewing permissions.
 Native script writes appear on the next request; profile changes preserve values
-and native visibility settings. Phase 3 desktop/narrow browser acceptance remains
-pending because the browser access host is unavailable. **Edit Parameters** is
-planned for Phase 4. See the
+and native visibility settings. Phase 3 desktop/narrow browser acceptance is
+deferred to final manual acceptance by the user. Phase 4 adds **Edit Parameters**,
+using native widgets, validation, permissions and change logging with one input per
+relevant editable field. See the
 [administration guide](docs/development/profiles.md),
 [roadmap](.planning/ROADMAP.md), and [project state](.planning/STATE.md).
 
@@ -58,12 +59,16 @@ Compose project leaves other workstation NetBox installations untouched.
 `make down` preserves data; `make reset` deliberately recreates this project's
 sandbox database while retaining credentials.
 
-See [sandbox guide](docs/development/sandbox.md) and
+See [installation and supported runtime](docs/development/installation.md),
+[sandbox guide](docs/development/sandbox.md) and
 [actual baseline status](docs/development/baseline-status.md).
+Run `make release-check` for an isolated installed-wheel/fresh-database check.
+The [final manual UAT guide](docs/development/final-uat.md) collects the deferred
+browser acceptance steps.
 This is a new, undeployed plugin using a disposable development database: no
 legacy app/data upgrade is needed or supported by this baseline. Profile administration,
-matching and the read-only Parameters tab are implemented; native value editing
-remains the next roadmap capability.
+matching, the Parameters tab and native value editing are implemented. Browser UAT
+is deferred to final manual acceptance; automated checks remain required.
 
 ## Earlier documents
 
