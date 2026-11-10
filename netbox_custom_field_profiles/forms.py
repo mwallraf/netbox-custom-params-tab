@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 
 from django import forms
 from django.db import router, transaction
@@ -7,11 +8,76 @@ from django.db.models import Q
 from netbox.forms import NetBoxModelForm
 from extras.choices import CustomFieldStatusChoices
 from extras.models import CustomField, Tag
-from dcim.models import DeviceType, DeviceRole
+from dcim.models import Device, DeviceType, DeviceRole
 from utilities.forms.fields import DynamicModelMultipleChoiceField
 from utilities.exceptions import AbortRequest
 from .models import CustomFieldProfile, ProfileField
 from .signals import lock_profile_fields
+from .matching import get_matching_profiles, get_profile_fields
+
+
+class DeviceParametersForm(NetBoxModelForm):
+    """A partial native Device form; only current editable profile fields bind."""
+
+    class Meta:
+        model = Device
+        fields = ()
+
+    def _get_custom_fields(self, content_type):
+        fields = {}
+        for profile in get_matching_profiles(self.instance):
+            for field in get_profile_fields(profile):
+                if field.ui_editable == 'yes':
+                    fields.setdefault(field.pk, field)
+        return list(fields.values())
+
+    def __init__(self, *args, user, **kwargs):
+        from django.core import signing
+        from utilities.forms.utils import restrict_form_fields
+
+        super().__init__(*args, **kwargs)
+        self.fields.pop('tags', None)
+        restrict_form_fields(self, user)
+        # Never expose an inaccessible saved reference via widget initial data,
+        # nor silently clear it when the remaining parameters are saved.
+        for name, customfield in list(self.custom_fields.items()):
+            field = self.fields[name]
+            if hasattr(field, 'queryset'):
+                raw = self.instance.custom_field_data.get(customfield.name)
+                ids = raw if isinstance(raw, list) else ([] if raw is None else [raw])
+                if set(ids) - set(field.queryset.filter(pk__in=ids).values_list('pk', flat=True)):
+                    del self.fields[name]
+                    del self.custom_fields[name]
+        self.scope = [(field.pk, field.name, field.type, str(field.last_updated))
+                      for field in self.custom_fields.values()]
+        self.fields['_parameter_scope'] = forms.CharField(
+            widget=forms.HiddenInput,
+            initial=signing.dumps(self.scope, salt='device-parameters'),
+        )
+        editable_names = {field.name for field in self.custom_fields.values()}
+        self.untouched_values = {
+            name: deepcopy(value) for name, value in self.instance.custom_field_data.items()
+            if name not in editable_names
+        }
+
+    def _post_clean(self):
+        super()._post_clean()
+        # Native model validation prunes orphaned keys. A partial editor owns
+        # only its edit set, so retain all pre-existing data outside that set.
+        self.instance.custom_field_data.update(self.untouched_values)
+
+    def clean(self):
+        from django.core import signing
+
+        super().clean()
+        if not self.custom_fields:
+            raise forms.ValidationError('No editable parameters are available for this device.')
+        try:
+            scope = signing.loads(self.cleaned_data.get('_parameter_scope', ''), salt='device-parameters')
+            if scope != [list(item) for item in self.scope]:
+                raise signing.BadSignature()
+        except signing.BadSignature:
+            raise forms.ValidationError('The available parameters changed. Reload this page before saving.')
 
 
 class CustomFieldProfileForm(NetBoxModelForm):

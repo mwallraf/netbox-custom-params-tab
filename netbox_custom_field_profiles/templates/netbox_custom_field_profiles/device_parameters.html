@@ -1,6 +1,12 @@
 {% extends 'dcim/device/base.html' %}
 {% load parameter_tags %}
 
+{% block extra_controls %}
+  {% if can_edit_parameters %}
+    <a href="{% url 'dcim:device_edit_parameters' pk=object.pk %}" class="btn btn-primary">Edit Parameters</a>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
 <style>
   #device-parameters .card-header,
