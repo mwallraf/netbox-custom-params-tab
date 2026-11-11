@@ -1,3 +1,10 @@
+---
+audit_acknowledged:
+  milestone: v0.1.0
+  at: 2026-11-11
+  status: unknown
+---
+
 # Selected-fields profile creation failure
 
 Reported 2026-11-11: enabled Device profile with a title, order and one selected

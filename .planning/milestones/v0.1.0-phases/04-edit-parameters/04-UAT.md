@@ -4,6 +4,10 @@ status: passed
 owner: user
 passed: 8
 pending: 0
+audit_acknowledged:
+  milestone: v0.1.0
+  at: 2026-11-11
+  gap_snapshot: "passed::scenarios=0"
 ---
 
 # Final manual editing acceptance

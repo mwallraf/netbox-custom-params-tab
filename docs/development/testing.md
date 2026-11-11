@@ -66,8 +66,8 @@ ignored local `.env`; keep them out of screenshots and logs.
    URL, MIT License, correct name and author. Confirm another plugin is unaffected.
 
 Record steps, actual outcomes, browser/viewport and sample IDs. For detailed
-historical case matrices, see the [historical Parameters UAT record](../../.planning/phases/03-parameters-tab/03-UAT.md)
-and [editing UAT record](../../.planning/phases/04-edit-parameters/04-UAT.md).
+historical case matrices, see the [historical Parameters UAT record](../../.planning/milestones/v0.1.0-phases/03-parameters-tab/03-UAT.md)
+and [editing UAT record](../../.planning/milestones/v0.1.0-phases/04-edit-parameters/04-UAT.md).
 The Phase 3-only “no Edit Parameters action” case was superseded by the authorized
 Phase 4 editor; the Custom Fields GET view itself still rejects POST.
 

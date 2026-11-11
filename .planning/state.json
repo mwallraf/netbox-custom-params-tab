@@ -1,56 +1,24 @@
 {
   "contract": "1.0.0",
   "flavor": "core",
-  "milestone": null,
-  "phases": [
-    {
-      "number": "1",
-      "name": "Reproducible baseline",
-      "status": "complete"
-    },
-    {
-      "number": "2",
-      "name": "Profile administration and matching",
-      "status": "complete"
-    },
-    {
-      "number": "3",
-      "name": "Parameters tab",
-      "status": "complete",
-      "implementation": "complete",
-      "automated_verification": "passed",
-      "manual_verification": "passed_user_reported_2026-11-11"
-    },
-    {
-      "number": "4",
-      "name": "Edit Parameters",
-      "status": "complete",
-      "implementation": "complete",
-      "automated_verification": "passed",
-      "manual_verification": "passed_user_reported_2026-11-11"
-    },
-    {
-      "number": "5",
-      "name": "Release verification",
-      "status": "complete",
-      "implementation": "complete",
-      "automated_verification": "passed",
-      "manual_verification": "passed_user_reported_2026-11-11"
-    }
-  ],
-  "next": {
-    "command": "$gsd-complete-milestone 0.1.0",
-    "label": "Complete milestone with accepted audit debt",
-    "reason": "Metadata/status and Phase 4/5 Nyquist debt accepted by user; obsolete packaged UI removed and installed-wheel verification passed."
+  "milestone": {
+    "version": "0.1.0",
+    "name": "Device Profiles",
+    "status": "complete",
+    "closeout_type": "override_closeout",
+    "completed": "2026-11-11"
   },
-  "updated_at": "2026-11-11T08:07:41.781721+00:00",
+  "phases": [],
+  "next": {
+    "command": "$gsd-new-milestone",
+    "label": "Define the next milestone",
+    "reason": "v0.1.0 archived with accepted debt and explicit closeout overrides."
+  },
+  "updated_at": "2026-11-11T09:58:56.767351+00:00",
   "audit": {
-    "path": ".planning/v0.1.0-MILESTONE-AUDIT.md",
-    "status": "tech_debt",
-    "requirements": "26/26",
-    "integration": "10/10",
-    "flows": "8/8",
-    "debt_disposition": "metadata_and_nyquist_accepted_by_user_2026-11-11",
-    "legacy_ui_cleanup": "verified_removed_from_wheel_104_native_tests_pass"
+    "path": ".planning/milestones/v0.1.0-MILESTONE-AUDIT.md",
+    "integration": "11/11",
+    "flows": "9/9",
+    "legacy_ui_cleanup": "verified_absent_from_current_wheel_109_tests_pass"
   }
 }

@@ -8,6 +8,10 @@ recorded_at: 2026-11-07T14:47:24Z
 historical_source: 03-04-T2
 browser_cases_passed: 15
 browser_cases_pending: 0
+audit_acknowledged:
+  milestone: v0.1.0
+  at: 2026-11-11
+  gap_snapshot: "passed::scenarios=0"
 ---
 
 # Phase 3 Device Parameters browser acceptance

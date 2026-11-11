@@ -1,13 +1,14 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 05
-current_phase_name: All phases accepted
-status: Audit debt accepted; legacy UI cleanup verified; ready for milestone completion
-stopped_at: User signed off final manual UAT on 2026-11-11
-last_updated: "2026-11-11T09:52:29.701007+00:00"
+milestone: "0.1.0"
+milestone_name: "Device Profiles"
+status: milestone_complete
+closeout_type: override_closeout
+current_phase: null
+current_phase_name: null
+last_updated: "2026-11-11T09:58:35.658698+00:00"
 last_activity: 2026-11-11
-last_activity_desc: Re-audited milestone 0.1.0; 26/26 requirements supported; current installed wheel passes 109 tests; prior debt retained
-state_head: fc52aa30e527decbe5d89db2be6dccd1dd08c508
+last_activity_desc: Completed and archived v0.1.0 with accepted debt and user-approved overrides
 progress:
   total_phases: 5
   completed_phases: 5
@@ -20,206 +21,50 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-11-07)
+See: .planning/PROJECT.md (updated 2026-11-11)
 
 **Core value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
-**Current focus:** User accepted metadata/status and Nyquist debt. Legacy UI cleanup passed installed-wheel verification; ready for milestone completion. Final UAT remains accepted.
+**Current focus:** v0.1.0 complete; define the next milestone when requested.
 
 ## Current Position
 
-Phase: 05 (Release verification)
-Plan: 1 of 1 automated work complete
-Status: All phases accepted; user UAT passed
-Last activity: 2026-11-11 — Completed quick task 261111-erg: Rename Device tab and editor to Custom Fields
+Milestone: v0.1.0 Device Profiles — complete locally, 2026-11-11.
+Five phases, 18 plans, 41 planned tasks; 26/26 requirements supported. Final user
+manual UAT accepted. Current installed wheel passes all 109 native tests and
+schema/metadata/asset checks, with live data unchanged. Earlier baseline: 37 helpers.
 
-Implementation: 18/18 plans complete. Acceptance: 5/5 phases complete; final user UAT sign-off recorded 2026-11-11.
+## Accepted Debt and Overrides
 
-## Performance Metrics
+- Phase 4/5 SUMMARY completion-key differences and missing Nyquist records.
+- Historical pending/status prose retained as dated evidence.
+- Stale Phase 1–3 verification fingerprints after later code/docs changes; user
+  explicitly approved override closeout rather than regenerating those reports.
+- Three artifact acknowledgments below preserve the original artifact verdicts.
 
-- Total implementation plans completed: 18 (4 baseline, 8 profiles, 4 Parameters, 1 editor, 1 release verification).
-- Phase 1: 4/4 plans complete; independent verification passed 24/24 must-haves.
-- Phase 2: 8/8 plans complete; 63 native tests, required baseline and 8/8 user acceptance checks pass. Code review clean; 18 security threats closed.
+Known verification overrides: 3 newly acknowledged, 0 carried forward from a prior close.
+No open functional blocker found by the final milestone audit. Scope and evidence:
+[milestone audit](milestones/v0.1.0-MILESTONE-AUDIT.md).
 
-**Per-Plan Metrics:**
+## Deferred Items
 
-| Plan | Duration | Tasks | Files |
-|------|----------|-------|-------|
-| Phase 02 P01 | 10 min | 2 tasks | 8 files |
-| Phase 02 P02 | 9 min | 2 tasks | 7 files |
-| Phase 02 P03 | 9 min | 2 tasks | 8 files |
-| Phase 02 P04 | 9 min | 2 tasks | 6 files |
-| Phase 02 P05 | 20 min | 2 tasks | 4 files |
-| Phase 02 P06 | 11 min | 2 tasks | 3 files |
-| Phase 02 P07 | 13 min | 2 tasks | 7 files |
-| Phase 02 P08 | 6 min | 2 tasks | 7 files |
-| Phase 03 P01 | 9 min | 2 tasks | 6 files |
-| Phase 03 P02 | 15min | 2 tasks | 5 files |
-| Phase 03 P03 | 7min | 2 tasks | 6 files |
-| Phase 03 P04 | 6min | 2 tasks | 7 files |
+Items acknowledged by explicit user choice at v0.1.0 close; not new failing UAT.
 
-## Accumulated Context
-
-### Decisions
-
-See PROJECT.md Key Decisions and product authority `docs/REQUIREMENTS.md`.
-- Devices first; each matching enabled profile becomes a Parameters tab section.
-- Native fields only; AND across fixed filter rules, OR within selected values.
-- One edit page with deduplicated fields; native permissions and validation.
-- Root milestone checkout retains renamed source/history; original preserved in .recovery.
-- NetBox 4.7.4 / Docker 5.1.1 native schema, actual login/API and isolated lifecycle verified.
-- Generated credentials remain stable; project-only reset recreates disposable data.
-- [Phase 02]: Native dynamic field authority is captured before binding narrows choices; inaccessible saved rules reject edits instead of broadening scope.
-- [Phase 02]: Use for_object_type_id for native tag discovery, including unused compatible/unrestricted tags.
-- [Phase 02]: Native lifecycle cleanup writes only plugin tables; direct SQL/through-table bypass is excluded synchronously but defensive resolution filters stale fields.
-- [Phase 02]: User explicitly selected retire; native 0003 removes only the three legacy configuration models after constraint-first ordering correction.
-- [Phase 03]: Import decorated Device views from ready after signals so core URL assembly sees the registration.
-- [Phase 03]: Constrain referenced native objects before rendering; never deserialize raw reference IDs through unrestricted lookup.
-- [Phase 03]: Perform constrained Device lookup before rejecting unsupported methods, preserving excluded-object 404 semantics.
-- [Phase 03]: Keep ordinary type formatting in native customfield_value; linkify references only from already restricted prepared instances.
-- [Phase 03]: Reuse native customfield_value URL safety context while rendering complete escaped URL text.
-- [Phase 03]: Retain inherited restricted reference resolution and verify its complete authority matrix without artificial production changes.
-- [Phase 03]: Treat unavailable browser proof as pending Phase 3 acceptance; all 15 cases and WINDOWS entry 3 record the concrete browser-host failure.
-- [Phase 03]: Verify inherited read-only behavior through full native/plugin snapshots and independent native saves without changing production code.
-
-### Pending Todos
-
-None outside the roadmap.
-
-### Blockers/Concerns
-
-- Optional historical pytest suite remains unexecuted; required native and baseline suites pass.
-- Historical 02-07-SUMMARY.md names the retired tab_panel.html; that unused asset was intentionally removed in the post-audit cleanup.
-- Phase 3/4/5 UAT accepted by user on 2026-11-11; browser-host limitations no longer block acceptance.
-- All five phases accepted; WINDOWS entry 3 closed by user sign-off.
-
-## Session Continuity
-
-Last session: 2026-11-10
-Stopped at: Phase 4 implemented; Phase 5 automated checks pass; final manual UAT pending
-Resume file: docs/development/testing.md
-Next step: $gsd-complete-milestone 0.1.0 with the accepted metadata/status and Nyquist debt.
-
-## User-directed verification deferral — 2026-11-10
-
-All remaining browser UAT is deferred to the end of the project for the user to run manually. This explicitly removes Phase 3 visual acceptance as a development gate for Phase 4/5. Preserve the 15 pending Phase 3 cases and add editing/release cases; do not mark unobserved cases passed or archive the milestone as fully accepted. Continue automated testing and development in the canonical root checkout.
-
-## Phase 4/5 automated results — 2026-11-10
-
-104 native tests pass (15 new editing tests); live snapshots unchanged. Required baseline passes (35 helper tests, runtime/schema, authentication, idempotent seed). Current wheel assets/import provenance and fresh installed-wheel database/migrations/tests pass in 113.40 seconds. Sandbox processes reloaded and runtime/authentication smoke passed. No browser was used. Phase 3’s 15 cases and Phase 4’s eight cases, plus integrated release round trips, await final manual observations. There is no remaining automated development gate caused by browser access.
-
-## Final user UAT sign-off — 2026-11-11
-
-User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
-All remaining display, editing and integrated release acceptance cases passed on the user’s overall report. No additional tests were run for this record-only update. All five phases and 26 requirements are accepted; milestone audit/archival remains a separate workflow step.
-
-## Milestone audit — 2026-11-11
-
-Audit status: tech_debt. All 26 requirements supported (18 canonical three-source claims plus eight manually reconciled nonstandard summary claims); all five verification reports present; 10/10 principal integrations and 8/8 flows wired. No demonstrated functional blocker. Phase 4/5 Nyquist records are missing; completion metadata and stale project/status prose need reconciliation. User UAT sign-off remains accepted. See v0.1.0-MILESTONE-AUDIT.md. No tests rerun, no archive/tag/publication performed.
-
-## Audit debt disposition — 2026-11-11
-
-User accepted inconsistent completion metadata/stale status text and missing
-Phase 4/5 Nyquist records. User requested removing the unused legacy UI assets;
-three retired templates and their unused tag module are removed, with a release
-package exclusion check added. User UAT sign-off remains accepted.
-
-Cleanup verification: installed wheel excludes all four retired assets, retains
-active templates/static/migrations, and passes 104 native tests on a fresh DB.
-Release check elapsed 115.91s; live native/plugin data unchanged. Ready for
-milestone completion with the explicitly accepted metadata and Nyquist debt.
+| Category | Item | Status | Deferred At | Milestone |
+|---|---|---|---|---|
+| debug_sessions | profile-selected-field-create | unknown machine status; resolved and user-confirmed in body | 2026-11-11 | v0.1.0 |
+| uat_gaps | 03/03-UAT.md | passed; zero open scenarios | 2026-11-11 | v0.1.0 |
+| uat_gaps | 04/04-UAT.md | passed; zero open scenarios | 2026-11-11 | v0.1.0 |
 
 ### Quick Tasks Completed
 
+Both completed quick tasks are [archived with v0.1.0](milestones/v0.1.0-quick/README.md).
+
 | # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 261111-cwr | Add author MIT license GitHub origin and native System plugin user documentation | 2026-11-11 | fc571e4 | [261111-cwr-add-plugin-author-mit-license-project-li](./quick/261111-cwr-add-plugin-author-mit-license-project-li/) |
-| 261111-erg | Rename Device tab and editor to Custom Fields | 2026-11-11 | fc52aa3 | [261111-erg-rename-device-parameters-tab-to-custom-f](./quick/261111-erg-rename-device-parameters-tab-to-custom-f/) |
+|---|---|---|---|---|
 
-## Public README follow-up — 2026-11-11
+## Session Continuity
 
-Replaced development-history README with a public product overview, feature list,
-compatibility, standard NetBox installation, first-use steps and documentation
-links. Verified six active local link targets and whitespace. Screenshot assets
-are absent; existing CLI browser-host limitation remains, so the user must supply
-two real captures. See docs/screenshots/README.md. Prepared image references stay
-in an HTML comment until files exist, avoiding broken images on GitHub. This is
-documentation polish, not a reopened functional UAT gate. No remote push.
-
-## README screenshots — 2026-11-11
-
-User supplied two real screenshots in .screenshots. Inspected both, copied their
-unchanged bytes to docs/screenshots under descriptive filenames, and embedded them
-with captions in README (tall profile editor in an expandable section). Original
-input files preserved. The README screenshot follow-up is complete; functional
-UAT sign-off and accepted debt remain unchanged.
-
-## Post-acceptance bug fix — 2026-11-11
-
-User reported one-field Selected profile creation failed with remembered-field
-validation. Live ordering JavaScript returned 404: the image installed the plugin
-after upstream static collection. Docker now copies plugin assets to STATIC_ROOT;
-the template invalidates cached old script responses. New baseline HTTP checks
-fetch the real editor/script and reject missing/stale JavaScript. Rebuilt/recreated
-the sandbox, verified live asset delivery, 37 helper and 106 native test passes
-with live snapshots unchanged. Details: debug/profile-selected-field-create.md.
-Existing validation, accepted audit debt and UAT records remain intact.
-
-User confirmation (2026-11-11): “it works, confirmed” after retrying profile
-creation with fix 81067eb. The reported defect is closed.
-
-## Plugin display name — 2026-11-11
-
-Changed PluginConfig.verbose_name to NetBox Custom Field Profiles for the native
-System plugin catalog/listing. Navigation link_text remains Custom Field Profiles;
-package/module identifiers, URL namespace and data models are unchanged.
-
-## Documentation and System metadata review — 2026-11-11
-
-Reviewed all original docs against current implementation. User/admin guides now
-live under docs/, maintainer guidance under docs/development/, superseded panel
-records under docs/history/. Current root guidance, product status and metadata
-links follow the new documentation index. Source recovery hashes are preserved.
-
-Summary is plain text; Description contains the explanatory documentation links.
-A narrowly scoped NetBox 4.7.4 compatibility adapter supplies the native System
-project URL and MIT License fields while retaining core templates and permissions.
-All 109 native tests, 37 helper tests and actual live System metadata checks pass.
-Final package verification is recorded in docs-review.json and the review report
-is docs-review.md. Existing user UAT acceptance and accepted Nyquist debt remain.
-
-## Device tab terminology — 2026-11-11
-
-User requested Custom Fields in place of Parameters. Quick task 261111-erg
-updates the tab, Edit Custom Fields action/page, related messages, current docs
-and System metadata. Existing URLs remain compatible. All 109 native tests pass
-with live data unchanged; reloaded runtime registration verified. Screenshots
-retain their original bytes with an explicit former-label note.
-
-## Device route follow-up — 2026-11-11
-
-User requested a plugin-specific path after the tab rename. View and editor now
-register plugin-custom-field-profiles/ and plugin-custom-field-profiles/edit/
-under each Device. URL names remain stable for native reversing; no parameters
-alias is retained, leaving that generic path free. Current requirements and
-administration instructions updated. All 109 native tests passed in 21.354s
-(runner 25.92s), with live native/plugin data unchanged. Sandbox services reloaded.
-
-## Milestone re-audit — 2026-11-11
-
-Rechecked all five verification reports, 18 summary completion headers and all
-26 traceability requirements. 18 IDs have canonical three-source claims; eight
-Phase 4/5 claims remain manually reconciled because of their alternate summary
-key. No unsatisfied/orphaned requirement, critical integration gap or broken
-required flow found. Inline integration audit covers 11 principal boundaries and
-nine flows, including current Custom Fields routes and System metadata/docs.
-
-Current installed-wheel gate passed all 109 tests on a fresh isolated database,
-assets/license/project/docs metadata, import provenance, system/schema checks;
-RELEASE_CHECK_OK elapsed=117.11s and RELEASE_LIVE_UNCHANGED. Current 56 relative
-doc file targets resolve; screenshot bytes match the supplied current capture.
-User UAT sign-off remains accepted. No browser replay is claimed.
-
-Verdict remains tech_debt: existing completion/status metadata and missing Phase
-4/5 Nyquist records were previously accepted; no new blocker was found. See
-v0.1.0-MILESTONE-AUDIT.md. Next: $gsd-complete-milestone 0.1.0 with accepted debt.
-No application change, archival, tag, push or publication performed by audit.
+Detailed prior state: [v0.1.0 continuity archive](milestones/v0.1.0-STATE.md).
+Next step: `$gsd-new-milestone`. Fresh REQUIREMENTS.md will be created then.
+No next milestone or additional feature implementation has been authorized.
+Canonical root checkout and branch remain in use; no worktrees or branch cleanup.

@@ -5,7 +5,8 @@ the agreed NetBox Custom Field Profiles milestone and supersedes conflicting
 assumptions in the original panel-based design and implementation plan.
 
 GSD onboarding is complete. Read `.planning/STATE.md` for current workflow state,
-`.planning/ROADMAP.md` for the five phases, and `.planning/REQUIREMENTS.md` for
+`.planning/ROADMAP.md` for milestone status, and
+`.planning/milestones/v0.1.0-REQUIREMENTS.md` for
 traceable requirement IDs. The five-phase Device milestone and final user UAT are
 accepted; consult current STATE.md for subsequent work and accepted audit debt.
 
