@@ -4,9 +4,9 @@ current_phase: 05
 current_phase_name: All phases accepted
 status: Audit debt accepted; legacy UI cleanup verified; ready for milestone completion
 stopped_at: User signed off final manual UAT on 2026-11-11
-last_updated: "2026-11-11T08:28:53.427Z"
+last_updated: "2026-11-11T08:38:09.556691+00:00"
 last_activity: 2026-11-11
-last_activity_desc: Quick task 261111-cwr adds System plugin documentation, Maarten Wallraf author, MIT license and origin; 105 installed-wheel tests pass
+last_activity_desc: Rewrote public README with quick installation and documentation links; two real screenshots await user capture
 state_head: fc571e4981590136962c9c18c2983d71d173eabc
 progress:
   total_phases: 5
@@ -133,3 +133,13 @@ milestone completion with the explicitly accepted metadata and Nyquist debt.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 261111-cwr | Add author MIT license GitHub origin and native System plugin user documentation | 2026-11-11 | fc571e4 | [261111-cwr-add-plugin-author-mit-license-project-li](./quick/261111-cwr-add-plugin-author-mit-license-project-li/) |
+
+## Public README follow-up — 2026-11-11
+
+Replaced development-history README with a public product overview, feature list,
+compatibility, standard NetBox installation, first-use steps and documentation
+links. Verified six active local link targets and whitespace. Screenshot assets
+are absent; existing CLI browser-host limitation remains, so the user must supply
+two real captures. See docs/screenshots/README.md. Prepared image references stay
+in an HTML comment until files exist, avoiding broken images on GitHub. This is
+documentation polish, not a reopened functional UAT gate. No remote push.

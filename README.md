@@ -1,89 +1,103 @@
 # NetBox Custom Field Profiles
 
-Package: `netbox-custom-field-profiles`  
-Python module and NetBox plugin identifier: `netbox_custom_field_profiles`
+Show the custom fields that matter for each Device, without cluttering its main
+page. Custom Field Profiles groups existing NetBox custom fields into reusable
+sections on a dedicated **Parameters** tab.
 
-Organize NetBox's existing custom fields into relevant, grouped views for objects.
-Custom field definitions, visibility settings, and values remain managed by NetBox.
+For example, a CMTS can show 20–30 service fields while a CPE shows only two,
+with shared fields appearing on both.
 
-Start with the [short user guide](docs/user-guide.md) for profiles, native values,
-and reducing main-page clutter. Author: **Maarten Wallraf**. Licensed under
-[MIT](LICENSE). [GitHub project](https://github.com/mwallraf/netbox-custom-params-tab).
+**Your fields and values stay in NetBox.** The plugin creates no field definitions
+and has no separate value storage. **Edit Parameters** updates native custom field
+values using NetBox’s permissions and validation, so existing scripts and APIs
+continue to work with the same data.
 
-## Agreed milestone direction
+## Features
 
-See [agreed requirements](docs/REQUIREMENTS.md) for the authoritative milestone scope,
-filter matching rules, acceptance examples, and remaining planning details.
+- Manage reusable profiles under **Plugins → Custom Field Profiles**.
+- Match Devices automatically by Device Type, role and tags.
+- Choose and order specific fields, or include all applicable fields dynamically.
+- Display each matching profile as a section; edit repeated fields only once.
+- Hide fields on the normal Device page using native **UI visibility → Hidden**,
+  while keeping them available in Parameters. Native editability still applies.
 
-- Reusable field profiles for Devices, with optional Device Type, role, and tag filters.
-- A dedicated Parameters tab; each matching profile is an ordered section.
-- Selected fields or dynamically all applicable fields; duplicates across profiles allowed.
-- One Edit Parameters page using native custom field values, validation, and permissions.
-- A separate profile administration interface; NetBox's custom field settings stay unchanged.
-- No independent parameter storage or automatic changes to native field visibility.
+<!-- Add real UI screenshots here once captured; see docs/screenshots/README.md.
+![Device Parameters tab with matching profile sections](docs/screenshots/parameters-tab.png)
+![Profile configuration with field selection and Device matching rules](docs/screenshots/profile-configuration.png)
+-->
 
-Profile administration and matching are implemented: native plugin CRUD,
-ordered Selected/All field modes, fixed applicability filters, and safe lifecycle
-cleanup. The old panel/API and configuration schema have been retired. Phase 3
-adds a read-only Device **Parameters** tab with matching ordered sections,
-native typed values, explicit empty states and native viewing permissions.
-Native script writes appear on the next request; profile changes preserve values
-and native visibility settings. Phase 3 desktop/narrow browser acceptance is
-deferred to final manual acceptance by the user. Phase 4 adds **Edit Parameters**,
-using native widgets, validation, permissions and change logging with one input per
-relevant editable field. See the
-[administration guide](docs/development/profiles.md),
-[roadmap](.planning/ROADMAP.md), and [project state](.planning/STATE.md).
+## Compatibility
 
-## Source location
+Supports **Devices**. Tested with **NetBox 4.7.4** and NetBox Docker **5.1.1**.
+The declared minimum is NetBox 4.7.0; other versions have not been verified.
 
-The implementation is tracked in this repository root on `milestone/custom-field-profiles`.
-The renamed snapshot and feature history were retained in commit `4dba67e`.
-The obsolete nested directory is preserved locally in ignored `.recovery/implement-plugin`.
-See [source recovery](docs/development/source-recovery.md) for the inventory.
+## Quick installation
 
-## Rename status
+For a standard NetBox installation under `/opt/netbox`, install directly from
+GitHub using NetBox’s normal plugin installation process:
 
-The project was renamed from NetBox Custom Params Tab. Source imports, plugin
-configuration, URL namespaces, templates, tests, and Docker paths now use the new
-name. `CustomFieldProfile` and ordered `ProfileField` memberships replace the old
-`CustomTabConfig` models; migrations retain the original history and explicitly
-retire the obsolete configuration schema.
+1. Add this line to `/opt/netbox/local_requirements.txt`:
 
-## Development sandbox
+   ```text
+   netbox-custom-field-profiles @ git+https://github.com/mwallraf/netbox-custom-params-tab.git
+   ```
 
-Run `make setup`, then open <http://127.0.0.1:18047>. Administrator credentials
-are generated once in the ignored local `.env` file. Run `make test` for native
-runtime, migration, real admin/API authentication and dummy-data checks. Run `make test-profiles`
-for the isolated native profile suite; see the guide for focused test labels.
+2. Add the plugin to the existing `PLUGINS` list in NetBox’s `configuration.py`:
 
-The exercised baseline is NetBox **4.7.4**, Docker packaging **5.1.1**; minimum
-plugin version is 4.7.0. Other versions have not been verified. The dedicated
-Compose project leaves other workstation NetBox installations untouched.
-`make down` preserves data; `make reset` deliberately recreates this project's
-sandbox database while retaining credentials.
+   ```python
+   PLUGINS = [
+       # Your other plugins...
+       'netbox_custom_field_profiles',
+   ]
+   ```
 
-See [installation and supported runtime](docs/development/installation.md),
-[sandbox guide](docs/development/sandbox.md) and
-[actual baseline status](docs/development/baseline-status.md).
-Run `make release-check` for an isolated installed-wheel/fresh-database check.
-The [final manual UAT guide](docs/development/final-uat.md) collects the deferred
-browser acceptance steps.
-This is a new, undeployed plugin using a disposable development database: no
-legacy app/data upgrade is needed or supported by this baseline. Profile administration,
-matching, the Parameters tab and native value editing are implemented. Browser UAT
-is deferred to final manual acceptance; automated checks remain required.
+3. Run NetBox’s upgrade script to install requirements, apply migrations and
+   collect static files, then restart its services:
 
-## Earlier documents
+   ```sh
+   sudo /opt/netbox/upgrade.sh
+   sudo systemctl restart netbox netbox-rq
+   ```
 
-- [Original design](docs/superpowers/specs/2026-05-04-netbox-custom-field-profiles-design.md)
-- [Original implementation plan](docs/superpowers/plans/2026-05-04-netbox-custom-field-profiles.md)
+No plugin-specific settings are required. For Docker, wheel installation and
+runtime details, see the [installation guide](docs/development/installation.md)
+and the [NetBox plugin installation documentation](https://netboxlabs.com/docs/netbox/plugins/installation/).
 
-These describe the earlier panel-based design and are retained as background.
-The milestone direction above supersedes their conflicting product assumptions.
+## Get started
 
-## Acceptance status — 2026-11-11
+1. Create your fields in NetBox’s built-in **Custom Fields** administration and
+   make them applicable to Devices.
+2. Open **Plugins → Custom Field Profiles**, add a profile, select its fields,
+   and optionally set Device Type, role or tag rules. Enable it and save.
+3. Open a matching Device’s **Parameters** tab. Users with native Device change
+   permission can choose **Edit Parameters** to update editable values.
 
-Final manual UAT passed by the user’s overall sign-off (“ok, pass UAT”). Earlier
-deferral/pending descriptions are historical. No agent browser run or screenshots
-are claimed. All five phases are accepted; milestone audit/archival is next.
+Different rule types combine with **AND**; values within a rule combine with
+**OR**. A tag rule matches any selected tag. Profiles without rules apply to all
+Devices. Matching never grants additional permissions.
+
+## Documentation
+
+- [User guide](docs/user-guide.md) — profiles, native values and reducing clutter.
+- [Installation guide](docs/development/installation.md) — supported runtime and deployment details.
+- [Profile administration](docs/development/profiles.md) — ordering, rules and field lifecycle behavior.
+- [Development sandbox](docs/development/sandbox.md) — run and test the included Docker environment.
+- [Report an issue](https://github.com/mwallraf/netbox-custom-params-tab/issues).
+
+## Development
+
+With Docker Compose, Python 3 and Make installed:
+
+```sh
+git clone https://github.com/mwallraf/netbox-custom-params-tab.git
+cd netbox-custom-params-tab
+make setup
+```
+
+Open <http://127.0.0.1:18047>. Generated administrator credentials are in the local,
+ignored `.env` file. Run `make test` for baseline checks, `make test-profiles` for
+the native plugin suite, and `make release-check` for installed-wheel verification.
+
+## License
+
+[MIT](LICENSE) © 2026 [Maarten Wallraf](https://github.com/mwallraf).

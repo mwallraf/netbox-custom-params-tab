@@ -43,3 +43,16 @@ verified wheel metadata and packaged license. No schema or value change.
 User-confirmed discussion decisions are in 261111-cwr-CONTEXT.md. The quick task
 ran inline under the Codex single-agent fallback, on the canonical root branch.
 No ROADMAP edit, worktree, branch change, migration, remote push or UAT reopening.
+
+## Public README follow-up — 2026-11-11
+
+User requested a GitHub-facing README. Replaced project workflow/history content
+with a brief product explanation, features, compatibility, direct-from-GitHub
+installation via local_requirements.txt/PLUGINS/upgrade.sh, first-use instructions
+and links to user/install/admin/development docs. Installation sequence checked
+against https://netboxlabs.com/docs/netbox/plugins/installation/. All six active
+local targets resolve; git diff --check passes. No application changes or runtime
+test reruns were needed. Two real screenshot captures are requested from the user
+because no image assets exist and CLI browser access was previously unavailable.
+Capture instructions are in docs/screenshots/README.md; image Markdown remains
+commented out until supplied. No invented screenshots, broken image embeds or push.
