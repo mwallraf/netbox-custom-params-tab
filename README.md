@@ -25,9 +25,8 @@ continue to work with the same data.
 
 **Device Custom Fields:** a matching profile presents existing native field values,
 with one action to edit the relevant custom fields.
-The capture below predates the label change and shows “Parameters” / “Edit Parameters”.
 
-![Device tab showing the Sandbox properties section and the former Parameters and Edit Parameters labels](docs/screenshots/parameters-tab.png)
+![Device Custom Fields tab showing Sandbox properties and Test properties sections with the Edit Custom Fields action](docs/screenshots/parameters-tab.png)
 
 <details>
 <summary><strong>Profile configuration</strong> — field selection, order and matching rules</summary>
