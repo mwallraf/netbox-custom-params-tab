@@ -39,9 +39,16 @@
     }
   ],
   "next": {
-    "command": "$gsd-audit-milestone",
-    "label": "Audit accepted milestone",
-    "reason": "All five phases accepted; final manual UAT passed by user report on 2026-11-11."
+    "command": "$gsd-complete-milestone 0.1.0",
+    "label": "Reconcile or accept audit debt before milestone completion",
+    "reason": "No demonstrated functional blockers; summary/lifecycle/status metadata and missing Phase 4/5 Nyquist records are documented in the audit."
   },
-  "updated_at": "2026-11-11T07:41:08.104903+00:00"
+  "updated_at": "2026-11-11T07:55:16.934398+00:00",
+  "audit": {
+    "path": ".planning/v0.1.0-MILESTONE-AUDIT.md",
+    "status": "tech_debt",
+    "requirements": "26/26",
+    "integration": "10/10",
+    "flows": "8/8"
+  }
 }

@@ -2,11 +2,11 @@
 gsd_state_version: "1.0"
 current_phase: 05
 current_phase_name: All phases accepted
-status: All five phases complete; user UAT passed; ready for milestone audit
+status: Milestone audit complete; tech debt review before archival
 stopped_at: User signed off final manual UAT on 2026-11-11
-last_updated: "2026-11-11T07:41:08.104903+00:00"
+last_updated: "2026-11-11T07:55:16.934398+00:00"
 last_activity: 2026-11-11
-last_activity_desc: User reported final UAT passed; all five phases accepted
+last_activity_desc: Audit supports 26/26 requirements, 10/10 integration contracts and 8/8 flows; metadata/Nyquist debt remains
 state_head: 78031a5432406298e63343781f05b93148685ef4
 progress:
   total_phases: 5
@@ -23,7 +23,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-07)
 
 **Core value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
-**Current focus:** All five phases accepted following user-reported final UAT pass on 2026-11-11. Ready for milestone audit; no publication or archival performed.
+**Current focus:** Milestone audit completed with no demonstrated functional blockers; metadata and Nyquist debt remain for review before archival. Final user UAT sign-off remains accepted.
 
 ## Current Position
 
@@ -97,7 +97,7 @@ None outside the roadmap.
 Last session: 2026-11-10
 Stopped at: Phase 4 implemented; Phase 5 automated checks pass; final manual UAT pending
 Resume file: docs/development/final-uat.md
-Next step: Milestone audit ($gsd-audit-milestone), then completion/archival as separately authorized.
+Next step: Reconcile or accept debt in .planning/v0.1.0-MILESTONE-AUDIT.md before $gsd-complete-milestone 0.1.0.
 
 ## User-directed verification deferral — 2026-11-10
 
@@ -111,3 +111,7 @@ All remaining browser UAT is deferred to the end of the project for the user to 
 
 User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
 All remaining display, editing and integrated release acceptance cases passed on the user’s overall report. No additional tests were run for this record-only update. All five phases and 26 requirements are accepted; milestone audit/archival remains a separate workflow step.
+
+## Milestone audit — 2026-11-11
+
+Audit status: tech_debt. All 26 requirements supported (18 canonical three-source claims plus eight manually reconciled nonstandard summary claims); all five verification reports present; 10/10 principal integrations and 8/8 flows wired. No demonstrated functional blocker. Phase 4/5 Nyquist records are missing; completion metadata and stale project/status prose need reconciliation. User UAT sign-off remains accepted. See v0.1.0-MILESTONE-AUDIT.md. No tests rerun, no archive/tag/publication performed.
