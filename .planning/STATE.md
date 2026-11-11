@@ -165,3 +165,9 @@ Existing validation, accepted audit debt and UAT records remain intact.
 
 User confirmation (2026-11-11): “it works, confirmed” after retrying profile
 creation with fix 81067eb. The reported defect is closed.
+
+## Plugin display name — 2026-11-11
+
+Changed PluginConfig.verbose_name to NetBox Custom Field Profiles for the native
+System plugin catalog/listing. Navigation link_text remains Custom Field Profiles;
+package/module identifiers, URL namespace and data models are unchanged.

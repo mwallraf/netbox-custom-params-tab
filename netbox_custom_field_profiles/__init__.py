@@ -3,7 +3,7 @@ from netbox.plugins import PluginConfig
 
 class CustomFieldProfilesConfig(PluginConfig):
     name = 'netbox_custom_field_profiles'
-    verbose_name = 'Custom Field Profiles'
+    verbose_name = 'NetBox Custom Field Profiles'
     version = '0.1.0'
     author = 'Maarten Wallraf'
     description = (
