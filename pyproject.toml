@@ -15,8 +15,8 @@ dependencies = []
 [project.urls]
 Homepage = "https://github.com/mwallraf/netbox-custom-params-tab"
 Repository = "https://github.com/mwallraf/netbox-custom-params-tab"
-Documentation = "https://github.com/mwallraf/netbox-custom-params-tab/blob/HEAD/docs/user-guide.md"
-Installation = "https://github.com/mwallraf/netbox-custom-params-tab/blob/HEAD/docs/development/installation.md"
+Documentation = "https://github.com/mwallraf/netbox-custom-params-tab/blob/HEAD/docs/README.md"
+Installation = "https://github.com/mwallraf/netbox-custom-params-tab/blob/HEAD/docs/installation.md"
 Issues = "https://github.com/mwallraf/netbox-custom-params-tab/issues"
 
 [project.optional-dependencies]

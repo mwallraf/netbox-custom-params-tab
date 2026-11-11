@@ -43,6 +43,8 @@ with tempfile.TemporaryDirectory(prefix='cfprofiles-release-') as temporary:
         metadata = archive.read(metadata).decode()
         assert 'Maarten Wallraf' in metadata, 'Missing package author'
         assert 'https://github.com/mwallraf/netbox-custom-params-tab' in metadata, 'Missing project URL'
+        assert '/blob/HEAD/docs/README.md' in metadata, 'Missing documentation index URL'
+        assert '/blob/HEAD/docs/installation.md' in metadata, 'Missing current installation URL'
         assert 'MIT License' in metadata, 'Missing license metadata'
         licenses = [name for name in names if '.dist-info/' in name and name.endswith('/LICENSE')]
         assert licenses and 'Copyright (c) 2026 Maarten Wallraf' in archive.read(licenses[0]).decode(), 'Missing packaged license'
