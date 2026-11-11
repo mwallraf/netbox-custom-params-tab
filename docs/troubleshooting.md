@@ -1,6 +1,6 @@
 # Troubleshooting
 
-## Parameters tab is missing
+## Custom Fields tab is missing
 
 The tab appears only when an enabled profile matches the Device. Check:
 
@@ -35,7 +35,7 @@ This deployment defect was fixed in commit `81067eb` and confirmed by the user.
 If the current script loads but the error persists, report the mode, field count,
 steps, browser and console/network errors in the [issue tracker](https://github.com/mwallraf/netbox-custom-params-tab/issues).
 
-## Edit Parameters is missing or a field cannot be edited
+## Edit Custom Fields is missing or a field cannot be edited
 
 The action requires native Device change permission and at least one matching
 editable field. Only active, applicable fields with native **UI editable** set to

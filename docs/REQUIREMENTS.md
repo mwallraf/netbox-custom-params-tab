@@ -25,7 +25,7 @@ object types or capabilities are not implementation authorization by themselves.
 - Store field values in NetBox's native custom field data, without duplication.
 - Leave NetBox's custom field definition/settings pages and native visibility
   settings unchanged. Administrators may hide fields on the normal detail page
-  using native settings while presenting them in the Parameters tab.
+  using native settings while presenting them in the Custom Fields tab.
 - Values may be populated or updated by external scripts using native NetBox
   facilities. The plugin must remain generic and not depend on those scripts.
 - Viewing and editing must follow the same permissions, validation, and field
@@ -49,7 +49,7 @@ object types or capabilities are not implementation authorization by themselves.
 - Provide a separate administration interface for creating and managing profiles.
 - Allow any number of profiles for the same supported object type.
 - Each profile has a section title, display order, and enabled/disabled state.
-- Each matching enabled profile renders as one section in the Parameters tab.
+- Each matching enabled profile renders as one section in the Custom Fields tab.
 - A profile contains an ordered list of fields; no nested grouping initially.
 - A custom field may appear in multiple profiles. Every occurrence represents
   the same underlying native value.
@@ -73,9 +73,12 @@ object types or capabilities are not implementation authorization by themselves.
 - Filters should remain simple for administrators. Additional criteria can be
   added later; arbitrary object-attribute traversal is not an initial requirement.
 
-## Parameters tab
+## Custom Fields tab
 
-- Provide a dedicated **Parameters** tab, replacing the earlier panel approach.
+The user renamed the former Parameters tab to **Custom Fields** on 2026-11-11;
+the edit action is **Edit Custom Fields**. Existing route paths remain compatible.
+
+- Provide a dedicated **Custom Fields** tab, replacing the earlier panel approach.
 - Show applicable enabled profiles as ordered sections, with their selected or
   dynamically applicable custom fields.
 - Relevant empty fields are distinct from fields excluded by profile selection
@@ -84,7 +87,7 @@ object types or capabilities are not implementation authorization by themselves.
 
 ## Editing
 
-- Provide one **Edit Parameters** page covering the applicable sections.
+- Provide one **Edit Custom Fields** page covering the applicable sections.
 - When a field occurs in multiple profiles, edit it once to avoid conflicting
   inputs; show its saved value consistently wherever it appears.
 - Save through NetBox's native custom field validation and permission rules.
@@ -98,7 +101,7 @@ object types or capabilities are not implementation authorization by themselves.
 3. A shared profile without filters appears on both devices.
 4. Several profiles can match one device and appear as separate ordered sections.
 5. A field repeated across sections displays one native value and has one edit
-   input on Edit Parameters.
+   input on Edit Custom Fields.
 6. Creating an applicable native custom field adds it automatically to profiles
    using All applicable fields, but not to Selected fields profiles.
 7. Native field visibility settings remain unchanged when profiles are managed.
@@ -110,7 +113,7 @@ object types or capabilities are not implementation authorization by themselves.
 - Exercised runtime: NetBox 4.7.4 / Docker packaging 5.1.1; declared minimum 4.7.0.
 - Source: canonical repository root; original recovery snapshot retained locally.
 - Installation: clean plugin migrations; no legacy-installation data mapping.
-- No-match behavior: Parameters navigation is absent without an enabled match;
+- No-match behavior: Custom Fields navigation is absent without an enabled match;
   an authorized direct visit displays the documented no-profile message.
 - Profile order: display order, title, creation time, primary key. All follows
   native active-field order; Selected follows saved membership order.

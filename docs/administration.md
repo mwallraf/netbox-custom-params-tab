@@ -16,7 +16,7 @@ reference they cannot access. Such a profile needs review by an authorized
 administrator.
 
 Choose **Add** to create a profile. Devices are the only supported Object Type.
-The title identifies the profile and supplies its Parameters section heading;
+The title identifies the profile and supplies its Custom Fields section heading;
 duplicate titles are allowed. New profiles start **disabled**. Set display order,
 configure fields/rules, and explicitly enable the profile when ready. The list
 shows title, enabled state, display order, field mode, and readable applicability.
@@ -93,9 +93,9 @@ operations. Defensive field resolution excludes nonapplicable/inactive fields
 if stale memberships were introduced by a bypass. NetBox retains ownership of
 its own field-data cleanup; the plugin does not write native definitions/values.
 
-## View Device Parameters
+## View Device Custom Fields
 
-Open a Device's native detail page and choose **Parameters**. The tab appears when
+Open a Device's native detail page and choose **Custom Fields**. The tab appears when
 at least one enabled profile matches, including a matching profile that currently
 has no fields. Each profile is an expanded full-width card; duplicate titles are
 retained. Sections use the same deterministic profile order described above;
@@ -106,8 +106,8 @@ do not need profile or custom-field definition administration permissions. Match
 never grants access. Direct tab URLs enforce the same Device boundary. An
 authorized direct visit with no match says **No parameter profiles apply to this
 device.** A matching section without fields says **No fields are available in this
-profile.** Parameters exposes no profile administration metadata. Authorized Device
-editors see **Edit Parameters** when at least one matching field can be edited.
+profile.** Custom Fields exposes no profile administration metadata. Authorized Device
+editors see **Edit Custom Fields** when at least one matching field can be edited.
 
 Every relevant field appears, including fields set to native **Hidden** or **If
 Set** presentation on the normal detail page. Those native settings remain
@@ -134,14 +134,14 @@ profile selection, filters or enable state changes relevance while retaining nat
 stored values. GETs and unsupported POSTs leave native definitions, settings,
 choices, applicability, values and every profile aggregate table unchanged.
 
-## Edit Device Parameters
+## Edit Device Custom Fields
 
-On a matching Device’s Parameters tab, choose **Edit Parameters**. The single form
+On a matching Device’s Custom Fields tab, choose **Edit Custom Fields**. The single form
 follows first-occurrence section/field order and offers each native field once,
 including fields repeated across profiles. Native Device change permission and
 object constraints apply to both the action and direct GET/POST requests; profile
 administration permission is not required. The route is
-`/dcim/devices/<id>/parameters/edit/`. Save and Cancel return to Parameters.
+`/dcim/devices/<id>/parameters/edit/`. Save and Cancel return to Custom Fields.
 
 Only active, applicable fields in currently matching enabled profiles whose native
 UI editability is Yes are offered. Fields with **UI editable** set to No or Hidden retain
@@ -161,7 +161,7 @@ extra inputs cannot change Device properties, tags, or excluded fields. Native
 save behavior, including default population, still applies.
 
 Saved values live in native `custom_field_data`; native APIs/scripts and normal
-Device editing see the same values. The next Parameters request reflects the save
+Device editing see the same values. The next Custom Fields request reflects the save
 in every repeated occurrence. Native field definitions and visibility settings
 are unchanged.
 

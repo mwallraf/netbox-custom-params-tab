@@ -17,7 +17,7 @@ class DeviceParametersView(ObjectView):
     template_name = 'netbox_custom_field_profiles/device_parameters.html'
     actions = ()
     tab = ViewTab(
-        label='Parameters', permission='dcim.view_device',
+        label='Custom Fields', permission='dcim.view_device',
         visible=lambda device: bool(get_matching_profiles(device)),
     )
 

@@ -1,7 +1,7 @@
 # Documentation
 
 NetBox Custom Field Profiles organizes existing Device custom fields into reusable
-profiles on a **Parameters** tab. The plugin stores profile configuration; field
+profiles on a **Custom Fields** tab. The plugin stores profile configuration; field
 definitions and values remain native NetBox data.
 
 ## Users and administrators

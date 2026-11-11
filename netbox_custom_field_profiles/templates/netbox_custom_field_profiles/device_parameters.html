@@ -3,7 +3,7 @@
 
 {% block extra_controls %}
   {% if can_edit_parameters %}
-    <a href="{% url 'dcim:device_edit_parameters' pk=object.pk %}" class="btn btn-primary">Edit Parameters</a>
+    <a href="{% url 'dcim:device_edit_parameters' pk=object.pk %}" class="btn btn-primary">Edit Custom Fields</a>
   {% endif %}
 {% endblock %}
 
@@ -69,7 +69,7 @@
       {% endif %}
     </div>
   {% empty %}
-    <div class="card"><div class="card-body text-muted">No parameter profiles apply to this device.</div></div>
+    <div class="card"><div class="card-body text-muted">No custom field profiles apply to this device.</div></div>
   {% endfor %}
 </div>
 {% endblock %}

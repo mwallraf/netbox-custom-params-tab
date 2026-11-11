@@ -11,3 +11,6 @@ Docker 5.1.1 sandbox, copied without image editing from `.screenshots/`.
 The main README embeds the Parameters screenshot and places the taller profile
 editor screenshot in an expandable section. Keep these paths stable when
 replacing images. Use sample data suitable for public documentation.
+
+The Device capture predates the tab rename to **Custom Fields** and edit action
+rename to **Edit Custom Fields**; its visible Parameters labels are historical.

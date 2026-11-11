@@ -94,7 +94,7 @@ class ParameterPermissionTests(TestCase):
         self.client.force_login(viewer)
         self.profile.enabled = False
         self.profile.save()
-        self.assertContains(self.preserved_request(), 'No parameter profiles apply to this device.')
+        self.assertContains(self.preserved_request(), 'No custom field profiles apply to this device.')
         self.preserved_request('post', {'enabled': True}, expected=405)
         self.profile.enabled = True
         self.profile.save()
@@ -167,11 +167,11 @@ class ParameterPermissionTests(TestCase):
         self.assertNotIn('Excluded native value', self.parameter_content(self.preserved_request()))
         tag = Tag.objects.create(name='Unmatched relevance rule', slug='unmatched-relevance-rule')
         self.profile.applicability_tags.add(tag)
-        self.assertContains(self.preserved_request(), 'No parameter profiles apply to this device.')
+        self.assertContains(self.preserved_request(), 'No custom field profiles apply to this device.')
         self.profile.applicability_tags.clear()
         self.profile.enabled = False
         self.profile.save()
-        self.assertContains(self.preserved_request(), 'No parameter profiles apply to this device.')
+        self.assertContains(self.preserved_request(), 'No custom field profiles apply to this device.')
         self.profile.enabled = True
         self.profile.save()
         self.assertContains(self.preserved_request(), 'Selected native value')
@@ -190,7 +190,7 @@ class ParameterPermissionTests(TestCase):
                 response = self.client.get(self.parameter_url())
                 self.assertContains(response, 'external value')
                 content = self.parameter_content(response)
-                self.assertNotIn('Edit Parameters', content)
+                self.assertNotIn('Edit Custom Fields', content)
                 self.assertNotIn('/plugins/custom-field-profiles/', content)
 
     def test_denied_subjects_and_no_match_never_resolve_profiles(self):
@@ -213,7 +213,7 @@ class ParameterPermissionTests(TestCase):
                             response = self.client.get(url)
                             self.assertIn(response.status_code, expected)
                             for secret in ('Private profile section', 'Tracer device',
-                                           'No parameter profiles apply to this device.'):
+                                           'No custom field profiles apply to this device.'):
                                 self.assertNotContains(response, secret, status_code=response.status_code)
                         build.assert_not_called()
                         match.assert_not_called()
@@ -223,7 +223,7 @@ class ParameterPermissionTests(TestCase):
         self.profile.save()
         self.client.force_login(self.user('empty-state-viewer', ['view']))
         response = self.client.get(self.parameter_url())
-        self.assertContains(response, 'No parameter profiles apply to this device.', count=1)
+        self.assertContains(response, 'No custom field profiles apply to this device.', count=1)
         self.assertTemplateUsed(response, 'dcim/device/base.html')
 
     def test_post_is_unsupported_and_preserves_native_and_profile_data(self):

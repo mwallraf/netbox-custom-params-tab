@@ -2,13 +2,13 @@
 
 Show the custom fields that matter for each Device, without cluttering its main
 page. Custom Field Profiles groups existing NetBox custom fields into reusable
-sections on a dedicated **Parameters** tab.
+sections on a dedicated **Custom Fields** tab.
 
 For example, a CMTS can show 20–30 service fields while a CPE shows only two,
 with shared fields appearing on both.
 
 **Your fields and values stay in NetBox.** The plugin creates no field definitions
-and has no separate value storage. **Edit Parameters** updates native custom field
+and has no separate value storage. **Edit Custom Fields** updates native custom field
 values using NetBox’s permissions and validation, so existing scripts and APIs
 continue to work with the same data.
 
@@ -19,14 +19,15 @@ continue to work with the same data.
 - Choose and order specific fields, or include all applicable fields dynamically.
 - Display each matching profile as a section; edit repeated fields only once.
 - Hide fields on the normal Device page using native **UI visibility → Hidden**,
-  while keeping them available in Parameters. Native editability still applies.
+  while keeping them available in Custom Fields. Native editability still applies.
 
 ## Screenshots
 
-**Device Parameters:** a matching profile presents existing native field values,
-with one action to edit the relevant parameters.
+**Device Custom Fields:** a matching profile presents existing native field values,
+with one action to edit the relevant custom fields.
+The capture below predates the label change and shows “Parameters” / “Edit Parameters”.
 
-![Device Parameters tab showing the Sandbox properties section and Edit Parameters action](docs/screenshots/parameters-tab.png)
+![Device tab showing the Sandbox properties section and the former Parameters and Edit Parameters labels](docs/screenshots/parameters-tab.png)
 
 <details>
 <summary><strong>Profile configuration</strong> — field selection, order and matching rules</summary>
@@ -80,8 +81,8 @@ and the [NetBox plugin installation documentation](https://netboxlabs.com/docs/n
    make them applicable to Devices.
 2. Open **Plugins → Custom Field Profiles**, add a profile, select its fields,
    and optionally set Device Type, role or tag rules. Enable it and save.
-3. Open a matching Device’s **Parameters** tab. Users with native Device change
-   permission can choose **Edit Parameters** to update editable values.
+3. Open a matching Device’s **Custom Fields** tab. Users with native Device change
+   permission can choose **Edit Custom Fields** to update editable values.
 
 Different rule types combine with **AND**; values within a rule combine with
 **OR**. A tag rule matches any selected tag. Profiles without rules apply to all

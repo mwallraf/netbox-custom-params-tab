@@ -51,7 +51,7 @@ class ParametersTabTests(TestCase):
         self.assertEqual(re.findall(r'<h2 class="card-header">(.*?)</h2>', content),
                          [p.title for p in profiles])
         for forbidden in ('data-bs-toggle="collapse"', 'Applies to all Devices',
-                          'Selected fields', 'Display order', 'Edit Parameters'):
+                          'Selected fields', 'Display order', 'Edit Custom Fields'):
             self.assertNotIn(forbidden, content)
 
     def test_matching_device_classes_shared_and_combined_rules(self):
@@ -149,6 +149,11 @@ class ParametersTabTests(TestCase):
         self.assertEqual(resolve(url).func.view_class.__name__, 'DeviceParametersView')
         detail = self.client.get(reverse('dcim:device', args=[self.device.pk]))
         self.assertContains(detail, f'href="{url}"')
+        tab_link = re.search(rf'<a[^>]*href="{re.escape(url)}"[^>]*>(.*?)</a>',
+                             detail.content.decode(), re.DOTALL)
+        self.assertIsNotNone(tab_link)
+        self.assertIn('Custom Fields', tab_link.group(1))
+        self.assertNotIn('Parameters', tab_link.group(1))
         self.assertTemplateNotUsed(detail, 'netbox_custom_field_profiles/tab_panel.html')
         response = self.client.get(url)
         self.assertContains(response, 'Service parameters')
@@ -169,7 +174,7 @@ class ParametersTabTests(TestCase):
                 detail = self.client.get(reverse('dcim:device', args=[self.device.pk]))
                 self.assertNotContains(detail, f'href="{self.parameter_url()}"')
                 response = self.client.get(self.parameter_url())
-                self.assertContains(response, 'No parameter profiles apply to this device.', count=1)
+                self.assertContains(response, 'No custom field profiles apply to this device.', count=1)
                 self.assertTemplateUsed(response, 'dcim/device/base.html')
                 self.assertNotContains(response, 'No fields are available in this profile.')
 
@@ -183,4 +188,4 @@ class ParametersTabTests(TestCase):
         response = self.client.get(self.parameter_url())
         self.assertContains(response, 'Service parameters')
         self.assertContains(response, 'No fields are available in this profile.', count=1)
-        self.assertNotContains(response, 'No parameter profiles apply to this device.')
+        self.assertNotContains(response, 'No custom field profiles apply to this device.')

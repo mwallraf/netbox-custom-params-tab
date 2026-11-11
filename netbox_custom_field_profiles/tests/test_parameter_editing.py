@@ -1,4 +1,4 @@
-"""Edit Parameters through real native GET/POST routes and isolated storage."""
+"""Edit Custom Fields through real native GET/POST routes and isolated storage."""
 import time
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
@@ -131,7 +131,7 @@ class ParameterEditingTests(TestCase):
         self.field('added')
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'available parameters changed')
+        self.assertContains(response, 'available custom fields changed')
         self.assertEqual(self.values()['tracer_value'], 'external value')
         self.profile.field_mode = 'all'
         self.profile.save()
@@ -160,9 +160,9 @@ class ParameterEditingTests(TestCase):
             if mode == 'hidden':
                 self.native_field.ui_editable = 'hidden'
                 self.native_field.save()
-            self.assertNotContains(self.client.get(self.tab_url), 'Edit Parameters')
+            self.assertNotContains(self.client.get(self.tab_url), 'Edit Custom Fields')
             response = self.client.get(self.url)
-            self.assertContains(response, 'No editable parameters are available')
+            self.assertContains(response, 'No editable custom fields are available')
             self.assertNotContains(response, 'name="_update"')
             self.assertEqual(self.client.post(self.url, data).status_code, 200)
             self.assertEqual(self.values()['tracer_value'], 'external value')
@@ -196,7 +196,7 @@ class ParameterEditingTests(TestCase):
                 self.assertEqual(self.values(), before)
             if status != 404 and 'view' in actions:
                 tab = self.client.get(self.tab_url)
-                self.assertEqual('Edit Parameters' in tab.content.decode(), status == 200)
+                self.assertEqual('Edit Custom Fields' in tab.content.decode(), status == 200)
 
     def test_reference_choices_reject_denied_targets_and_preserve_inaccessible_current_values(self):
         self.field('reference', 'object', related_object_type=ContentType.objects.get_for_model(Site))
@@ -244,7 +244,7 @@ class ParameterEditingTests(TestCase):
 
     def test_quickadd_and_clone_flags_cannot_expose_unrelated_values(self):
         response = self.client.get(self.url + '?_quickadd=1')
-        self.assertContains(response, 'Edit Parameters:')
+        self.assertContains(response, 'Edit Custom Fields:')
         response = self.client.post(self.url + '?_quickadd=1', self.payload(_addanother='1'))
         self.assertRedirects(response, self.tab_url, fetch_redirect_response=False)
 

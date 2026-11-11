@@ -49,16 +49,16 @@ ignored local `.env`; keep them out of screenshots and logs.
    and an All profile, using native Device-applicable field definitions.
 3. Verify AND across populated rules, OR within values, tag-any matching, disabled
    profiles, Selected/All ordering and newly created native-field inclusion.
-4. View Parameters with unset values, false/zero, all native types, duplicate
+4. View Custom Fields with unset values, false/zero, all native types, duplicate
    fields, long URLs/text, Markdown and wide JSON. Check desktop/narrow readability,
    help, keyboard focus and local overflow.
-5. Edit Parameters: one input per native field, native widget/type/required/range/
+5. Edit Custom Fields: one input per native field, native widget/type/required/range/
    regex/choice/uniqueness errors, Save/Cancel, stale-form rejection and identical
    repeated values after save. Confirm unrelated native data/settings remain intact.
 6. Check viewer/editor/denied/constrained users on navigation, direct URLs and
    POSTs. Related-object permissions are independent of Device permissions.
 7. Change a value through native Device editing or a native script/API operation;
-   the next Parameters request must show it. Save through Parameters and confirm
+   the next Custom Fields request must show it. Save through Custom Fields and confirm
    native consumers see the same value and native change log.
 8. Recheck profile ordering/mode switching through pointer and keyboard controls,
    invalid-form recovery, unused-tag search and no-JavaScript/error guidance.
@@ -66,10 +66,10 @@ ignored local `.env`; keep them out of screenshots and logs.
    URL, MIT License, correct name and author. Confirm another plugin is unaffected.
 
 Record steps, actual outcomes, browser/viewport and sample IDs. For detailed
-historical case matrices, see the [Parameters UAT record](../../.planning/phases/03-parameters-tab/03-UAT.md)
+historical case matrices, see the [historical Parameters UAT record](../../.planning/phases/03-parameters-tab/03-UAT.md)
 and [editing UAT record](../../.planning/phases/04-edit-parameters/04-UAT.md).
 The Phase 3-only “no Edit Parameters action” case was superseded by the authorized
-Phase 4 editor; the Parameters GET view itself still rejects POST.
+Phase 4 editor; the Custom Fields GET view itself still rejects POST.
 
 ## Existing acceptance and known scope
 

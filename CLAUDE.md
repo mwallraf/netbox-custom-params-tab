@@ -9,7 +9,7 @@ Do not create worktrees/per-phase branches or edit/prune ignored `.recovery`.
 
 - Native CustomFieldProfile/ProfileField configuration, Device-only Selected/All
   resolution, fixed Device Type/role/tag AND/OR/tag-any matching and safe cleanup.
-- A dedicated Device Parameters tab with ordered sections and native formatting.
+- A dedicated Device Custom Fields tab with ordered sections and native formatting.
   Values remain in native custom_field_data; references use restricted querysets.
 - One native partial editor with deduplicated editable fields, constrained Device
   authority, validation, transaction/change logging and preservation of other data.

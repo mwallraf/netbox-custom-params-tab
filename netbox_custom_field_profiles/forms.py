@@ -71,13 +71,13 @@ class DeviceParametersForm(NetBoxModelForm):
 
         super().clean()
         if not self.custom_fields:
-            raise forms.ValidationError('No editable parameters are available for this device.')
+            raise forms.ValidationError('No editable custom fields are available for this device.')
         try:
             scope = signing.loads(self.cleaned_data.get('_parameter_scope', ''), salt='device-parameters')
             if scope != [list(item) for item in self.scope]:
                 raise signing.BadSignature()
         except signing.BadSignature:
-            raise forms.ValidationError('The available parameters changed. Reload this page before saving.')
+            raise forms.ValidationError('The available custom fields changed. Reload this page before saving.')
 
 
 class CustomFieldProfileForm(NetBoxModelForm):
