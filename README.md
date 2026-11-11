@@ -6,6 +6,10 @@ Python module and NetBox plugin identifier: `netbox_custom_field_profiles`
 Organize NetBox's existing custom fields into relevant, grouped views for objects.
 Custom field definitions, visibility settings, and values remain managed by NetBox.
 
+Start with the [short user guide](docs/user-guide.md) for profiles, native values,
+and reducing main-page clutter. Author: **Maarten Wallraf**. Licensed under
+[MIT](LICENSE). [GitHub project](https://github.com/mwallraf/netbox-custom-params-tab).
+
 ## Agreed milestone direction
 
 See [agreed requirements](docs/REQUIREMENTS.md) for the authoritative milestone scope,

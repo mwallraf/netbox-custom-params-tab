@@ -6,8 +6,18 @@ build-backend = "setuptools.build_meta"
 name = "netbox-custom-field-profiles"
 version = "0.1.0"
 description = "Reusable native custom field profiles for NetBox Devices"
+readme = "README.md"
+authors = [{name = "Maarten Wallraf"}]
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/mwallraf/netbox-custom-params-tab"
+Repository = "https://github.com/mwallraf/netbox-custom-params-tab"
+Documentation = "https://github.com/mwallraf/netbox-custom-params-tab/blob/HEAD/docs/user-guide.md"
+Installation = "https://github.com/mwallraf/netbox-custom-params-tab/blob/HEAD/docs/development/installation.md"
+Issues = "https://github.com/mwallraf/netbox-custom-params-tab/issues"
 
 [project.optional-dependencies]
 test = [

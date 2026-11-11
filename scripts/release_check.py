@@ -17,7 +17,9 @@ with tempfile.TemporaryDirectory(prefix='cfprofiles-release-') as temporary:
     clean = root / 'source'
     clean.mkdir()
     # The image's baked metadata can predate the bind-mounted source checkout.
-    (clean / 'pyproject.toml').write_text(json.load(sys.stdin)['pyproject'])
+    inputs = json.load(sys.stdin)
+    for name in ('pyproject.toml', 'README.md', 'LICENSE'):
+        (clean / name).write_text(inputs[name])
     shutil.copytree(source / 'netbox_custom_field_profiles', clean / 'netbox_custom_field_profiles',
                     ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '*.egg-info'))
     subprocess.run(['uv', 'build', '--out-dir', str(root / 'dist'), str(clean)], check=True)
@@ -37,8 +39,16 @@ with tempfile.TemporaryDirectory(prefix='cfprofiles-release-') as temporary:
                    'templates/netbox_custom_field_profiles/tab_panel.html',
                    'templatetags/customtab_tags.py']
         assert not any('netbox_custom_field_profiles/' + name in names for name in retired), 'Retired UI assets included'
+        metadata = next(name for name in names if name.endswith('.dist-info/METADATA'))
+        metadata = archive.read(metadata).decode()
+        assert 'Maarten Wallraf' in metadata, 'Missing package author'
+        assert 'https://github.com/mwallraf/netbox-custom-params-tab' in metadata, 'Missing project URL'
+        assert 'MIT License' in metadata, 'Missing license metadata'
+        licenses = [name for name in names if '.dist-info/' in name and name.endswith('/LICENSE')]
+        assert licenses and 'Copyright (c) 2026 Maarten Wallraf' in archive.read(licenses[0]).decode(), 'Missing packaged license'
     print('RELEASE_WHEEL_ASSETS_OK', flush=True)
     print('RELEASE_RETIRED_UI_ABSENT', flush=True)
+    print('RELEASE_PROJECT_METADATA_LICENSE_OK', flush=True)
     target = root / 'installed'
     subprocess.run(['uv', 'pip', 'install', '--offline', '--no-deps', '--python', python,
                     '--target', str(target), str(wheels[0])], check=True)
@@ -70,10 +80,12 @@ def main():
         before = snapshot()
         try:
             output = sandbox.run(['exec', '-T', 'netbox', sandbox.PYTHON, '-c', CHECK], capture=True,
-                                 input=json.dumps({'pyproject': (sandbox.ROOT / 'pyproject.toml').read_text()}))
+                                 input=json.dumps({name: (sandbox.ROOT / name).read_text()
+                                                   for name in ('pyproject.toml', 'README.md', 'LICENSE')}))
             print(sandbox.redact(output), end='')
             for marker in ('RELEASE_WHEEL_ASSETS_OK', 'RELEASE_RETIRED_UI_ABSENT', 'RELEASE_INSTALLED_IMPORT_OK',
-                           'PROFILE_TESTS_ISOLATED', 'RELEASE_CLEAN_INSTALL_MIGRATIONS_TESTS_OK'):
+                           'RELEASE_PROJECT_METADATA_LICENSE_OK', 'PROFILE_TESTS_ISOLATED',
+                           'RELEASE_CLEAN_INSTALL_MIGRATIONS_TESTS_OK'):
                 if marker not in output:
                     raise RuntimeError('Missing release verification marker: ' + marker)
         finally:
