@@ -143,3 +143,11 @@ are absent; existing CLI browser-host limitation remains, so the user must suppl
 two real captures. See docs/screenshots/README.md. Prepared image references stay
 in an HTML comment until files exist, avoiding broken images on GitHub. This is
 documentation polish, not a reopened functional UAT gate. No remote push.
+
+## README screenshots — 2026-11-11
+
+User supplied two real screenshots in .screenshots. Inspected both, copied their
+unchanged bytes to docs/screenshots under descriptive filenames, and embedded them
+with captions in README (tall profile editor in an expandable section). Original
+input files preserved. The README screenshot follow-up is complete; functional
+UAT sign-off and accepted debt remain unchanged.

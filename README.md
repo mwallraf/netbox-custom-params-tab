@@ -21,10 +21,21 @@ continue to work with the same data.
 - Hide fields on the normal Device page using native **UI visibility → Hidden**,
   while keeping them available in Parameters. Native editability still applies.
 
-<!-- Add real UI screenshots here once captured; see docs/screenshots/README.md.
-![Device Parameters tab with matching profile sections](docs/screenshots/parameters-tab.png)
-![Profile configuration with field selection and Device matching rules](docs/screenshots/profile-configuration.png)
--->
+## Screenshots
+
+**Device Parameters:** a matching profile presents existing native field values,
+with one action to edit the relevant parameters.
+
+![Device Parameters tab showing the Sandbox properties section and Edit Parameters action](docs/screenshots/parameters-tab.png)
+
+<details>
+<summary><strong>Profile configuration</strong> — field selection, order and matching rules</summary>
+
+Select existing Device fields, arrange their order, and choose which Devices match.
+
+![Custom Field Profile editor showing selected fields, a Device tag rule and ordering controls](docs/screenshots/profile-configuration.png)
+
+</details>
 
 ## Compatibility
 
