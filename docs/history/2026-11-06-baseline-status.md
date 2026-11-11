@@ -1,3 +1,6 @@
+> **Historical record.** Preserved for provenance; not current installation or feature guidance.
+> See the [documentation index](../README.md) and [current architecture](../development/architecture.md).
+
 # Phase 1 baseline status
 
 Executed 2026-11-06 from milestone/custom-field-profiles, canonical root checkout.
@@ -27,7 +30,7 @@ No profile administration/matching (Phase 2), Parameters tab (Phase 3), native
 edit workflow (Phase 4), or full feature release verification (Phase 5) is claimed.
 The legacy runner is unavailable, so there is no measured feature-failure list.
 Old SQLite settings and panel tests remain unverified and may require adaptation
-in their relevant feature phases. See sandbox.md for the optional declared-extra
+in their relevant feature phases. See [the development sandbox](../development/sandbox.md) for the optional declared-extra
 installation path. Missing optional pytest is not a successful legacy run.
 
 This new undeployed plugin has no legacy database upgrade requirement. Clean

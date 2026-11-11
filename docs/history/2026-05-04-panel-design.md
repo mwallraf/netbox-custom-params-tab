@@ -1,3 +1,6 @@
+> **Historical record.** Preserved for provenance; not current installation or feature guidance.
+> See the [documentation index](../README.md) and [current architecture](../development/architecture.md).
+
 # Design: netbox-custom-field-profiles
 
 **Date:** 2026-05-04  

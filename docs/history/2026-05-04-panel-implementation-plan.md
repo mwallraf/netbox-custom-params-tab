@@ -1,3 +1,6 @@
+> **Historical record.** Preserved for provenance; not current installation or feature guidance.
+> See the [documentation index](../README.md) and [current architecture](../development/architecture.md).
+
 # netbox-custom-field-profiles Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

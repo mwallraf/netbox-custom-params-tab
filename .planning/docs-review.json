@@ -1,0 +1,149 @@
+{
+  "scope": "Review existing documentation against current implementation; user and maintainer structure, historical preservation, System plugin metadata",
+  "mode": "user-authorized update/restructure, inline Codex fallback",
+  "items": [
+    {
+      "path": "docs/REQUIREMENTS.md",
+      "status": "source_verified",
+      "bytes": 6382,
+      "disposition": "reviewed_updated_or_restructured",
+      "current_path": "docs/REQUIREMENTS.md"
+    },
+    {
+      "path": "docs/development/baseline-status.md",
+      "status": "source_verified",
+      "bytes": 2287,
+      "disposition": "archived_original_content_with_banner",
+      "current_path": "docs/history/2026-11-06-baseline-status.md"
+    },
+    {
+      "path": "docs/development/final-uat.md",
+      "status": "source_verified",
+      "bytes": 4403,
+      "disposition": "reviewed_updated_or_restructured",
+      "current_path": "docs/development/testing.md"
+    },
+    {
+      "path": "docs/development/installation.md",
+      "status": "source_verified",
+      "bytes": 3175,
+      "disposition": "reviewed_updated_or_restructured",
+      "current_path": "docs/installation.md"
+    },
+    {
+      "path": "docs/development/profiles.md",
+      "status": "source_verified",
+      "bytes": 15755,
+      "disposition": "reviewed_updated_or_restructured",
+      "current_path": "docs/administration.md"
+    },
+    {
+      "path": "docs/development/sandbox.md",
+      "status": "source_verified",
+      "bytes": 5372,
+      "disposition": "reviewed_updated_or_restructured",
+      "current_path": "docs/development/sandbox.md"
+    },
+    {
+      "path": "docs/development/source-recovery.md",
+      "status": "source_verified",
+      "bytes": 5001,
+      "disposition": "preserved_machine_readable_manifest_with_historical_context",
+      "current_path": "docs/development/source-recovery.md"
+    },
+    {
+      "path": "docs/screenshots/README.md",
+      "status": "source_verified",
+      "bytes": 673,
+      "disposition": "reviewed_retained_real_user_captures",
+      "current_path": "docs/screenshots/README.md"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-05-04-netbox-custom-field-profiles.md",
+      "status": "source_verified",
+      "bytes": 60575,
+      "disposition": "archived_original_content_with_banner",
+      "current_path": "docs/history/2026-05-04-panel-implementation-plan.md"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-05-04-netbox-custom-field-profiles-design.md",
+      "status": "source_verified",
+      "bytes": 6297,
+      "disposition": "archived_original_content_with_banner",
+      "current_path": "docs/history/2026-05-04-panel-design.md"
+    },
+    {
+      "path": "docs/user-guide.md",
+      "status": "source_verified",
+      "bytes": 2818,
+      "disposition": "reviewed_updated_or_restructured",
+      "current_path": "docs/user-guide.md"
+    },
+    {
+      "path": "README.md",
+      "current_path": "README.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    },
+    {
+      "path": "AGENTS.md",
+      "current_path": "AGENTS.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    },
+    {
+      "path": "CLAUDE.md",
+      "current_path": "CLAUDE.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    },
+    {
+      "path": "docs/README.md",
+      "current_path": "docs/README.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    },
+    {
+      "path": "docs/development/README.md",
+      "current_path": "docs/development/README.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    },
+    {
+      "path": "docs/development/architecture.md",
+      "current_path": "docs/development/architecture.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    },
+    {
+      "path": "docs/history/README.md",
+      "current_path": "docs/history/README.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    },
+    {
+      "path": "docs/troubleshooting.md",
+      "current_path": "docs/troubleshooting.md",
+      "status": "source_verified",
+      "disposition": "created_or_updated_current_navigation_and_guidance"
+    }
+  ],
+  "verification": {
+    "relative_links_checked": 69,
+    "broken_links": 0,
+    "obsolete_public_paths": 0,
+    "metadata_focused_tests": "4 passed; native rendering, other-plugin isolation, cached object preservation and native superuser boundary",
+    "final_runtime_and_package_checks": {
+      "native_tests": 109,
+      "helper_tests": 37,
+      "live_system_metadata": "LIVE_SYSTEM_METADATA_OK",
+      "baseline": "passed",
+      "installed_wheel": "RELEASE_CHECK_OK",
+      "installed_wheel_elapsed_seconds": 119.89,
+      "installed_wheel_native_tests": 109,
+      "live_data": "RELEASE_LIVE_UNCHANGED"
+    },
+    "anchors_checked": true,
+    "source_recovery_manifest": "SOURCE_SNAPSHOT_OK at original commit 4dba67e"
+  }
+}

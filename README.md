@@ -71,7 +71,7 @@ GitHub using NetBox’s normal plugin installation process:
    ```
 
 No plugin-specific settings are required. For Docker, wheel installation and
-runtime details, see the [installation guide](docs/development/installation.md)
+runtime details, see the [installation guide](docs/installation.md)
 and the [NetBox plugin installation documentation](https://netboxlabs.com/docs/netbox/plugins/installation/).
 
 ## Get started
@@ -89,10 +89,12 @@ Devices. Matching never grants additional permissions.
 
 ## Documentation
 
+- [Documentation index](docs/README.md) — choose the right user or maintainer guide.
 - [User guide](docs/user-guide.md) — profiles, native values and reducing clutter.
-- [Installation guide](docs/development/installation.md) — supported runtime and deployment details.
-- [Profile administration](docs/development/profiles.md) — ordering, rules and field lifecycle behavior.
-- [Development sandbox](docs/development/sandbox.md) — run and test the included Docker environment.
+- [Installation guide](docs/installation.md) — supported runtime and deployment details.
+- [Profile administration](docs/administration.md) — ordering, rules and field lifecycle behavior.
+- [Troubleshooting](docs/troubleshooting.md) — common UI and deployment problems.
+- [Maintainer guides](docs/development/README.md) — sandbox, architecture and testing.
 - [Report an issue](https://github.com/mwallraf/netbox-custom-params-tab/issues).
 
 ## Development

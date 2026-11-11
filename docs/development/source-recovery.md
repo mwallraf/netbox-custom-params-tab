@@ -1,3 +1,7 @@
+> **Historical maintainer evidence.** This file contains the original recovery manifest,
+> consumed by `scripts/source_snapshot.py`. Hashes and historical paths are intentionally unchanged.
+> For current implementation details, see [architecture.md](architecture.md).
+
 # Source recovery
 
 Original renamed working snapshot; feature history: `42ad9c2`.

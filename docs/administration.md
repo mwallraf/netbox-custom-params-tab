@@ -1,17 +1,12 @@
-# Device profiles and Parameters
+# Profile administration
 
-The exercised runtime is NetBox **4.7.4**, Docker packaging **5.1.1**. Phase 2
-provides profile administration and reusable matching/field resolution. Phase 3
-adds the Device **Parameters** tab. Phase 4 adds **Edit Parameters** using native values.
-Phase 2 is verified complete; Phase 3 browser acceptance is pending as recorded
-in `.planning/phases/03-parameters-tab/03-UAT.md`.
+This guide covers configuration and permissions for the implemented Device
+workflow. For a short walkthrough, start with the [user guide](user-guide.md).
 
 ## Manage profiles
 
-Start the dedicated sandbox with `make up`, then open
-<http://127.0.0.1:18047/plugins/custom-field-profiles/>. Use the generated local
-administrator credentials described in [sandbox.md](sandbox.md); there is no
-fixed/default password. The Custom Field Profiles menu links to the same list.
+Open **Plugins → Custom Field Profiles** in your NetBox installation. Use the
+[installation guide](installation.md) if the plugin is not enabled yet.
 
 Users need the native profile `view`, `add`, `change`, or `delete` permissions
 for the corresponding operation. NetBox object constraints apply to list results
@@ -57,7 +52,8 @@ when profiles are managed or deleted.
 Field ordering requires JavaScript. A loading message stays visible if the
 ordering controls fail to initialize; reload the page and check JavaScript is
 enabled before changing selected fields or their order. A separate noscript
-message provides the same recovery action when JavaScript is disabled.
+message provides the same recovery action when JavaScript is disabled. See
+[troubleshooting](troubleshooting.md) if the script is missing or stale.
 
 ### Applicability
 
@@ -67,8 +63,7 @@ must **all** match (AND). The tag rule accepts any selected tag on the Device.
 Empty selectors impose no restriction. When all are empty, the edit page shows
 **Applies to all Devices**, with no extra unrestricted-save confirmation.
 An always-present polite status region announces unrestricted or restricted
-scope when these selectors change; actual assistive-technology behavior remains
-part of the pending browser checks below.
+scope when these selectors change.
 
 The tag selector includes unused tags compatible with Devices and unrestricted
 tags. It does not require a tag to be currently assigned to a Device. Native
@@ -124,8 +119,7 @@ name; descriptions use secondary native help tooltips with escaped text.
 Values use native type formatting, choice labels/colors and sanitized Markdown.
 URLs retain their complete visible text; links obey NetBox's configured URL scheme
 policy. Long text retains complete content and line breaks; JSON uses native
-preformatted output with local horizontal overflow. Actual desktop/narrow wrapping,
-tooltip usability and keyboard behavior still require browser acceptance.
+preformatted output with local horizontal overflow.
 
 Related object values resolve only through the viewer's native restricted queryset.
 A missing/denied scalar or entirely unavailable collection shows **Unavailable**,
@@ -150,8 +144,9 @@ administration permission is not required. The route is
 `/dcim/devices/<id>/parameters/edit/`. Save and Cancel return to Parameters.
 
 Only active, applicable fields in currently matching enabled profiles whose native
-UI editability is Yes are offered. Native Hidden and noneditable fields retain
-their stored values. A field containing inaccessible saved references is omitted
+UI editability is Yes are offered. Fields with **UI editable** set to No or Hidden retain
+their stored values and are not offered by the editor. This is separate from
+**UI visibility**, which controls main-detail display. A field containing inaccessible saved references is omitted
 as a whole, preserving its complete value without exposing denied IDs or labels.
 New reference choices use native restricted querysets. If no editable fields
 remain, the page explains this and has no Save action.
@@ -170,89 +165,5 @@ Device editing see the same values. The next Parameters request reflects the sav
 in every repeated occurrence. Native field definitions and visibility settings
 are unchanged.
 
-## Repeatable checks
 
-Run from the canonical repository root:
-
-```sh
-make test-profiles
-python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_permissions
-python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_preservation
-python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameters
-python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_rendering
-python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_permissions
-python3 scripts/test_profiles.py --label netbox_custom_field_profiles.tests.test_parameter_editing
-make test
-```
-
-The profile runner uses native Django/PostgreSQL, a separate test database, and
-only plugin-owned tests. It rejects an empty suite and compares live native/plugin
-snapshots around the run. It never resets the live sandbox. The permissions suite
-covers action-only users, native object constraints, denied/invalid direct
-requests, post-save constraint rollback, membership-write rollback, CSRF, and
-read-only GET requests. Preservation tests snapshot complete native field
-definitions/applicability and Device values across CRUD, enable state, order,
-mode and rule changes, CMTS/CPE/shared memberships, and external native updates.
-Lifecycle tests assert preservation of unrelated state rather than forbidding
-NetBox's intentional native cleanup.
-
-Measured focused runs in Plan 02-06: permissions **6 tests / 6.78 s** end to end;
-preservation **3 tests / 5.01 s** end to end, using the retained isolated test
-database. Timings include sandbox validation and live snapshots. Full-suite and
-baseline results are recorded in
-`.planning/phases/02-profile-administration-and-matching/02-06-SUMMARY.md`.
-The optional historical pytest suite is separate and is not claimed as passing.
-
-## Browser acceptance status
-
-Phase 2's eight user acceptance checks passed and its two WINDOWS entries are
-closed. The sequence below remains useful when rechecking profile administration.
-It is not outstanding Phase 2 work.
-
-Phase 3 browser discovery was retried on 2026-11-07 during Plan 03-04 through
-`mcp__cua_repl` and returned `Browsers: Error: The browser access host is unavailable`
-with no browser targets. No browser fixture was created and no live data was
-changed. Every required Parameters visual case remains **pending**, with fixture,
-viewport and expected outcomes in `.planning/phases/03-parameters-tab/03-UAT.md`.
-Server tests establish response content and permissions; they do not establish
-layout, focus, tooltip interaction or actual horizontal scrolling. Phase 3 is not
-visually accepted until those cases have observed evidence.
-
-In the dedicated sandbox, using disposable verification profiles:
-
-1. Create a Selected profile with at least three applicable fields. Drag its last
-   field before the first. Save, reopen Edit, and verify the exact order survives.
-2. Tab to **Move down** or **Move up**, activate with Enter/Space, and verify focus
-   and the announced position. Save and reopen to confirm persistence.
-3. Before switching to All, reorder fields and add/remove a field. Save/reopen,
-   then switch back to Selected. Verify the pending manual selection and order
-   were remembered. All mode should disable manual controls without losing them.
-4. Submit with an empty title while retaining several selected fields, their
-   order, and at least one rule. Verify the required-title error appears and the
-   choices/order/rules remain available for correction. Correct and save.
-   Repeat after changing manual fields/order and switching to All before the
-   invalid save; switch back to Selected and verify those pending changes remain.
-5. Through native tag administration, create an unused tag compatible with
-   Devices. Search for it in Device tags on the profile form, select/save/reopen,
-   and verify it is retained. Do the same with an unrestricted unused tag.
-6. Clear all three rule selectors and verify **Applies to all Devices** appears
-   immediately. Add a rule and verify it hides; clear the rule and verify it
-   returns. Verify the polite status announcement for both scope changes with
-   assistive technology. Save without an extra unrestricted-profile confirmation.
-7. With JavaScript disabled, verify the actionable ordering explanation. With
-   the ordering asset blocked, verify the loading/reload explanation remains.
-   Restore JavaScript/the asset and reload before modifying selected field order.
-8. Record the browser/version, profile IDs, exact observed outcomes and redacted
-   screenshot paths. No native field settings or values need changing for these
-   tests.
-
-On 2026-11-10 the user explicitly deferred all remaining browser UAT to final
-manual acceptance. Phase 3’s 15 cases remain pending, and Phase 4 editing cases
-are in `.planning/phases/04-edit-parameters/04-UAT.md`. This no longer blocks
-development or automated release checks. It does not establish visual acceptance.
-
-## Acceptance status — 2026-11-11
-
-Final manual UAT passed by the user’s overall sign-off (“ok, pass UAT”). Earlier
-deferral/pending descriptions are historical. No agent browser run or screenshots
-are claimed. All five phases are accepted; milestone audit/archival is next.
+[Documentation index](README.md) · [Troubleshooting](troubleshooting.md)

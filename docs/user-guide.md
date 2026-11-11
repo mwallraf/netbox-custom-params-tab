@@ -44,11 +44,13 @@ grants access to a Device or a referenced object.
 ## Where to find more information
 
 Open **System → Plugins → Custom Field Profiles** for the author, explanation and
-project/documentation links. In NetBox 4.7, the dedicated URL/license rows and
-catalog Install tab are populated by catalog entries; a local installation exposes
-these links in its native Description area instead.
+project URL, MIT license and short Summary. Description contains the detailed
+explanation and links to the documentation index, this guide and installation.
+This native System area requires a superuser; profile management remains under
+Plugins → Custom Field Profiles.
 
-- [Installation and supported runtime](development/installation.md)
-- [Detailed profile administration](development/profiles.md)
+- [Documentation index](README.md)
+- [Installation and supported runtime](installation.md)
+- [Detailed profile administration](administration.md)
 - [Project and issue tracker](https://github.com/mwallraf/netbox-custom-params-tab)
 - [MIT license](../LICENSE) — Maarten Wallraf

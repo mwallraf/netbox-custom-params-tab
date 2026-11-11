@@ -4,9 +4,9 @@ current_phase: 05
 current_phase_name: All phases accepted
 status: Audit debt accepted; legacy UI cleanup verified; ready for milestone completion
 stopped_at: User signed off final manual UAT on 2026-11-11
-last_updated: "2026-11-11T08:58:26.030447+00:00"
+last_updated: "2026-11-11T09:29:08.626365+00:00"
 last_activity: 2026-11-11
-last_activity_desc: Fixed profile create failure caused by missing served JavaScript; live asset smoke, 37 helper and 106 native tests pass
+last_activity_desc: Reviewed and restructured documentation; corrected native System plugin metadata; 109 native and 37 helper tests pass
 state_head: fc571e4981590136962c9c18c2983d71d173eabc
 progress:
   total_phases: 5
@@ -96,7 +96,7 @@ None outside the roadmap.
 
 Last session: 2026-11-10
 Stopped at: Phase 4 implemented; Phase 5 automated checks pass; final manual UAT pending
-Resume file: docs/development/final-uat.md
+Resume file: docs/development/testing.md
 Next step: $gsd-complete-milestone 0.1.0 with the accepted metadata/status and Nyquist debt.
 
 ## User-directed verification deferral — 2026-11-10
@@ -171,3 +171,17 @@ creation with fix 81067eb. The reported defect is closed.
 Changed PluginConfig.verbose_name to NetBox Custom Field Profiles for the native
 System plugin catalog/listing. Navigation link_text remains Custom Field Profiles;
 package/module identifiers, URL namespace and data models are unchanged.
+
+## Documentation and System metadata review — 2026-11-11
+
+Reviewed all original docs against current implementation. User/admin guides now
+live under docs/, maintainer guidance under docs/development/, superseded panel
+records under docs/history/. Current root guidance, product status and metadata
+links follow the new documentation index. Source recovery hashes are preserved.
+
+Summary is plain text; Description contains the explanatory documentation links.
+A narrowly scoped NetBox 4.7.4 compatibility adapter supplies the native System
+project URL and MIT License fields while retaining core templates and permissions.
+All 109 native tests, 37 helper tests and actual live System metadata checks pass.
+Final package verification is recorded in docs-review.json and the review report
+is docs-review.md. Existing user UAT acceptance and accepted Nyquist debt remain.

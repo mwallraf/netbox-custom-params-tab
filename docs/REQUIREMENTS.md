@@ -1,12 +1,13 @@
 # NetBox Custom Field Profiles — agreed requirements
 
-Last agreed: 2026-11-06. Status: product requirements agreed; development phases
-and implementation plan have not yet been defined.
+Product scope agreed: 2026-11-06. The Device-profile milestone is implemented;
+manual UAT was accepted by the user on 2026-11-11. This document remains the scope
+contract and supersedes the archived panel-based design where they conflict.
 
-This document is the source of truth for the next milestone. It supersedes
-conflicting assumptions in the original design, implementation plan, and earlier
-panel-based code. Requirements below describe intended behavior, not completed
-features.
+For current usage and installation, start with the [documentation index](README.md).
+Implementation evidence and workflow status are maintained in
+[the project state](../.planning/STATE.md) and phase records. Requirements for later
+object types or capabilities are not implementation authorization by themselves.
 
 ## Identity and purpose
 
@@ -37,7 +38,7 @@ features.
 - Profile administration includes an object-type selector. The available custom
   fields must be restricted to fields applicable to the selected object type.
 - Multiple object types per profile and support for other object types are
-  deferred to later phases. Do not implement Devices/Virtual Machines combined
+  deferred to later milestones. Do not implement Devices/Virtual Machines combined
   profiles in the initial scope.
 - Keep the design extensible for additional object types and filter criteria,
   including tenancy and IPAM use cases, without building a general-purpose
@@ -104,15 +105,18 @@ features.
 8. Script-written native values appear in the tab without copying or importing
    them into plugin-specific value storage.
 
-## Planning details still to resolve
+## Resolved implementation details
 
-- Exact supported NetBox version and a reproducible test/development environment.
-- Repair of relocated worktree metadata and migration strategy for the renamed
-  Django app and replacement of the earlier configuration model.
-- Tab behavior when no profiles match, ordering tie-breaks, empty-value display,
-  and behavior when referenced fields or filter targets are deleted.
-- Concrete development phases, verification criteria, and release scope.
+- Exercised runtime: NetBox 4.7.4 / Docker packaging 5.1.1; declared minimum 4.7.0.
+- Source: canonical repository root; original recovery snapshot retained locally.
+- Installation: clean plugin migrations; no legacy-installation data mapping.
+- No-match behavior: Parameters navigation is absent without an enabled match;
+  an authorized direct visit displays the documented no-profile message.
+- Profile order: display order, title, creation time, primary key. All follows
+  native active-field order; Selected follows saved membership order.
+- Unset values are shown as Not set; false/zero and empty JSON remain values.
+- Deleted filter targets disable affected profiles rather than broadening matches;
+  invalid selected membership is removed and empty Selected profiles are disabled.
 
-No implementation of these new profile requirements has been authorized yet;
-the current work is requirements capture and planning. The project rename was
-authorized and has already been applied to the source.
+See [administration](administration.md) for exact behavior and
+[architecture](development/architecture.md) for native integration boundaries.

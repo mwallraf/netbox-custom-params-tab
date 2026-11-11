@@ -1,8 +1,8 @@
 # Development sandbox
 
 Use the normal repository checkout on `milestone/custom-field-profiles`.
-Source recovery retained the renamed snapshot and feature history in `4dba67e`;
-the original directory remains ignored at `.recovery/implement-plugin`.
+The [source recovery manifest](source-recovery.md) records the retained snapshot.
+The original directory remains ignored at `.recovery/implement-plugin`.
 
 ## Requirements and compatibility
 
@@ -55,6 +55,8 @@ references JavaScript that is served successfully and matches the current source
 | `make seed` | Add/update owned CMTS/CPE demonstration data |
 | `make seed-check` | Prove seed identities/values stable across reruns |
 | `make test` | Blocking helper, configuration, live smoke and seed checks |
+| `make test-profiles` | Isolated native plugin tests and live-data preservation checks |
+| `make release-check` | Current wheel metadata/assets/imports and fresh native database tests |
 | `make test-legacy` | Run optional legacy pytest suite and preserve its true exit |
 | `make lifecycle-check` | Repeated setup, down/up persistence, explicit reset, smoke |
 | `make reset` | Deliberately recreate only project-owned volumes; seed/smoke |
@@ -65,27 +67,28 @@ and actual volume ownership labels, retains `.env`, and never runs global prune.
 Credentials remain stable on reset. The project name is fixed to netbox-custom-field-profiles. Only the web port is
 published, bound to 127.0.0.1; DB/cache ports remain internal.
 
-## Data and legacy tests
+## Seed data and isolation
 
 The seed creates CFP Sandbox manufacturer/site/tag, two device types/roles/devices
 (CMTS and CPE), and two native custom fields. Native values are not duplicated
 into plugin storage. Seed does not create profiles or implement matching.
 
-The baseline suite uses stdlib, requiring no pytest installation. The optional
-legacy suite currently reports runner-unavailable and is unexecuted. To inspect
-those old tests, explicitly install the already declared extras inside this
-sandbox image environment, then rerun make test-legacy:
-
-```sh
-python3 scripts/sandbox.py compose exec -T -u root netbox uv pip install --python /opt/netbox/venv/bin/python --editable '/opt/netbox-custom-field-profiles[test]'
-make test-legacy
-```
-
-These extras are the upstream [pytest](https://pypi.org/project/pytest/) and
-[pytest-django](https://pypi.org/project/pytest-django/) distributions. This optional
-command is not run by setup. Record resolved versions if used. Old SQLite test
-settings may need later adaptation; no successful feature suite is claimed.
-The sanitized report is local `.sandbox/legacy-tests.json` and the target returns
-its actual nonzero outcome. Feature acceptance belongs to later roadmap phases.
+The required helper suite uses Python's standard library. Plugin tests run in
+native NetBox/Django/PostgreSQL through a separate test database. See
+[testing.md](testing.md) for commands and the separate, historical pytest suite.
+Do not use the old SQLite settings as a substitute for native feature checks.
 
 Lifecycle isolation compares original running unrelated container IDs with the final inventory; new unrelated containers are allowed. Missing/replaced original IDs fail, with local diagnostic IDs under `.sandbox/`. No unrelated resource is mutated. All Docker subprocesses use the same environment builder, ignoring ambient DOCKER_/COMPOSE_ overrides.
+
+## Rebuild and verify
+
+After changing Python view registration or middleware, restart the web and worker
+processes before running tests. After changing package metadata or JavaScript, use
+`make build` then `make up`. Run `make test` to verify the running deployment,
+including successful delivery of the current profile-ordering script.
+
+Never restart/recreate services while native tests are running. `make setup` and
+`make reset` seed only owned dummy data; they do not create profiles. Use the UI or
+isolated test fixtures to create profiles for verification.
+
+[Maintainer index](README.md) · [User installation](../installation.md)
