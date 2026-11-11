@@ -57,11 +57,13 @@ jobs:
           skip-existing: true
 
       - name: Confirm PyPI holds the exact tested artifacts
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           python - <<'PYPI'
-          import hashlib, json, pathlib, time, urllib.request
+          import hashlib, json, os, pathlib, time, urllib.request
           files = list(pathlib.Path('dist').glob('*'))
-          version = files[0].name.split('-')[1]
+          version = os.environ['RELEASE_TAG'].removeprefix('v')
           for attempt in range(6):
               try:
                   with urllib.request.urlopen('https://pypi.org/pypi/netbox-custom-field-profiles/' + version + '/json') as response:
