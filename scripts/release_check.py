@@ -2,13 +2,17 @@
 import sys
 import time
 import json
+import argparse
+import base64
+from pathlib import Path
+import re
 
 import sandbox
 from test_profiles import snapshot
 
 
 CHECK = r'''
-import json, os, pathlib, shutil, subprocess, sys, tempfile, uuid, zipfile
+import base64, json, os, pathlib, re, shutil, subprocess, sys, tempfile, tomllib, uuid, zipfile
 source = pathlib.Path('/opt/netbox-custom-field-profiles')
 python = '/opt/netbox/venv/bin/python'
 manage = '/opt/netbox/netbox/manage.py'
@@ -20,6 +24,21 @@ with tempfile.TemporaryDirectory(prefix='cfprofiles-release-') as temporary:
     inputs = json.load(sys.stdin)
     for name in ('pyproject.toml', 'README.md', 'LICENSE'):
         (clean / name).write_text(inputs[name])
+    release_tag = inputs.get('release_tag')
+    if release_tag:
+        version = tomllib.loads(inputs['pyproject.toml'])['project']['version']
+        assert release_tag == 'v' + version, 'Release tag/package version mismatch'
+        assert re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+(?:[a-zA-Z0-9.-]+)?', release_tag), 'Invalid tag'
+        # PyPI cannot resolve GitHub-relative README links. Transform only build input.
+        base = 'https://github.com/mwallraf/netbox-custom-params-tab/blob/' + release_tag + '/'
+        raw = 'https://raw.githubusercontent.com/mwallraf/netbox-custom-params-tab/' + release_tag + '/'
+        def absolute_link(match):
+            image, label, target = match.groups()
+            if '://' in target or target.startswith(('#', 'mailto:')):
+                return match.group(0)
+            return image + '[' + label + '](' + (raw if image else base) + target + ')'
+        readme = re.sub(r'(!?)\[([^\]]*)\]\(([^)]+)\)', absolute_link, inputs['README.md'])
+        (clean / 'README.md').write_text(readme)
     shutil.copytree(source / 'netbox_custom_field_profiles', clean / 'netbox_custom_field_profiles',
                     ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '*.egg-info'))
     subprocess.run(['uv', 'build', '--out-dir', str(root / 'dist'), str(clean)], check=True)
@@ -72,19 +91,41 @@ with tempfile.TemporaryDirectory(prefix='cfprofiles-release-') as temporary:
                  'keepdb=False, testrunner="netbox_custom_field_profiles.tests.runner.ProfileTestRunner")')
     subprocess.run([python, manage, 'shell', '-c', run_tests], env=environment, check=True)
     print('RELEASE_CLEAN_INSTALL_MIGRATIONS_TESTS_OK', flush=True)
+    if inputs.get('export_dist'):
+        print('RELEASE_DISTRIBUTIONS=' + json.dumps({
+            file.name: base64.b64encode(file.read_bytes()).decode()
+            for file in sorted((root / 'dist').iterdir())
+            if file.name.endswith(('.whl', '.tar.gz'))
+        }), flush=True)
 '''
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--dist-dir', type=Path, help='Retain the exact tested wheel and source archive')
+    parser.add_argument('--release-tag', help='Validate version and make build README links absolute')
+    args = parser.parse_args()
+    if args.release_tag and not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+(?:[a-zA-Z0-9.-]+)?', args.release_tag):
+        parser.error('Invalid release tag')
+    distributions = None
     started = time.monotonic()
     try:
         sandbox.validate_compose()
         before = snapshot()
         try:
             output = sandbox.run(['exec', '-T', 'netbox', sandbox.PYTHON, '-c', CHECK], capture=True,
-                                 input=json.dumps({name: (sandbox.ROOT / name).read_text()
-                                                   for name in ('pyproject.toml', 'README.md', 'LICENSE')}))
-            print(sandbox.redact(output), end='')
+                                 input=json.dumps(dict(
+                                     {name: (sandbox.ROOT / name).read_text()
+                                      for name in ('pyproject.toml', 'README.md', 'LICENSE')},
+                                     export_dist=bool(args.dist_dir), release_tag=args.release_tag)))
+            lines = output.splitlines(keepends=True)
+            payloads = [line for line in lines if line.startswith('RELEASE_DISTRIBUTIONS=')]
+            if args.dist_dir:
+                if len(payloads) != 1:
+                    raise RuntimeError('Missing verified distribution export')
+                distributions = json.loads(payloads[0].split('=', 1)[1])
+            print(sandbox.redact(''.join(line for line in lines
+                                        if not line.startswith('RELEASE_DISTRIBUTIONS='))), end='')
             for marker in ('RELEASE_WHEEL_ASSETS_OK', 'RELEASE_RETIRED_UI_ABSENT', 'RELEASE_INSTALLED_IMPORT_OK',
                            'RELEASE_PROJECT_METADATA_LICENSE_OK', 'PROFILE_TESTS_ISOLATED',
                            'RELEASE_CLEAN_INSTALL_MIGRATIONS_TESTS_OK'):
@@ -94,9 +135,25 @@ def main():
             if snapshot() != before:
                 raise RuntimeError('RELEASE_LIVE_CHANGED: live native/plugin state differs')
             print('RELEASE_LIVE_UNCHANGED')
+        if args.dist_dir:
+            if len(distributions) != 2:
+                raise RuntimeError('Expected one wheel and one source archive')
+            decoded = {}
+            for name, data in distributions.items():
+                if not re.fullmatch(r'netbox_custom_field_profiles-[A-Za-z0-9_.+-]+(?:\.whl|\.tar\.gz)', name):
+                    raise RuntimeError('Unexpected distribution filename')
+                decoded[name] = base64.b64decode(data, validate=True)
+            if sum(name.endswith('.whl') for name in decoded) != 1:
+                raise RuntimeError('Expected exactly one tested wheel')
+            args.dist_dir.mkdir(parents=True, exist_ok=True)
+            if any(args.dist_dir.iterdir()):
+                raise RuntimeError('Distribution output directory must be empty')
+            for name, data in decoded.items():
+                (args.dist_dir / name).write_bytes(data)
+            print('RELEASE_DISTRIBUTIONS_EXPORTED ' + str(args.dist_dir))
         print(f'RELEASE_CHECK_OK elapsed={time.monotonic() - started:.2f}s')
         return 0
-    except (RuntimeError, OSError) as error:
+    except (RuntimeError, OSError, ValueError, TypeError) as error:
         print('RELEASE_CHECK_ERROR: ' + sandbox.redact(str(error)), file=sys.stderr)
         return 1
 

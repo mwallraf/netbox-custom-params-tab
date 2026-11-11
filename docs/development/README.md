@@ -5,6 +5,7 @@ This directory covers development and verification, not end-user installation.
 - [Sandbox](sandbox.md): prerequisites, startup, credentials and Make targets.
 - [Architecture](architecture.md): native integration, data boundaries and System metadata.
 - [Testing](testing.md): automated gates and repeatable manual acceptance checks.
+- [CI and releases](releases.md): verified artifacts, Trusted Publishing and GitHub Releases.
 - [Source recovery](source-recovery.md): preserved recovery manifest used by the provenance tool.
 
 The implementation is canonical in the repository root on

@@ -1,0 +1,102 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag, for example v0.1.0
+        required: true
+        type: string
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.repository == 'mwallraf/netbox-custom-params-tab' && (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main')
+    uses: ./.github/workflows/ci.yml
+    with:
+      release_tag: ${{ inputs.tag || github.ref_name }}
+    permissions:
+      contents: read
+
+  pypi:
+    name: Publish verified artifacts to PyPI
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: pypi
+      url: https://pypi.org/p/netbox-custom-field-profiles
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download verified distributions
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: verified-distributions
+          path: artifacts
+      - name: Verify checksums and isolate upload files
+        run: |
+          cd artifacts
+          sha256sum --check SHA256SUMS
+          mkdir ../dist
+          cp dist/*.whl dist/*.tar.gz ../dist/
+      - name: Publish using PyPI Trusted Publishing and attestations
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # release/v1
+        with:
+          packages-dir: dist/
+          attestations: true
+          skip-existing: true
+
+      - name: Confirm PyPI holds the exact tested artifacts
+        run: |
+          python - <<'PYPI'
+          import hashlib, json, pathlib, time, urllib.request
+          files = list(pathlib.Path('dist').glob('*'))
+          version = files[0].name.split('-')[1]
+          for attempt in range(6):
+              try:
+                  with urllib.request.urlopen('https://pypi.org/pypi/netbox-custom-field-profiles/' + version + '/json') as response:
+                      published = {item['filename']: item['digests']['sha256'] for item in json.load(response)['urls']}
+                  assert all(published.get(file.name) == hashlib.sha256(file.read_bytes()).hexdigest() for file in files), 'PyPI artifact digest mismatch'
+                  break
+              except Exception:
+                  if attempt == 5:
+                      raise
+                  time.sleep(5)
+          print('PYPI_ARTIFACT_DIGESTS_OK')
+          PYPI
+
+  github-release:
+    name: Attach verified artifacts to GitHub Release
+    needs: [validate, pypi]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified distributions
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: verified-distributions
+          path: artifacts
+      - name: Create release and attach the tested files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          cd artifacts
+          sha256sum --check SHA256SUMS
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG — NetBox Custom Field Profiles" --generate-notes
+          fi
+          gh release upload "$RELEASE_TAG" dist/*.whl dist/*.tar.gz SHA256SUMS --clobber
