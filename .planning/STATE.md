@@ -4,10 +4,10 @@ current_phase: 05
 current_phase_name: All phases accepted
 status: Audit debt accepted; legacy UI cleanup verified; ready for milestone completion
 stopped_at: User signed off final manual UAT on 2026-11-11
-last_updated: "2026-11-11T09:29:08.626365+00:00"
+last_updated: "2026-11-11T09:40:15.435779+00:00"
 last_activity: 2026-11-11
-last_activity_desc: Reviewed and restructured documentation; corrected native System plugin metadata; 109 native and 37 helper tests pass
-state_head: fc571e4981590136962c9c18c2983d71d173eabc
+last_activity_desc: Renamed Device tab and editor to Custom Fields; 109 native tests pass; sandbox reloaded
+state_head: fc52aa30e527decbe5d89db2be6dccd1dd08c508
 progress:
   total_phases: 5
   completed_phases: 5
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-11-07)
 Phase: 05 (Release verification)
 Plan: 1 of 1 automated work complete
 Status: All phases accepted; user UAT passed
-Last activity: 2026-11-11 — Completed quick task 261111-cwr: plugin identity, MIT license and native System documentation
+Last activity: 2026-11-11 — Completed quick task 261111-erg: Rename Device tab and editor to Custom Fields
 
 Implementation: 18/18 plans complete. Acceptance: 5/5 phases complete; final user UAT sign-off recorded 2026-11-11.
 
@@ -133,6 +133,7 @@ milestone completion with the explicitly accepted metadata and Nyquist debt.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 261111-cwr | Add author MIT license GitHub origin and native System plugin user documentation | 2026-11-11 | fc571e4 | [261111-cwr-add-plugin-author-mit-license-project-li](./quick/261111-cwr-add-plugin-author-mit-license-project-li/) |
+| 261111-erg | Rename Device tab and editor to Custom Fields | 2026-11-11 | fc52aa3 | [261111-erg-rename-device-parameters-tab-to-custom-f](./quick/261111-erg-rename-device-parameters-tab-to-custom-f/) |
 
 ## Public README follow-up — 2026-11-11
 
@@ -185,3 +186,11 @@ project URL and MIT License fields while retaining core templates and permission
 All 109 native tests, 37 helper tests and actual live System metadata checks pass.
 Final package verification is recorded in docs-review.json and the review report
 is docs-review.md. Existing user UAT acceptance and accepted Nyquist debt remain.
+
+## Device tab terminology — 2026-11-11
+
+User requested Custom Fields in place of Parameters. Quick task 261111-erg
+updates the tab, Edit Custom Fields action/page, related messages, current docs
+and System metadata. Existing URLs remain compatible. All 109 native tests pass
+with live data unchanged; reloaded runtime registration verified. Screenshots
+retain their original bytes with an explicit former-label note.
