@@ -95,6 +95,9 @@ its own field-data cleanup; the plugin does not write native definitions/values.
 
 ## View Device Custom Fields
 
+The tab uses `/dcim/devices/<id>/plugin-custom-field-profiles/`. Update any bookmarks
+using the former `/parameters/` path; the plugin no longer registers that path.
+
 Open a Device's native detail page and choose **Custom Fields**. The tab appears when
 at least one enabled profile matches, including a matching profile that currently
 has no fields. Each profile is an expanded full-width card; duplicate titles are
@@ -141,7 +144,8 @@ follows first-occurrence section/field order and offers each native field once,
 including fields repeated across profiles. Native Device change permission and
 object constraints apply to both the action and direct GET/POST requests; profile
 administration permission is not required. The route is
-`/dcim/devices/<id>/parameters/edit/`. Save and Cancel return to Custom Fields.
+`/dcim/devices/<id>/plugin-custom-field-profiles/edit/`. Save and Cancel return
+to Custom Fields.
 
 Only active, applicable fields in currently matching enabled profiles whose native
 UI editability is Yes are offered. Fields with **UI editable** set to No or Hidden retain

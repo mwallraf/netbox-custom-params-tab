@@ -146,6 +146,7 @@ class ParametersTabTests(TestCase):
             url = self.parameter_url()
         except NoReverseMatch:
             self.fail('Application startup must register the native Device Parameters route')
+        self.assertEqual(url, f'/dcim/devices/{self.device.pk}/plugin-custom-field-profiles/')
         self.assertEqual(resolve(url).func.view_class.__name__, 'DeviceParametersView')
         detail = self.client.get(reverse('dcim:device', args=[self.device.pk]))
         self.assertContains(detail, f'href="{url}"')

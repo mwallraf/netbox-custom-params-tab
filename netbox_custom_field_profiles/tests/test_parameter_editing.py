@@ -21,6 +21,8 @@ class ParameterEditingTests(TestCase):
             title='Editable', content_type=self.device_ct, enabled=True, field_mode='selected')
         ProfileField.objects.create(profile=self.profile, field=self.native_field, position=0)
         self.url = reverse('dcim:device_edit_parameters', args=[self.device.pk])
+        self.assertEqual(self.url,
+                         f'/dcim/devices/{self.device.pk}/plugin-custom-field-profiles/edit/')
         self.tab_url = reverse('dcim:device_custom_field_profiles', args=[self.device.pk])
 
     def field(self, name, kind='text', **kwargs):

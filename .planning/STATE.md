@@ -6,7 +6,7 @@ status: Audit debt accepted; legacy UI cleanup verified; ready for milestone com
 stopped_at: User signed off final manual UAT on 2026-11-11
 last_updated: "2026-11-11T09:40:15.435779+00:00"
 last_activity: 2026-11-11
-last_activity_desc: Renamed Device tab and editor to Custom Fields; 109 native tests pass; sandbox reloaded
+last_activity_desc: Updated Device tab and editor routes to plugin-custom-field-profiles; 109 native tests pass
 state_head: fc52aa30e527decbe5d89db2be6dccd1dd08c508
 progress:
   total_phases: 5
@@ -194,3 +194,12 @@ updates the tab, Edit Custom Fields action/page, related messages, current docs
 and System metadata. Existing URLs remain compatible. All 109 native tests pass
 with live data unchanged; reloaded runtime registration verified. Screenshots
 retain their original bytes with an explicit former-label note.
+
+## Device route follow-up — 2026-11-11
+
+User requested a plugin-specific path after the tab rename. View and editor now
+register plugin-custom-field-profiles/ and plugin-custom-field-profiles/edit/
+under each Device. URL names remain stable for native reversing; no parameters
+alias is retained, leaving that generic path free. Current requirements and
+administration instructions updated. All 109 native tests passed in 21.354s
+(runner 25.92s), with live native/plugin data unchanged. Sandbox services reloaded.

@@ -76,7 +76,8 @@ object types or capabilities are not implementation authorization by themselves.
 ## Custom Fields tab
 
 The user renamed the former Parameters tab to **Custom Fields** on 2026-11-11;
-the edit action is **Edit Custom Fields**. Existing route paths remain compatible.
+the edit action is **Edit Custom Fields**. The Device route uses the explicit
+`plugin-custom-field-profiles/` suffix, with `edit/` for its editor.
 
 - Provide a dedicated **Custom Fields** tab, replacing the earlier panel approach.
 - Show applicable enabled profiles as ordered sections, with their selected or

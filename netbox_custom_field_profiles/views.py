@@ -11,7 +11,7 @@ from django.db import transaction
 from django.urls import reverse
 
 
-@register_model_view(Device, name='custom_field_profiles', path='parameters')
+@register_model_view(Device, name='custom_field_profiles', path='plugin-custom-field-profiles')
 class DeviceParametersView(ObjectView):
     queryset = Device.objects.all()
     template_name = 'netbox_custom_field_profiles/device_parameters.html'
@@ -37,7 +37,7 @@ class DeviceParametersView(ObjectView):
         return super().http_method_not_allowed(request, *args, **kwargs)
 
 
-@register_model_view(Device, name='edit_parameters', path='parameters/edit')
+@register_model_view(Device, name='edit_parameters', path='plugin-custom-field-profiles/edit')
 class DeviceParametersEditView(ObjectEditView):
     queryset = Device.objects.all()
     template_name = 'netbox_custom_field_profiles/device_parameters_edit.html'
