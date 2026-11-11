@@ -46,3 +46,9 @@ Hard-refresh the profile creation page after deployment. No validation relaxatio
 new migration or remote push. For other deployments, publish/collect plugin static
 assets as documented during installation; the image fix applies to this repository
 sandbox.
+
+## User confirmation — 2026-11-11
+
+User retried the workflow and confirmed: “it works, confirmed”. The reported
+one-field Selected-profile creation bug is closed with automated and manual
+confirmation.

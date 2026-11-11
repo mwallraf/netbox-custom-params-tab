@@ -162,3 +162,6 @@ fetch the real editor/script and reject missing/stale JavaScript. Rebuilt/recrea
 the sandbox, verified live asset delivery, 37 helper and 106 native test passes
 with live snapshots unchanged. Details: debug/profile-selected-field-create.md.
 Existing validation, accepted audit debt and UAT records remain intact.
+
+User confirmation (2026-11-11): “it works, confirmed” after retrying profile
+creation with fix 81067eb. The reported defect is closed.
