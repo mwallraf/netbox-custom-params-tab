@@ -32,7 +32,13 @@ with tempfile.TemporaryDirectory(prefix='cfprofiles-release-') as temporary:
                     'migrations/0003_retire_legacy_configuration.py']
         assert all('netbox_custom_field_profiles/' + name in names for name in expected), 'Missing package assets'
         assert not any(name.startswith('netbox_custom_params_tab/') for name in names), 'Retired package included'
+        retired = ['templates/netbox_custom_field_profiles/customtabconfig_edit.html',
+                   'templates/netbox_custom_field_profiles/customtabconfig_delete.html',
+                   'templates/netbox_custom_field_profiles/tab_panel.html',
+                   'templatetags/customtab_tags.py']
+        assert not any('netbox_custom_field_profiles/' + name in names for name in retired), 'Retired UI assets included'
     print('RELEASE_WHEEL_ASSETS_OK', flush=True)
+    print('RELEASE_RETIRED_UI_ABSENT', flush=True)
     target = root / 'installed'
     subprocess.run(['uv', 'pip', 'install', '--offline', '--no-deps', '--python', python,
                     '--target', str(target), str(wheels[0])], check=True)
@@ -66,7 +72,7 @@ def main():
             output = sandbox.run(['exec', '-T', 'netbox', sandbox.PYTHON, '-c', CHECK], capture=True,
                                  input=json.dumps({'pyproject': (sandbox.ROOT / 'pyproject.toml').read_text()}))
             print(sandbox.redact(output), end='')
-            for marker in ('RELEASE_WHEEL_ASSETS_OK', 'RELEASE_INSTALLED_IMPORT_OK',
+            for marker in ('RELEASE_WHEEL_ASSETS_OK', 'RELEASE_RETIRED_UI_ABSENT', 'RELEASE_INSTALLED_IMPORT_OK',
                            'PROFILE_TESTS_ISOLATED', 'RELEASE_CLEAN_INSTALL_MIGRATIONS_TESTS_OK'):
                 if marker not in output:
                     raise RuntimeError('Missing release verification marker: ' + marker)

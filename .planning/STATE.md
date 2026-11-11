@@ -2,11 +2,11 @@
 gsd_state_version: "1.0"
 current_phase: 05
 current_phase_name: All phases accepted
-status: Milestone audit complete; tech debt review before archival
+status: Audit debt accepted; legacy UI cleanup verified; ready for milestone completion
 stopped_at: User signed off final manual UAT on 2026-11-11
-last_updated: "2026-11-11T07:55:16.934398+00:00"
+last_updated: "2026-11-11T08:07:41.781721+00:00"
 last_activity: 2026-11-11
-last_activity_desc: Audit supports 26/26 requirements, 10/10 integration contracts and 8/8 flows; metadata/Nyquist debt remains
+last_activity_desc: Removed legacy UI assets; installed-wheel 104 tests pass; remaining audit debt explicitly accepted
 state_head: 78031a5432406298e63343781f05b93148685ef4
 progress:
   total_phases: 5
@@ -23,7 +23,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-07)
 
 **Core value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
-**Current focus:** Milestone audit completed with no demonstrated functional blockers; metadata and Nyquist debt remain for review before archival. Final user UAT sign-off remains accepted.
+**Current focus:** User accepted metadata/status and Nyquist debt. Legacy UI cleanup passed installed-wheel verification; ready for milestone completion. Final UAT remains accepted.
 
 ## Current Position
 
@@ -88,7 +88,7 @@ None outside the roadmap.
 ### Blockers/Concerns
 
 - Optional historical pytest suite remains unexecuted; required native and baseline suites pass.
-- Completion parser warning for logical template name in 02-07-SUMMARY.md is a false positive: the tracked file exists at netbox_custom_field_profiles/templates/netbox_custom_field_profiles/tab_panel.html.
+- Historical 02-07-SUMMARY.md names the retired tab_panel.html; that unused asset was intentionally removed in the post-audit cleanup.
 - Phase 3/4/5 UAT accepted by user on 2026-11-11; browser-host limitations no longer block acceptance.
 - All five phases accepted; WINDOWS entry 3 closed by user sign-off.
 
@@ -97,7 +97,7 @@ None outside the roadmap.
 Last session: 2026-11-10
 Stopped at: Phase 4 implemented; Phase 5 automated checks pass; final manual UAT pending
 Resume file: docs/development/final-uat.md
-Next step: Reconcile or accept debt in .planning/v0.1.0-MILESTONE-AUDIT.md before $gsd-complete-milestone 0.1.0.
+Next step: $gsd-complete-milestone 0.1.0 with the accepted metadata/status and Nyquist debt.
 
 ## User-directed verification deferral — 2026-11-10
 
@@ -115,3 +115,15 @@ All remaining display, editing and integrated release acceptance cases passed on
 ## Milestone audit — 2026-11-11
 
 Audit status: tech_debt. All 26 requirements supported (18 canonical three-source claims plus eight manually reconciled nonstandard summary claims); all five verification reports present; 10/10 principal integrations and 8/8 flows wired. No demonstrated functional blocker. Phase 4/5 Nyquist records are missing; completion metadata and stale project/status prose need reconciliation. User UAT sign-off remains accepted. See v0.1.0-MILESTONE-AUDIT.md. No tests rerun, no archive/tag/publication performed.
+
+## Audit debt disposition — 2026-11-11
+
+User accepted inconsistent completion metadata/stale status text and missing
+Phase 4/5 Nyquist records. User requested removing the unused legacy UI assets;
+three retired templates and their unused tag module are removed, with a release
+package exclusion check added. User UAT sign-off remains accepted.
+
+Cleanup verification: installed wheel excludes all four retired assets, retains
+active templates/static/migrations, and passes 104 native tests on a fresh DB.
+Release check elapsed 115.91s; live native/plugin data unchanged. Ready for
+milestone completion with the explicitly accepted metadata and Nyquist debt.

@@ -40,15 +40,17 @@
   ],
   "next": {
     "command": "$gsd-complete-milestone 0.1.0",
-    "label": "Reconcile or accept audit debt before milestone completion",
-    "reason": "No demonstrated functional blockers; summary/lifecycle/status metadata and missing Phase 4/5 Nyquist records are documented in the audit."
+    "label": "Complete milestone with accepted audit debt",
+    "reason": "Metadata/status and Phase 4/5 Nyquist debt accepted by user; obsolete packaged UI removed and installed-wheel verification passed."
   },
-  "updated_at": "2026-11-11T07:55:16.934398+00:00",
+  "updated_at": "2026-11-11T08:07:41.781721+00:00",
   "audit": {
     "path": ".planning/v0.1.0-MILESTONE-AUDIT.md",
     "status": "tech_debt",
     "requirements": "26/26",
     "integration": "10/10",
-    "flows": "8/8"
+    "flows": "8/8",
+    "debt_disposition": "metadata_and_nyquist_accepted_by_user_2026-11-11",
+    "legacy_ui_cleanup": "verified_removed_from_wheel_104_native_tests_pass"
   }
 }
