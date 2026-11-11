@@ -1,19 +1,19 @@
 ---
 gsd_state_version: "1.0"
 current_phase: 05
-current_phase_name: Final manual acceptance
-status: Automated implementation and release gates passed; manual UAT deferred to user
-stopped_at: Phase 4 implemented; Phase 5 automated release checks passed; final manual UAT pending
-last_updated: "2026-11-10T14:51:46.214469+00:00"
-last_activity: 2026-11-10
-last_activity_desc: Native editor implemented; 104 source and installed-wheel tests, required baseline and fresh migrations pass; browser UAT deferred
+current_phase_name: All phases accepted
+status: All five phases complete; user UAT passed; ready for milestone audit
+stopped_at: User signed off final manual UAT on 2026-11-11
+last_updated: "2026-11-11T07:41:08.104903+00:00"
+last_activity: 2026-11-11
+last_activity_desc: User reported final UAT passed; all five phases accepted
 state_head: 78031a5432406298e63343781f05b93148685ef4
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 5
   total_plans: 18
   completed_plans: 18
-  percent: 40
+  percent: 100
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-07)
 
 **Core value:** Each Device shows and edits the native custom fields relevant through its matching profiles, without cluttering its main detail page.
-**Current focus:** Implementation and automated release checks are complete through Phase 5. Final manual browser UAT is deferred to the user by explicit instruction on 2026-11-10. The milestone is not yet manually accepted.
+**Current focus:** All five phases accepted following user-reported final UAT pass on 2026-11-11. Ready for milestone audit; no publication or archival performed.
 
 ## Current Position
 
 Phase: 05 (Release verification)
 Plan: 1 of 1 automated work complete
-Status: Automated gates passed; final manual acceptance pending
+Status: All phases accepted; user UAT passed
 Last activity: 2026-11-10 — 104 source tests and installed-wheel tests pass; fresh schema/install, baseline and reloaded runtime smoke pass
 
-Implementation: 18/18 plans complete. Acceptance: 2/5 phases fully accepted; Phase 3/4/5 manual checks deferred.
+Implementation: 18/18 plans complete. Acceptance: 5/5 phases complete; final user UAT sign-off recorded 2026-11-11.
 
 ## Performance Metrics
 
@@ -89,15 +89,15 @@ None outside the roadmap.
 
 - Optional historical pytest suite remains unexecuted; required native and baseline suites pass.
 - Completion parser warning for logical template name in 02-07-SUMMARY.md is a false positive: the tracked file exists at netbox_custom_field_profiles/templates/netbox_custom_field_profiles/tab_panel.html.
-- Phase 3 browser cases UAT-01 through UAT-15 pending: CUA browser access host unavailable; automated tests do not establish visual acceptance. See 03-UAT.md and WINDOWS entry 3.
-- Phase 2 remains verified complete with all eight user acceptance checks passed; Phase 3 has an open browser-verification entry.
+- Phase 3/4/5 UAT accepted by user on 2026-11-11; browser-host limitations no longer block acceptance.
+- All five phases accepted; WINDOWS entry 3 closed by user sign-off.
 
 ## Session Continuity
 
 Last session: 2026-11-10
 Stopped at: Phase 4 implemented; Phase 5 automated checks pass; final manual UAT pending
 Resume file: docs/development/final-uat.md
-Next step: User-run final manual UAT using docs/development/final-uat.md; record results before milestone acceptance.
+Next step: Milestone audit ($gsd-audit-milestone), then completion/archival as separately authorized.
 
 ## User-directed verification deferral — 2026-11-10
 
@@ -106,3 +106,8 @@ All remaining browser UAT is deferred to the end of the project for the user to 
 ## Phase 4/5 automated results — 2026-11-10
 
 104 native tests pass (15 new editing tests); live snapshots unchanged. Required baseline passes (35 helper tests, runtime/schema, authentication, idempotent seed). Current wheel assets/import provenance and fresh installed-wheel database/migrations/tests pass in 113.40 seconds. Sandbox processes reloaded and runtime/authentication smoke passed. No browser was used. Phase 3’s 15 cases and Phase 4’s eight cases, plus integrated release round trips, await final manual observations. There is no remaining automated development gate caused by browser access.
+
+## Final user UAT sign-off — 2026-11-11
+
+User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
+All remaining display, editing and integrated release acceptance cases passed on the user’s overall report. No additional tests were run for this record-only update. All five phases and 26 requirements are accepted; milestone audit/archival remains a separate workflow step.

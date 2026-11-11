@@ -77,3 +77,9 @@ is deferred to final manual acceptance; automated checks remain required.
 
 These describe the earlier panel-based design and are retained as background.
 The milestone direction above supersedes their conflicting product assumptions.
+
+## Acceptance status — 2026-11-11
+
+Final manual UAT passed by the user’s overall sign-off (“ok, pass UAT”). Earlier
+deferral/pending descriptions are historical. No agent browser run or screenshots
+are claimed. All five phases are accepted; milestone audit/archival is next.

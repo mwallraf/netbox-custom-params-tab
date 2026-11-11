@@ -48,3 +48,9 @@ Browser acceptance is deferred to the user at project end. Follow
 [final-uat.md](final-uat.md). Automated results do not establish browser layout,
 keyboard or widget interaction. Optional historical pytest and unsupported NetBox
 versions are not included in the passing baseline.
+
+## Acceptance status — 2026-11-11
+
+Final manual UAT passed by the user’s overall sign-off (“ok, pass UAT”). Earlier
+deferral/pending descriptions are historical. No agent browser run or screenshots
+are claimed. All five phases are accepted; milestone audit/archival is next.

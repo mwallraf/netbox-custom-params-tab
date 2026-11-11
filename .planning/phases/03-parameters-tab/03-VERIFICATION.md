@@ -1,7 +1,7 @@
 ---
 phase: 03-parameters-tab
 verified: 2026-11-07T15:09:06Z
-status: human_needed
+status: passed
 score: 14/17 must-haves verified
 covered_files: [".planning/phases/03-parameters-tab/03-01-PLAN.md", ".planning/phases/03-parameters-tab/03-01-SUMMARY.md", ".planning/phases/03-parameters-tab/03-02-PLAN.md", ".planning/phases/03-parameters-tab/03-02-SUMMARY.md", ".planning/phases/03-parameters-tab/03-03-PLAN.md", ".planning/phases/03-parameters-tab/03-03-SUMMARY.md", ".planning/phases/03-parameters-tab/03-04-PLAN.md", ".planning/phases/03-parameters-tab/03-04-SUMMARY.md", ".planning/phases/03-parameters-tab/03-REVIEW-DISPOSITION.md", ".planning/phases/03-parameters-tab/03-REVIEW.md", ".planning/phases/03-parameters-tab/03-SECURITY.md", ".planning/phases/03-parameters-tab/03-UAT.md", ".planning/phases/03-parameters-tab/03-UI-REVIEW.md", ".planning/phases/03-parameters-tab/03-VALIDATION.md", "CLAUDE.md", "README.md", "docs/development/profiles.md", "netbox_custom_field_profiles/__init__.py", "netbox_custom_field_profiles/matching.py", "netbox_custom_field_profiles/models.py", "netbox_custom_field_profiles/presentation.py", "netbox_custom_field_profiles/template_content.py", "netbox_custom_field_profiles/templates/netbox_custom_field_profiles/device_parameters.html", "netbox_custom_field_profiles/templates/netbox_custom_field_profiles/parameter_value.html", "netbox_custom_field_profiles/templatetags/parameter_tags.py", "netbox_custom_field_profiles/tests/runner.py", "netbox_custom_field_profiles/tests/test_parameter_permissions.py", "netbox_custom_field_profiles/tests/test_parameter_rendering.py", "netbox_custom_field_profiles/tests/test_parameters.py", "netbox_custom_field_profiles/tests/test_permissions.py", "netbox_custom_field_profiles/tests/test_tracer.py", "netbox_custom_field_profiles/views.py", "scripts/test_profiles.py"]
 covered_digest: "v4:sha256:02f8fdbd6f87cc4e9e0411745e10fa661be0c866fe48de0fbf7ee4fbf3171709"
@@ -252,3 +252,8 @@ Later-phase review found no reason to move these explicit Phase 3 criteria out o
 
 _Verified: 2026-11-07T15:09:06Z_
 _Verifier: the agent (gsd-verifier)_
+
+## Acceptance update — 2026-11-11
+
+User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
+The earlier manual-pending findings are closed by this sign-off; automated evidence is unchanged. Historical technical findings and browser-host limitations remain as recorded, not as current acceptance blockers.

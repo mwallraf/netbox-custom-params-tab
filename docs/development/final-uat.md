@@ -69,3 +69,9 @@ The supported exercised runtime is NetBox 4.7.4 / Docker packaging 5.1.1.
 Other versions and the optional historical pytest suite are not verified. No
 legacy installation upgrade mapping is supported; this is the agreed new-install
 milestone. Final acceptance and milestone archival wait for manual observations.
+
+## Acceptance status — 2026-11-11
+
+Final manual UAT passed by the user’s overall sign-off (“ok, pass UAT”). Earlier
+deferral/pending descriptions are historical. No agent browser run or screenshots
+are claimed. All five phases are accepted; milestone audit/archival is next.

@@ -1,9 +1,9 @@
 ---
 phase: 04-edit-parameters
-status: deferred
+status: passed
 owner: user
-passed: 0
-pending: 8
+passed: 8
+pending: 0
 ---
 
 # Final manual editing acceptance
@@ -32,3 +32,8 @@ visual pass is claimed. Use the combined guide `docs/development/final-uat.md`.
 
 Record actual browser/version, viewport, Device/profile IDs, steps, observed
 result and redacted evidence for each case. All eight cases remain pending.
+
+## Final user acceptance — 2026-11-11
+
+User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
+All cases are recorded passed on that overall sign-off. Earlier pending/deferral descriptions are retained as historical context. Phase 3 case 15 uses the documented Phase 4 superseding action-permission expectation.

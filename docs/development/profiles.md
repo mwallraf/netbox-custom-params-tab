@@ -250,3 +250,9 @@ On 2026-11-10 the user explicitly deferred all remaining browser UAT to final
 manual acceptance. Phase 3’s 15 cases remain pending, and Phase 4 editing cases
 are in `.planning/phases/04-edit-parameters/04-UAT.md`. This no longer blocks
 development or automated release checks. It does not establish visual acceptance.
+
+## Acceptance status — 2026-11-11
+
+Final manual UAT passed by the user’s overall sign-off (“ok, pass UAT”). Earlier
+deferral/pending descriptions are historical. No agent browser run or screenshots
+are claimed. All five phases are accepted; milestone audit/archival is next.

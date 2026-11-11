@@ -91,3 +91,9 @@ scope to reject stale membership/definition changes. The native edit view handle
 change permissions, constrained querysets, validation, change logging and post-save
 authority checks. An outer transaction locks the Device before POST reads. No
 plugin schema or native field settings are changed.
+
+## Acceptance status — 2026-11-11
+
+Final manual UAT passed by the user’s overall sign-off (“ok, pass UAT”). Earlier
+deferral/pending descriptions are historical. No agent browser run or screenshots
+are claimed. All five phases are accepted; milestone audit/archival is next.

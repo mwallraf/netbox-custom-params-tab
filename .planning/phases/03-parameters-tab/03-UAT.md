@@ -1,13 +1,13 @@
 ---
 phase: 03-parameters-tab
-status: deferred
+status: passed
 source: [03-VERIFICATION.md]
 started: 2026-11-07T15:09:06Z
 updated: 2026-11-07T15:09:06Z
 recorded_at: 2026-11-07T14:47:24Z
 historical_source: 03-04-T2
-browser_cases_passed: 0
-browser_cases_pending: 15
+browser_cases_passed: 15
+browser_cases_pending: 0
 ---
 
 # Phase 3 Device Parameters browser acceptance
@@ -20,76 +20,76 @@ expected: |
   Open matching CMTS and nonmatching CPE native Device detail pages, including
   a matching profile with zero available fields. Parameters appears only when
   an enabled profile matches, independently of field count.
-awaiting: final manual acceptance by user
+awaiting: none — user signed off final UAT on 2026-11-11
 
 ## Tests
 
 ### 1. Matching Parameters navigation
 expected: Parameters appears on matching Device detail pages, including an empty matching profile, and is absent on nonmatching Devices.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 2. Authorized direct no-match state
 expected: An authorized viewer visiting a nonmatching Device's direct Parameters URL sees the native Device shell and exactly No parameter profiles apply to this device.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 3. Empty matching section
 expected: A matching profile resolving zero active fields retains its heading and exactly No fields are available in this profile.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 4. Device-only viewer
 expected: A viewer without profile or field-definition administration grants can use the tab and direct page; Parameters exposes no profile administration actions or links.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 5. Relevant unset values
 expected: Relevant unset text, null, missing and multivalue fields all have rows with muted Not set; excluded fields are absent.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 6. Meaningful false-like values
 expected: Boolean false and numeric zero remain displayed values; JSON {}, [], false, 0 and empty string remain readable JSON rather than Not set.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 7. Independent native visibility
 expected: Selected Hidden and unset If Set fields appear in Parameters while native main-page visibility and settings remain unchanged.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 8. Dense responsive sections
 expected: A 20–30-field CMTS section plus CPE/shared sections forms expanded full-width vertical cards at 1440×900 and 390×844, with readable label/value wrapping and no unwanted page overflow.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 9. Duplicate titles, order and dynamic fields
 expected: Duplicate headings remain; Selected and All fields follow deterministic order; a newly created applicable native field appears in All on the next ordinary request.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 10. Labels and accessible secondary help
 expected: Unlabeled fields use the exact internal name; escaped help remains safe and secondary, usable with pointer and keyboard Tab/focus; no filter or mode metadata appears.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 11. Native save and repeated values
 expected: A legitimate native save followed by an ordinary reload updates every repeated field occurrence identically, without a profile save, import or synchronization.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 12. All native field types
 expected: All 13 supported types preserve native formatting, friendly choice labels/colors and permitted reference links, with consistent duplicate values.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 13. Complete complex values and local overflow
 expected: At both viewports, complete long URLs, multiline Markdown, long words and nested wide JSON remain readable; line breaks survive, URLs wrap, JSON scrolls locally and escaped hostile content does not execute.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 14. Native constrained viewing
 expected: Device-only, constrained and denied viewers follow native access on navigation and direct URLs; allowed navigation is active; restricted scalar/mixed/all-denied references reveal no denied IDs, labels, links or counts and use neutral Unavailable where appropriate.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ### 15. Read-only controls and focus
 expected: Allowed, no-match and empty-section pages have no Edit Parameters action or inactive button; keyboard focus is usable and native storage remains unchanged.
-result: [pending]
+result: [pass — user-reported overall sign-off 2026-11-11]
 
 ## Summary
 
 total: 15
-passed: 0
+passed: 15
 issues: 0
-pending: 15
+pending: 0
 skipped: 0
 blocked: 0
 
@@ -182,3 +182,8 @@ The historical no-edit-action expectation in case 15 applies to the Phase 3-only
 implementation. Phase 4 intentionally adds Edit Parameters for authorized editors
 with matching editable fields. Final UAT verifies that action boundary; the
 Parameters view itself still rejects POST. See `docs/development/final-uat.md`.
+
+## Final user acceptance — 2026-11-11
+
+User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
+All cases are recorded passed on that overall sign-off. Earlier pending/deferral descriptions are retained as historical context. Phase 3 case 15 uses the documented Phase 4 superseding action-permission expectation.

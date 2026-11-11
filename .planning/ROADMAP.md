@@ -11,9 +11,9 @@ are verified complete. Parameters and native editing are implemented; automated 
 
 - [x] **Phase 1: Reproducible baseline** - A developer can install, run, and test the renamed plugin from a usable checkout without losing prior work. (completed 2026-11-06)
 - [x] **Phase 2: Profile administration and matching** - Administrators can define reusable Device profiles and determine which profiles match a Device. (completed 2026-11-07)
-- [ ] **Phase 3: Parameters tab** - Users can view relevant native fields as ordered profile sections in a dedicated Device tab.
-- [ ] **Phase 4: Edit Parameters** - Authorized users can edit relevant native values once, with native validation and safe persistence.
-- [ ] **Phase 5: Release verification** - The agreed Device workflow is verified, installable, and documented.
+- [x] **Phase 3: Parameters tab** - Users can view relevant native fields as ordered profile sections in a dedicated Device tab.
+- [x] **Phase 4: Edit Parameters** - Authorized users can edit relevant native values once, with native validation and safe persistence.
+- [x] **Phase 5: Release verification** - The agreed Device workflow is verified, installable, and documented.
 
 ## Phase Details
 
@@ -137,12 +137,17 @@ filter engine or multi-object-type scope is included.
 |-------|----------------|--------|-----------|
 | 1. Reproducible baseline | 4/4 | Complete    | 2026-11-06 |
 | 2. Profile administration and matching | 8/8 | Complete    | 2026-11-07 |
-| 3. Parameters tab | 4/4 | Implemented; manual UAT deferred | - |
-| 4. Edit Parameters | 1/1 | Implemented; automated pass; manual UAT deferred | - |
-| 5. Release verification | 1/1 | Automated pass; final manual acceptance pending | - |
+| 3. Parameters tab | 4/4 | Complete; user UAT passed | 2026-11-11 |
+| 4. Edit Parameters | 1/1 | Complete; user UAT passed | 2026-11-11 |
+| 5. Release verification | 1/1 | Complete; user UAT passed | 2026-11-11 |
 
 *Last updated: 2026-11-10 after Phase 4 implementation and automated Phase 5 release checks; final manual UAT deferred.*
 
 ## Final manual acceptance
 
 User instruction (2026-11-10): defer all remaining browser UAT until the end of the project, to be performed manually by the user. Phase 3 implementation/automated gates permit Phase 4 to proceed. The 15 Phase 3 cases remain pending; include Phase 4 editing cases in the final handoff. Final acceptance remains open until those observations are recorded.
+
+## Final acceptance — 2026-11-11
+
+User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
+All five phases are accepted. Prior UAT deferral notes describe history. Milestone audit/archival and publication are separate next steps.

@@ -46,9 +46,9 @@ and verifiable; they do not add new product functionality.
 
 ### Release verification
 
-- [ ] **REL-01**: Verify CMTS/CPE/shared profiles, AND/OR matching, dynamic field inclusion, duplicate display/editing, and preservation of values and native settings.
-- [ ] **REL-02**: Verify script-written native values display and plugin-written values remain available through native NetBox facilities.
-- [ ] **REL-03**: Verify clean package install, migration behavior, and end-to-end UI flow on the supported version; document installation, configuration, and limitations. nested grouping, manual per-object profile assignment, automatic native visibility changes, and a separate authorization system.
+- [x] **REL-01**: Verify CMTS/CPE/shared profiles, AND/OR matching, dynamic field inclusion, duplicate display/editing, and preservation of values and native settings.
+- [x] **REL-02**: Verify script-written native values display and plugin-written values remain available through native NetBox facilities.
+- [x] **REL-03**: Verify clean package install, migration behavior, and end-to-end UI flow on the supported version; document installation, configuration, and limitations. nested grouping, manual per-object profile assignment, automatic native visibility changes, and a separate authorization system.
 
 ## v2 Requirements
 
@@ -84,14 +84,14 @@ and verifiable; they do not add new product functionality.
 | TAB-02 | Phase 3 | Complete |
 | TAB-03 | Phase 3 | Complete |
 | AUTH-01 | Phase 3 | Complete |
-| EDIT-01 | Phase 4 | Implemented; automated pass; manual UAT deferred |
-| EDIT-02 | Phase 4 | Implemented; automated pass; manual UAT deferred |
-| EDIT-03 | Phase 4 | Implemented; automated pass; manual UAT deferred |
-| EDIT-04 | Phase 4 | Implemented; automated pass; manual UAT deferred |
-| AUTH-02 | Phase 4 | Implemented; automated pass; manual UAT deferred |
-| REL-01 | Phase 5 | Pending |
-| REL-02 | Phase 5 | Pending |
-| REL-03 | Phase 5 | Pending |
+| EDIT-01 | Phase 4 | Complete; automated pass and user UAT sign-off 2026-11-11 |
+| EDIT-02 | Phase 4 | Complete; automated pass and user UAT sign-off 2026-11-11 |
+| EDIT-03 | Phase 4 | Complete; automated pass and user UAT sign-off 2026-11-11 |
+| EDIT-04 | Phase 4 | Complete; automated pass and user UAT sign-off 2026-11-11 |
+| AUTH-02 | Phase 4 | Complete; automated pass and user UAT sign-off 2026-11-11 |
+| REL-01 | Phase 5 | Complete; user UAT passed 2026-11-11 |
+| REL-02 | Phase 5 | Complete; user UAT passed 2026-11-11 |
+| REL-03 | Phase 5 | Complete; user UAT passed 2026-11-11 |
 
 **Coverage:** 26 v1 requirements; 26 mapped; 0 unmapped.
 
@@ -104,3 +104,8 @@ Checked implementation requirements do not imply browser acceptance. The user
 explicitly deferred all remaining UAT to final manual testing. Phase 3’s 15 cases
 and Phase 4’s eight cases remain pending. REL requirements remain open until the
 final acceptance observations are recorded.
+
+## Final acceptance — 2026-11-11
+
+User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
+All 26 milestone requirements are accepted, combining the recorded automated evidence with the user’s manual UAT sign-off. Earlier pending statements are historical.

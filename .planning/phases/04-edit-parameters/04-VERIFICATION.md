@@ -1,8 +1,8 @@
 ---
 phase: 04-edit-parameters
-status: human_needed
+status: passed
 automated_status: passed
-manual_status: deferred_by_user
+manual_status: passed_user_reported
 ---
 
 # Verification
@@ -19,3 +19,8 @@ Full source suite: 104 tests pass, live snapshot unchanged. See 04-01-SUMMARY.md
 Browser layout, widget interaction, focus and visual error usability are unobserved.
 User deferred those checks to final manual UAT; they do not block Phase 5 automated
 work. Final acceptance is not granted by these automated results.
+
+## Acceptance update — 2026-11-11
+
+User reported overall manual UAT passed on 2026-11-11: “ok, pass UAT”. This is user-reported acceptance of the final checklist; no agent-run browser observations, screenshots, viewport details or individual execution logs were supplied.
+The earlier manual-pending findings are closed by this sign-off; automated evidence is unchanged. Historical technical findings and browser-host limitations remain as recorded, not as current acceptance blockers.
