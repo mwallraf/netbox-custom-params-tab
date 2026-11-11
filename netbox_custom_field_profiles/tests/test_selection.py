@@ -109,6 +109,18 @@ class ProfileSelectionTests(TestCase):
         self.assertEqual(response.context['form'].initial['selected_fields'], [other.pk, self.native_field.pk])
         self.assertContains(response, 'profile_fields.js')
 
+    def test_create_enabled_single_selected_field_without_rules(self):
+        response = self.client.post(self.url('_add'), self.form_data(
+            [self.native_field], enabled=True,
+            remembered_fields=json.dumps([self.native_field.pk]),
+            device_types=[], device_roles=[], applicability_tags=[]))
+        self.assertEqual(response.status_code, 302)
+        profile = CustomFieldProfile.objects.get()
+        self.assertTrue(profile.enabled)
+        self.assertEqual(get_profile_fields(profile), [self.native_field])
+        for relation in ('device_types', 'device_roles', 'applicability_tags'):
+            self.assertFalse(getattr(profile, relation).exists())
+
     def remembered_data(self, fields, **extra):
         ids = [field.pk for field in fields]
         # The browser disables selected_fields in All mode, so only the explicit

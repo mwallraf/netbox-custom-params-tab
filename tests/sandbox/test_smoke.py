@@ -9,6 +9,18 @@ import smoke_sandbox as smoke
 
 
 class SmokeTests(unittest.TestCase):
+    def test_profile_editor_missing_or_stale_script_fails(self):
+        page = '<script src="/static/netbox_custom_field_profiles/profile_fields.js?v=2"></script>'
+        for asset in ((404, '', ''), (200, '', '// stale script')):
+            with self.subTest(asset=asset), mock.patch.object(smoke, 'fetch', side_effect=[(200, '', page), asset]):
+                with self.assertRaisesRegex(smoke.SmokeFailure, 'JavaScript missing or stale'):
+                    smoke.check_profile_assets(None, 'http://localhost')
+
+    def test_profile_editor_without_script_reference_fails(self):
+        with mock.patch.object(smoke, 'fetch', return_value=(200, '', '<form></form>')):
+            with self.assertRaisesRegex(smoke.SmokeFailure, 'script reference missing'):
+                smoke.check_profile_assets(None, 'http://localhost')
+
     def test_csrf_parses_reordered_escaped_attributes(self):
         form = smoke.LoginForm()
         form.feed('<input value="abc&amp;def" type="hidden" name="csrfmiddlewaretoken">')

@@ -34,6 +34,11 @@ Do not run prepare-schema on an initialized database.
 
 ## Commands
 
+After changing plugin JavaScript, run `make build` followed by `make up` to refresh
+the files served from the image's static root. Bind-mounted Python/templates do
+not update collected static assets. `make smoke` verifies that the profile editor
+references JavaScript that is served successfully and matches the current source.
+
 | Target | Purpose |
 | --- | --- |
 | `make env` | Generate or validate persistent local configuration |

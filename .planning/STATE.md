@@ -4,9 +4,9 @@ current_phase: 05
 current_phase_name: All phases accepted
 status: Audit debt accepted; legacy UI cleanup verified; ready for milestone completion
 stopped_at: User signed off final manual UAT on 2026-11-11
-last_updated: "2026-11-11T08:38:09.556691+00:00"
+last_updated: "2026-11-11T08:58:26.030447+00:00"
 last_activity: 2026-11-11
-last_activity_desc: Rewrote public README with quick installation and documentation links; two real screenshots await user capture
+last_activity_desc: Fixed profile create failure caused by missing served JavaScript; live asset smoke, 37 helper and 106 native tests pass
 state_head: fc571e4981590136962c9c18c2983d71d173eabc
 progress:
   total_phases: 5
@@ -151,3 +151,14 @@ unchanged bytes to docs/screenshots under descriptive filenames, and embedded th
 with captions in README (tall profile editor in an expandable section). Original
 input files preserved. The README screenshot follow-up is complete; functional
 UAT sign-off and accepted debt remain unchanged.
+
+## Post-acceptance bug fix — 2026-11-11
+
+User reported one-field Selected profile creation failed with remembered-field
+validation. Live ordering JavaScript returned 404: the image installed the plugin
+after upstream static collection. Docker now copies plugin assets to STATIC_ROOT;
+the template invalidates cached old script responses. New baseline HTTP checks
+fetch the real editor/script and reject missing/stale JavaScript. Rebuilt/recreated
+the sandbox, verified live asset delivery, 37 helper and 106 native test passes
+with live snapshots unchanged. Details: debug/profile-selected-field-create.md.
+Existing validation, accepted audit debt and UAT records remain intact.

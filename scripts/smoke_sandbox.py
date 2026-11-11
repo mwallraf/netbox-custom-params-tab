@@ -14,6 +14,16 @@ class SmokeFailure(RuntimeError):
     pass
 
 
+class ScriptSources(html.parser.HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.sources = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'script':
+            self.sources.append(dict(attrs).get('src', ''))
+
+
 class LoginForm(html.parser.HTMLParser):
     def __init__(self):
         super().__init__()
@@ -85,6 +95,22 @@ def assert_api_identity(result, expected):
         raise SmokeFailure('native API identity evidence missing') from None
 
 
+def check_profile_assets(opener, base):
+    status, _, body = fetch(opener, base + '/plugins/custom-field-profiles/add/')
+    scripts = ScriptSources()
+    scripts.feed(body)
+    expected_path = '/static/netbox_custom_field_profiles/profile_fields.js'
+    sources = [src for src in scripts.sources if src.split('?', 1)[0] == expected_path]
+    if status != 200 or not sources:
+        raise SmokeFailure('profile editor or ordering script reference missing')
+    status, _, script = fetch(opener, base + sources[0])
+    expected = (sandbox.ROOT / 'netbox_custom_field_profiles/static/'
+                'netbox_custom_field_profiles/profile_fields.js').read_text()
+    if status != 200 or script != expected:
+        raise SmokeFailure('profile ordering JavaScript missing or stale; rebuild the sandbox image')
+    print('PROFILE_ASSETS_HTTP_OK editor references current served selection/order script')
+
+
 def smoke():
     values = sandbox.ensure_env()
     sandbox.runtime()
@@ -110,6 +136,7 @@ def smoke():
     bad_status, _, _ = fetch(anonymous, endpoint, headers={'Authorization': 'Bearer nbt_' + 'x' * 12 + '.' + 'x' * 40})
     if bad_status not in (401, 403):
         raise SmokeFailure('invalid API token was not rejected')
+    check_profile_assets(authenticated, base)
     print('BASELINE_SMOKE_OK runtime/schema/registration/admin-session/native-token/negative-controls')
 
 
